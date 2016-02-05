@@ -3,6 +3,8 @@ var GamePlayScene = function(game, stage)
   var self = this;
   var dc = stage.drawCanv;
 
+  var inc_balloon = false;
+
   var balloon;
   var particles;
   var n_particles;
@@ -23,7 +25,7 @@ var GamePlayScene = function(game, stage)
     dragger = new Dragger({source:stage.dispCanv.canvas});
 
     particles = [];
-    n_particles = 1000;
+    n_particles = 10;
     p_size = 0.02;
     p_vel = 0.005;
     m_size = 0.2;
@@ -36,9 +38,11 @@ var GamePlayScene = function(game, stage)
 
     for(var i = 0; i < n_particles; i++)
       particles.push(new Particle(Math.random(),Math.random(),(Math.random()*p_vel*2)-p_vel,(Math.random()*p_vel*2)-p_vel));
-    balloon = new DraggableMass(Math.random(),Math.random(),(Math.random()*m_vel*2)-m_vel,(Math.random()*m_vel*2)-m_vel,m_m);
-
-    dragger.register(balloon);
+    if(inc_balloon)
+    {
+      balloon = new DraggableMass(Math.random(),Math.random(),(Math.random()*m_vel*2)-m_vel,(Math.random()*m_vel*2)-m_vel,m_m);
+      dragger.register(balloon);
+    }
   };
 
   self.tick = function()
@@ -48,31 +52,28 @@ var GamePlayScene = function(game, stage)
     //movement
     for(var i = 0; i < n_particles; i++)
       moveMass(particles[i]);
-    moveMass(balloon);
+    if(inc_balloon) moveMass(balloon);
 
     //gravity
     for(var i = 0; i < n_particles; i++)
       particles[i].wyv += 0.0001;
-    balloon.wyv += 0.0001;
+    if(inc_balloon) balloon.wyv += 0.0001;
 
     //collision - bounce
     for(var i = 0; i < n_particles; i++)
-    {
       for(var j = i+1; j < n_particles; j++)
-      {
         collideParticles(particles[i],particles[j]);
-      }
-    }
-    for(var i = 0; i < n_particles; i++)
+    if(inc_balloon)
     {
-      collideParticleMass(particles[i],balloon);
+      for(var i = 0; i < n_particles; i++)
+        collideParticleMass(particles[i],balloon);
     }
 
     //edge detection
     var p;
     for(var i = 0; i < n_particles; i++)
       collideParticleEdge(particles[i]);
-    collideMassEdge(balloon);
+    if(inc_balloon) collideMassEdge(balloon);
   };
 
   self.draw = function()
@@ -86,11 +87,14 @@ var GamePlayScene = function(game, stage)
     dc.context.fillStyle = "#000000";
     for(var i = 0; i < n_particles; i++)
       dc.context.fillRect(particles[i].wx*w-hpw,particles[i].wy*h-hph,pw,ph);
-    //dc.context.fillStyle = "#FF0000";
-    dc.context.fillStyle = "rgba(255,0,0,0.5)";
-    balloon.x = balloon.wx*w-balloon.w/2;
-    balloon.y = balloon.wy*h-balloon.h/2;
-    dc.context.fillRect(balloon.x,balloon.y,balloon.w,balloon.h);
+
+    if(inc_balloon)
+    {
+      dc.context.fillStyle = "rgba(255,0,0,0.5)";
+      balloon.x = balloon.wx*w-balloon.w/2;
+      balloon.y = balloon.wy*h-balloon.h/2;
+      dc.context.fillRect(balloon.x,balloon.y,balloon.w,balloon.h);
+    }
   };
 
   self.cleanup = function()
@@ -165,7 +169,11 @@ var GamePlayScene = function(game, stage)
   var tmpP = new Particle(0,0,0,0);
   var collideParticles = function(a,b)
   {
-    if(pDistSqr(a,b) > pCollideDistSqr) return;
+    var xd = b.wx - a.wx;
+    var yd = b.wy - a.wy;
+    var dsqr = (xd*xd)+(yd*yd);
+    if(dsqr > pCollideDistSqr) return;
+    var d = Math.sqrt(dsqr);
 
     //bounce particles
     tmpP.wxv = a.wxv;
@@ -176,28 +184,13 @@ var GamePlayScene = function(game, stage)
     b.wyv = tmpP.wyv;
 
     //push particles away
-    tmpP.wx = a.wx+((b.wx-a.wx)/2);
-    tmpP.wy = a.wy+((b.wy-a.wy)/2);
-    if(a.wx < b.wx)
-    {
-      a.wx = tmpP.wx-hp_size;
-      b.wx = tmpP.wx+hp_size;
-    }
-    else
-    {
-      a.wx = tmpP.wx+hp_size;
-      b.wx = tmpP.wx-hp_size;
-    }
-    if(a.wy < b.wy)
-    {
-      a.wy = tmpP.wy-hp_size;
-      b.wy = tmpP.wy+hp_size;
-    }
-    else
-    {
-      a.wy = tmpP.wy+hp_size;
-      b.wy = tmpP.wy-hp_size;
-    }
+    var md = (p_size-d)/2;
+    var mx = md*Math.cos(xd/d);
+    var my = md*Math.sin(yd/d);
+    a.wx -= mx;
+    a.wy -= my;
+    b.wx += mx;
+    b.wy += my;
   }
   var tmpM = new Mass(0,0,0,0,0);
   var collideParticleMass = function(p,m)
