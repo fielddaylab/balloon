@@ -26,7 +26,7 @@ var Game = function(init)
     requestAnimFrame(tick,stage.dispCanv.canvas);
     //stage.clear();
     stage.drawCanv.clear();
-    stage.dispCanv.context.fillStyle = "rgba(255,255,255,0.05)";
+    stage.dispCanv.context.fillStyle = "rgba(255,255,255,0.1)";
     stage.dispCanv.context.fillRect(0,0,stage.dispCanv.canvas.width,stage.dispCanv.canvas.height);
     scenes[cur_scene].tick();
     scenes[cur_scene].draw();

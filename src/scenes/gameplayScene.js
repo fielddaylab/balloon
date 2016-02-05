@@ -3,7 +3,7 @@ var GamePlayScene = function(game, stage)
   var self = this;
   var dc = stage.drawCanv;
 
-  var inc_balloon = false;
+  var inc_balloon = true;
 
   var balloon;
   var particles;
@@ -19,6 +19,7 @@ var GamePlayScene = function(game, stage)
   var pmCollideDistSqr;
 
   var ball_canv;
+  var mass_canv;
   var dragger;
 
   self.ready = function()
@@ -26,7 +27,7 @@ var GamePlayScene = function(game, stage)
     dragger = new Dragger({source:stage.dispCanv.canvas});
 
     particles = [];
-    n_particles = 100;
+    n_particles = 1000;
     p_size = 0.02;
     p_vel = 0.005;
     m_size = 0.2;
@@ -45,6 +46,15 @@ var GamePlayScene = function(game, stage)
     ball_canv.context.beginPath();
     ball_canv.context.arc(ball_canv.width/2,ball_canv.height/2,ball_canv.width/2,0,2*Math.PI);
     ball_canv.context.fill();
+
+    mass_canv = document.createElement('canvas');
+    mass_canv.width = 40;
+    mass_canv.height = 40;
+    mass_canv.context = mass_canv.getContext('2d');
+    mass_canv.context.fillStyle = "#0000FF";
+    mass_canv.context.beginPath();
+    mass_canv.context.arc(mass_canv.width/2,mass_canv.height/2,mass_canv.width/2,0,2*Math.PI);
+    mass_canv.context.fill();
 
     for(var i = 0; i < n_particles; i++)
       particles.push(new Particle(Math.random(),Math.random(),(Math.random()*p_vel*2)-p_vel,(Math.random()*p_vel*2)-p_vel));
@@ -96,7 +106,6 @@ var GamePlayScene = function(game, stage)
     var hph = ph/2;
     dc.context.fillStyle = "#000000";
     for(var i = 0; i < n_particles; i++)
-      //dc.context.fillRect(particles[i].wx*w-hpw,particles[i].wy*h-hph,pw,ph);
       dc.context.drawImage(ball_canv,particles[i].wx*w-hpw,particles[i].wy*h-hph,pw,ph);
 
     if(inc_balloon)
@@ -104,7 +113,7 @@ var GamePlayScene = function(game, stage)
       dc.context.fillStyle = "rgba(255,0,0,0.5)";
       balloon.x = balloon.wx*w-balloon.w/2;
       balloon.y = balloon.wy*h-balloon.h/2;
-      dc.context.fillRect(balloon.x,balloon.y,balloon.w,balloon.h);
+      dc.context.drawImage(mass_canv,balloon.x,balloon.y,balloon.w,balloon.h);
     }
   };
 
@@ -195,6 +204,7 @@ var GamePlayScene = function(game, stage)
     b.wyv = tmpP.wyv;
 
     //push particles away
+    if(d == 0) { a.wx += 0.001; a.wy += 0.001; return; }
     var md = (p_size-d)/2;
     var mx = md*Math.cos(xd/d);
     var my = md*Math.sin(yd/d);
@@ -206,7 +216,11 @@ var GamePlayScene = function(game, stage)
   var tmpM = new Mass(0,0,0,0,0);
   var collideParticleMass = function(p,m)
   {
-    if(pDistSqr(p,m) > pmCollideDistSqr) return;
+    var xd = m.wx - p.wx;
+    var yd = m.wy - p.wy;
+    var dsqr = (xd*xd)+(yd*yd);
+    if(dsqr > pmCollideDistSqr) return;
+    var d = Math.sqrt(dsqr);
 
     //bounce particle/mass
     tmpP.wxv = p.wxv-m.wxv;
@@ -222,30 +236,14 @@ var GamePlayScene = function(game, stage)
     m.wyv = m.wyv+tmpM.wyv;
 
     //push particle/mass away
-    if(p.wx < m.wx)
-    {
-      tmpP.wx = p.wx+((m.wx-p.wx)*(p_size/m_size));
-      p.wx = tmpP.wx-hp_size;
-      m.wx = tmpP.wx+hm_size;
-    }
-    else
-    {
-      tmpP.wx = m.wx+((p.wx-m.wx)*(p_size/m_size));
-      p.wx = tmpP.wx+hp_size;
-      m.wx = tmpP.wx-hm_size;
-    }
-    if(p.wy < m.wy)
-    {
-      tmpP.wy = p.wy+((m.wy-p.wy)*(p_size/m_size));
-      p.wy = tmpP.wy-hp_size;
-      m.wy = tmpP.wy+hm_size;
-    }
-    else
-    {
-      tmpP.wy = m.wy+((p.wy-m.wy)*(p_size/m_size));
-      p.wy = tmpP.wy+hp_size;
-      m.wy = tmpP.wy-hm_size;
-    }
+    if(d == 0) { a.wx += 0.001; a.wy += 0.001; return; }
+    var md = (((p_size+m_size)/2)-d)/2;
+    var mx = md*Math.cos(xd/d);
+    var my = md*Math.sin(yd/d);
+    p.wx -= mx;
+    p.wy -= my;
+    m.wx += mx;
+    m.wy += my;
   }
   var collideParticleEdge = function(p)
   {
