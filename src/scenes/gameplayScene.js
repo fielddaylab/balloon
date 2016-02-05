@@ -20,11 +20,14 @@ var GamePlayScene = function(game, stage)
   var balloon;
   var pipes;
 
+  //ui
+  var boost_button;
+
   self.ready = function()
   {
     //config
     n_pipes = 10;
-    gravity = 0.0001;
+    gravity = 0.01;
 
     //utils
     balloon_canv = document.createElement('canvas');
@@ -45,10 +48,10 @@ var GamePlayScene = function(game, stage)
     balloon = new Balloon();
     pipes = [];
     for(var i = 0; i < n_pipes; i++)
-      pipes.push(new Pipe(i,Math.random()*2-1,0.2,0.5));
+      pipes.push(new Pipe(i*5,Math.random()*2-1,1,10));
 
-    screenSpace(camera,balloon);
-    screenSpace(camera,pipes[0]);
+    boost_button = new ButtonBox(0,0,dc.width,dc.height,function(){ balloon.wyv = 0.2; });
+    clicker.register(boost_button);
   };
 
   self.tick = function()
@@ -65,20 +68,35 @@ var GamePlayScene = function(game, stage)
 
     //cam track
     camera.wx = balloon.wx;
-
+    if(balloon.wy > 5)
+    {
+      camera.wh = 10+((balloon.wy-5)*2);
+      camera.ww = camera.wh;
+    }
+    if(balloon.wy < -5)
+    {
+      camera.wh = 10+((-balloon.wy-5)*2);
+      camera.ww = camera.wh;
+    }
     screenSpace(camera,balloon);
     for(var i = 0; i < n_pipes; i++)
       screenSpace(camera,pipes[i]);
-
     screenSpace(camera,grid);
+
+    //collision
+    for(var i = 0; i < n_pipes; i++)
+      pipes[i].colliding = queryRectCollide(balloon,pipes[i]);
   }
 
   self.draw = function()
   {
     dc.context.drawImage(balloon_canv,balloon.x,balloon.y,balloon.w,balloon.h);
-    dc.context.fillStyle = "#005500";
     for(var i = 0; i < n_pipes; i++)
+    {
+      if(pipes[i].colliding) dc.context.fillStyle = "#FF5500";
+      else                   dc.context.fillStyle = "#005500";
       dc.context.fillRect(pipes[i].x,pipes[i].y,pipes[i].w,pipes[i].h);
+    }
 
     grid.draw();
   };
@@ -138,7 +156,7 @@ var GamePlayScene = function(game, stage)
     self.ww = 1;
     self.wh = 1;
 
-    self.wxv = 0;
+    self.wxv = 0.01;
     self.wyv = 0;
     self.m = 1;
   }
@@ -156,6 +174,8 @@ var GamePlayScene = function(game, stage)
     self.wy = wy;
     self.ww = ww;
     self.wh = wh;
+
+    self.colliding = false;
   }
 
   var screenSpace = function(cam, obj)

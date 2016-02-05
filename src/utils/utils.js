@@ -231,3 +231,8 @@ var setBox = function(obj, x,y,w,h)
   obj.h = h;
 }
 
+var queryRectCollide = function(a,b)
+{
+  return a.x < b.x+b.w && b.x < a.x+a.w && a.y < b.y+b.h && b.y < a.y+a.h;
+}
+
