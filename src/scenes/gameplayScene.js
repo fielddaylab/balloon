@@ -5,29 +5,44 @@ var GamePlayScene = function(game, stage)
 
   var inc_mass = true;
 
-  var mass;
-  var particles;
+  //config
   var n_particles;
   var p_size;
-  var p_vel;
   var m_size;
+  var p_vel;
   var m_vel;
   var m_m;
+  var friction;
+  var gravity;
+
+  //derivable from config
   var hp_size;
   var hm_size;
   var pCollideDistSqr;
   var pmCollideDistSqr;
 
+  //utils
   var ball_canv;
   var mass_canv;
+
+  //doqueues
   var dragger;
+
+  //objects
+  var particles;
+  var mass;
+
+  //ui
+  var n_particles_slider;
+  var p_size_slider;
+  var m_size_slider;
+  var p_vel_slider;
+  var m_vel_slider;
+  var m_m_slider;
 
   self.ready = function()
   {
-    dragger = new Dragger({source:stage.dispCanv.canvas});
-
-    particles = [];
-
+    //config
     n_particles = 1000;
     p_size = 0.02;
     m_size = 0.02;
@@ -37,11 +52,17 @@ var GamePlayScene = function(game, stage)
     gravity = 0.0001;
     friction = 0.999;
 
-    hp_size = p_size/2;
-    hm_size = m_size/2;
-    pCollideDistSqr = p_size; pCollideDistSqr *= pCollideDistSqr;
-    pmCollideDistSqr = (p_size+m_size)/2; pmCollideDistSqr *= pmCollideDistSqr;
+    //derivable from config
+    function rederiveConfig()
+    {
+      hp_size = p_size/2;
+      hm_size = m_size/2;
+      pCollideDistSqr = p_size; pCollideDistSqr *= pCollideDistSqr;
+      pmCollideDistSqr = (p_size+m_size)/2; pmCollideDistSqr *= pmCollideDistSqr;
+    }
+    rederiveConfig();
 
+    //utils
     ball_canv = document.createElement('canvas');
     ball_canv.width = 20;
     ball_canv.height = 20;
@@ -60,6 +81,11 @@ var GamePlayScene = function(game, stage)
     mass_canv.context.arc(mass_canv.width/2,mass_canv.height/2,mass_canv.width/2,0,2*Math.PI);
     mass_canv.context.fill();
 
+    //doqueues
+    dragger = new Dragger({source:stage.dispCanv.canvas});
+
+    //objects
+    particles = [];
     for(var i = 0; i < n_particles; i++)
       particles.push(new Particle(Math.random(),Math.random(),(Math.random()*p_vel*2)-p_vel,(Math.random()*p_vel*2)-p_vel));
     if(inc_mass)
@@ -67,11 +93,39 @@ var GamePlayScene = function(game, stage)
       mass = new DraggableMass(Math.random(),Math.random(),(Math.random()*m_vel*2)-m_vel,(Math.random()*m_vel*2)-m_vel,m_m);
       dragger.register(mass);
     }
+
+    //ui
+    n_particles_slider = new SmoothSliderBox(10, 10,100,20,     0, n_particles, n_particles, function(n){ n_particles = Math.round(n); });
+    p_size_slider      = new SmoothSliderBox(10, 40,100,20, 0.005,         0.1,      p_size, function(n){ p_size = n; rederiveConfig(); });
+    m_size_slider      = new SmoothSliderBox(10, 70,100,20, 0.005,         0.2,      m_size, function(n){ m_size = n; rederiveConfig(); });
+    p_vel_slider       = new SmoothSliderBox(10,100,100,20, 0.002,        0.01,       p_vel, function(n){ p_vel = n; });
+    m_vel_slider       = new SmoothSliderBox(10,130,100,20, 0.002,        0.01,       m_vel, function(n){ m_vel = n; });
+    m_m_slider         = new SmoothSliderBox(10,160,100,20, 0.001,       10000,         m_m, function(n){ m_m = n; });
+    gravity_slider     = new SmoothSliderBox(10,190,100,20,     0,        0.01,         m_m, function(n){ gravity = n; });
+    friction_slider    = new SmoothSliderBox(10,210,100,20,     0,           1,         m_m, function(n){ friction = n; });
+
+    dragger.register(n_particles_slider);
+    dragger.register(p_size_slider);
+    dragger.register(m_size_slider);
+    dragger.register(p_vel_slider);
+    dragger.register(m_vel_slider);
+    dragger.register(m_m_slider);
+    dragger.register(gravity_slider);
+    dragger.register(friction_slider);
   };
 
   self.tick = function()
   {
     dragger.flush();
+
+    n_particles_slider.tick();
+    p_size_slider.tick();
+    m_size_slider.tick();
+    p_vel_slider.tick();
+    m_vel_slider.tick();
+    m_m_slider.tick();
+    gravity_slider.tick();
+    friction_slider.tick();
 
     //movement
     for(var i = 0; i < n_particles; i++)
@@ -107,23 +161,32 @@ var GamePlayScene = function(game, stage)
 
   self.draw = function()
   {
-    var w = dc.width;
-    var h = dc.height;
-    var pw = p_size * w;
-    var ph = p_size * h;
+    var pw = p_size * dc.width;
+    var ph = p_size * dc.height;
     var hpw = pw/2;
     var hph = ph/2;
     dc.context.fillStyle = "#000000";
     for(var i = 0; i < n_particles; i++)
-      dc.context.drawImage(ball_canv,particles[i].wx*w-hpw,particles[i].wy*h-hph,pw,ph);
+      dc.context.drawImage(ball_canv,particles[i].wx*dc.width-hpw,dc.height-(particles[i].wy*dc.height)-hph,pw,ph);
 
     if(inc_mass)
     {
       dc.context.fillStyle = "rgba(255,0,0,0.5)";
-      mass.x = mass.wx*w-mass.w/2;
-      mass.y = mass.wy*h-mass.h/2;
+      mass.x = mass.wx*dc.width-mass.w/2;
+      mass.y = dc.height-(mass.wy*dc.height)-mass.h/2;
+      mass.w = m_size*dc.width;
+      mass.h = m_size*dc.height;
       dc.context.drawImage(mass_canv,mass.x,mass.y,mass.w,mass.h);
     }
+
+    n_particles_slider.draw(dc);
+    p_size_slider.draw(dc);
+    m_size_slider.draw(dc);
+    p_vel_slider.draw(dc);
+    m_vel_slider.draw(dc);
+    m_m_slider.draw(dc);
+    gravity_slider.draw(dc);
+    friction_slider.draw(dc);
   };
 
   self.cleanup = function()
@@ -177,7 +240,7 @@ var GamePlayScene = function(game, stage)
     self.drag = function(evt)
     {
       self.wx = evt.doX/dc.width;
-      self.wy = evt.doY/dc.height;
+      self.wy = (dc.height-evt.doY)/dc.height;
       self.wxv = 0;
       self.wyv = 0;
     }
@@ -253,7 +316,6 @@ var GamePlayScene = function(game, stage)
     var t = Math.atan2(yd,xd);
     var mx = md*Math.cos(t);
     var my = md*Math.sin(t);
-    if(my < 0) console.log('less');
     p.wx -= mx;
     p.wy -= my;
     if(m.dragging) return;
