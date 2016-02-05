@@ -6,6 +6,16 @@ var GamePlayScene = function(game, stage)
   var inc_mass = true;
 
   //config
+  var default_n_particles;
+  var default_p_size;
+  var default_m_size;
+  var default_p_vel;
+  var default_m_vel;
+  var default_m_m;
+  var default_friction;
+  var default_gravity;
+
+  //cur config
   var n_particles;
   var p_size;
   var m_size;
@@ -27,6 +37,7 @@ var GamePlayScene = function(game, stage)
 
   //doqueues
   var dragger;
+  var clicker;
 
   //objects
   var particles;
@@ -39,18 +50,35 @@ var GamePlayScene = function(game, stage)
   var p_vel_slider;
   var m_vel_slider;
   var m_m_slider;
+  var defaults_button;
+  var velocitize_button;
 
   self.ready = function()
   {
-    //config
-    n_particles = 1000;
-    p_size = 0.02;
-    m_size = 0.02;
-    p_vel = 0.005;
-    m_vel = 0.005;
-    m_m = 10;
-    gravity = 0.0001;
-    friction = 0.999;
+    //default config
+    default_n_particles = 1000;
+    default_p_size = 0.02;
+    default_m_size = 0.02;
+    default_p_vel = 0.005;
+    default_m_vel = 0.005;
+    default_m_m = 10;
+    default_gravity = 0.0001;
+    default_friction = 0.999;
+
+    //cur config
+    function restoreDefaults()
+    {
+      n_particles = default_n_particles;
+      p_size = default_p_size;
+      m_size = default_m_size;
+      p_vel = default_p_vel;
+      m_vel = default_m_vel;
+      m_m = default_m_m;
+      gravity = default_gravity;
+      friction = default_friction;
+      rederiveConfig();
+    }
+    restoreDefaults();
 
     //derivable from config
     function rederiveConfig()
@@ -83,6 +111,7 @@ var GamePlayScene = function(game, stage)
 
     //doqueues
     dragger = new Dragger({source:stage.dispCanv.canvas});
+    clicker = new Clicker({source:stage.dispCanv.canvas});
 
     //objects
     particles = [];
@@ -94,15 +123,33 @@ var GamePlayScene = function(game, stage)
       dragger.register(mass);
     }
 
+    function revelocitize()
+    {
+      var p;
+      for(var i = 0; i < n_particles; i++)
+      {
+        p = particles[i];
+        p.wxv = (Math.random()*p_vel*2)-p_vel;
+        p.wyv = (Math.random()*p_vel*2)-p_vel;
+      }
+      if(inc_mass)
+      {
+        mass.wxv = (Math.random()*m_vel*2)-m_vel;
+        mass.wyv = (Math.random()*m_vel*2)-m_vel;
+      }
+    }
+
     //ui
     n_particles_slider = new SmoothSliderBox(10, 10,100,20,     0, n_particles, n_particles, function(n){ n_particles = Math.round(n); });
     p_size_slider      = new SmoothSliderBox(10, 40,100,20, 0.005,         0.1,      p_size, function(n){ p_size = n; rederiveConfig(); });
     m_size_slider      = new SmoothSliderBox(10, 70,100,20, 0.005,         0.2,      m_size, function(n){ m_size = n; rederiveConfig(); });
-    p_vel_slider       = new SmoothSliderBox(10,100,100,20, 0.002,        0.01,       p_vel, function(n){ p_vel = n; });
-    m_vel_slider       = new SmoothSliderBox(10,130,100,20, 0.002,        0.01,       m_vel, function(n){ m_vel = n; });
+    p_vel_slider       = new SmoothSliderBox(10,100,100,20, 0.002,        0.01,       p_vel, function(n){ p_vel = n; revelocitize(); });
+    m_vel_slider       = new SmoothSliderBox(10,130,100,20, 0.002,        0.01,       m_vel, function(n){ m_vel = n; revelocitize(); });
     m_m_slider         = new SmoothSliderBox(10,160,100,20, 0.001,       10000,         m_m, function(n){ m_m = n; });
-    gravity_slider     = new SmoothSliderBox(10,190,100,20,     0,        0.01,         m_m, function(n){ gravity = n; });
-    friction_slider    = new SmoothSliderBox(10,210,100,20,     0,           1,         m_m, function(n){ friction = n; });
+    gravity_slider     = new SmoothSliderBox(10,190,100,20,     0,        0.01,     gravity, function(n){ gravity = n; });
+    friction_slider    = new SmoothSliderBox(10,210,100,20,     0,           1,    friction, function(n){ friction = n; });
+    defaults_button = new ButtonBox(10,240,20,20,function(){ restoreDefaults(); rederiveConfig(); revelocitize(); });
+    velocitize_button = new ButtonBox(40,240,20,20,function(){ revelocitize(); });
 
     dragger.register(n_particles_slider);
     dragger.register(p_size_slider);
@@ -112,11 +159,14 @@ var GamePlayScene = function(game, stage)
     dragger.register(m_m_slider);
     dragger.register(gravity_slider);
     dragger.register(friction_slider);
+    clicker.register(defaults_button);
+    clicker.register(velocitize_button);
   };
 
   self.tick = function()
   {
     dragger.flush();
+    clicker.flush();
 
     n_particles_slider.tick();
     p_size_slider.tick();
@@ -176,17 +226,20 @@ var GamePlayScene = function(game, stage)
       mass.y = dc.height-(mass.wy*dc.height)-mass.h/2;
       mass.w = m_size*dc.width;
       mass.h = m_size*dc.height;
+      mass.m = m_m;
       dc.context.drawImage(mass_canv,mass.x,mass.y,mass.w,mass.h);
     }
 
-    n_particles_slider.draw(dc);
-    p_size_slider.draw(dc);
-    m_size_slider.draw(dc);
-    p_vel_slider.draw(dc);
-    m_vel_slider.draw(dc);
-    m_m_slider.draw(dc);
-    gravity_slider.draw(dc);
-    friction_slider.draw(dc);
+    n_particles_slider.draw(dc); dc.context.fillText("n_particles", n_particles_slider.x + n_particles_slider.w + 10, n_particles_slider.y + n_particles_slider.h); dc.context.fillText(n_particles, n_particles_slider.x + n_particles_slider.w + 100, n_particles_slider.y + n_particles_slider.h);
+    p_size_slider.draw(dc);      dc.context.fillText(     "p_size",      p_size_slider.x +      p_size_slider.w + 10,      p_size_slider.y +      p_size_slider.h); dc.context.fillText(     p_size, n_particles_slider.x + n_particles_slider.w + 100,      p_size_slider.y +      p_size_slider.h);
+    m_size_slider.draw(dc);      dc.context.fillText(     "m_size",      m_size_slider.x +      m_size_slider.w + 10,      m_size_slider.y +      m_size_slider.h); dc.context.fillText(     m_size, n_particles_slider.x + n_particles_slider.w + 100,      m_size_slider.y +      m_size_slider.h);
+    p_vel_slider.draw(dc);       dc.context.fillText(      "p_vel",       p_vel_slider.x +       p_vel_slider.w + 10,       p_vel_slider.y +       p_vel_slider.h); dc.context.fillText(      p_vel, n_particles_slider.x + n_particles_slider.w + 100,       p_vel_slider.y +       p_vel_slider.h);
+    m_vel_slider.draw(dc);       dc.context.fillText(      "m_vel",       m_vel_slider.x +       m_vel_slider.w + 10,       m_vel_slider.y +       m_vel_slider.h); dc.context.fillText(      m_vel, n_particles_slider.x + n_particles_slider.w + 100,       m_vel_slider.y +       m_vel_slider.h);
+    m_m_slider.draw(dc);         dc.context.fillText(        "m_m",         m_m_slider.x +         m_m_slider.w + 10,         m_m_slider.y +         m_m_slider.h); dc.context.fillText(        m_m, n_particles_slider.x + n_particles_slider.w + 100,         m_m_slider.y +         m_m_slider.h);
+    gravity_slider.draw(dc);     dc.context.fillText(    "gravity",     gravity_slider.x +     gravity_slider.w + 10,     gravity_slider.y +     gravity_slider.h); dc.context.fillText(    gravity, n_particles_slider.x + n_particles_slider.w + 100,     gravity_slider.y +     gravity_slider.h);
+    friction_slider.draw(dc);    dc.context.fillText(   "friction",    friction_slider.x +    friction_slider.w + 10,    friction_slider.y +    friction_slider.h); dc.context.fillText(   friction, n_particles_slider.x + n_particles_slider.w + 100,    friction_slider.y +    friction_slider.h);
+    defaults_button.draw(dc);
+    velocitize_button.draw(dc);
   };
 
   self.cleanup = function()
