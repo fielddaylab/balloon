@@ -27,12 +27,16 @@ var GamePlayScene = function(game, stage)
     dragger = new Dragger({source:stage.dispCanv.canvas});
 
     particles = [];
+
     n_particles = 1000;
-    p_size = 0.005;
+    p_size = 0.02;
+    m_size = 0.02;
     p_vel = 0.005;
-    m_size = 0.2;
     m_vel = 0.005;
-    m_m = 1;
+    m_m = 10;
+    gravity = 0.0001;
+    friction = 0.999;
+
     hp_size = p_size/2;
     hm_size = m_size/2;
     pCollideDistSqr = p_size; pCollideDistSqr *= pCollideDistSqr;
@@ -76,8 +80,8 @@ var GamePlayScene = function(game, stage)
 
     //gravity
     for(var i = 0; i < n_particles; i++)
-      particles[i].wyv += 0.0001;
-    if(inc_mass) mass.wyv += 0.0001;
+      gravitateMass(particles[i]);
+    if(inc_mass) gravitateMass(mass);
 
     //collision - bounce
     for(var i = 0; i < n_particles; i++)
@@ -88,6 +92,11 @@ var GamePlayScene = function(game, stage)
       for(var i = 0; i < n_particles; i++)
         collideParticleMass(particles[i],mass);
     }
+
+    //friction
+    for(var i = 0; i < n_particles; i++)
+      frictionMass(particles[i]);
+    if(inc_mass) frictionMass(mass);
 
     //edge detection
     var p;
@@ -264,6 +273,16 @@ var GamePlayScene = function(game, stage)
     if(m.wx < 0+hm_size) { m.wxv =  Math.abs(m.wxv); m.wx = 0+hm_size; }
     if(m.wy > 1-hm_size) { m.wyv = -Math.abs(m.wyv); m.wy = 1-hm_size; }
     if(m.wy < 0+hm_size) { m.wyv =  Math.abs(m.wyv); m.wy = 0+hm_size; }
+  }
+
+  var gravitateMass = function(m)
+  {
+    m.wyv -= gravity;
+  }
+  var frictionMass = function(m)
+  {
+    m.wyv *= friction;
+    m.wxv *= friction;
   }
 };
 
