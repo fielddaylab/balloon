@@ -12,7 +12,7 @@ var GamePlayScene = function(game, stage)
 
   //doqueues
   var dragger;
-  var clicker;
+  var presser;
 
   //objects
   var camera;
@@ -21,18 +21,18 @@ var GamePlayScene = function(game, stage)
   var pipes;
 
   //ui
-  var boost_button;
+  var boost_pad;
 
   self.ready = function()
   {
     //config
     n_pipes = 10;
-    gravity = 0.01;
+    gravity = 0.002;
 
     //utils
     balloon_canv = document.createElement('canvas');
-    balloon_canv.width = 20;
-    balloon_canv.height = 20;
+    balloon_canv.width = 100;
+    balloon_canv.height = 100;
     balloon_canv.context = balloon_canv.getContext('2d');
     balloon_canv.context.fillStyle = "#FF0000";
     balloon_canv.context.beginPath();
@@ -41,7 +41,7 @@ var GamePlayScene = function(game, stage)
 
     //doqueues
     dragger = new Dragger({source:stage.dispCanv.canvas});
-    clicker = new Clicker({source:stage.dispCanv.canvas});
+    presser = new Presser({source:stage.dispCanv.canvas});
 
     camera = new Camera();
     grid = new Grid();
@@ -50,14 +50,33 @@ var GamePlayScene = function(game, stage)
     for(var i = 0; i < n_pipes; i++)
       pipes.push(new Pipe(i*5,Math.random()*2-1,1,10));
 
-    boost_button = new ButtonBox(0,0,dc.width,dc.height,function(){ balloon.wyv = 0.2; });
-    clicker.register(boost_button);
+    boost_pad = new function()
+    {
+      var self = this;
+
+      self.x = 0;
+      self.y = 0;
+      self.w = dc.width;
+      self.h = dc.height;
+
+      self.pressed = false;
+      self.press = function(evt) { self.pressed = true; }
+      self.unpress = function(evt) { self.pressed = false; }
+    }
+    presser.register(boost_pad);
   };
 
   self.tick = function()
   {
     dragger.flush();
-    clicker.flush();
+    presser.flush();
+
+    //temp
+    if(boost_pad.pressed) balloon.t += 0.01;
+    else balloon.t = lerp(balloon.t,1,0.01);
+
+    //lift
+    balloon.wyv += (balloon.t-1)*0.001;
 
     //gravity
     balloon.wyv -= gravity;
@@ -65,23 +84,28 @@ var GamePlayScene = function(game, stage)
     //motion
     balloon.wx += balloon.wxv;
     balloon.wy += balloon.wyv;
+    if(balloon.wy < -10)
+    {
+      balloon.wy = -10;
+      if(balloon.wyv < 0) balloon.wyv = 0;
+    }
 
     //cam track
     camera.wx = balloon.wx;
-    if(balloon.wy > 5)
+    if(balloon.wy > 4)
     {
-      camera.wh = 10+((balloon.wy-5)*2);
+      camera.wh = 10+((balloon.wy-4)*2);
       camera.ww = camera.wh;
     }
-    if(balloon.wy < -5)
+    if(balloon.wy < -4)
     {
-      camera.wh = 10+((-balloon.wy-5)*2);
+      camera.wh = 10+((-balloon.wy-4)*2);
       camera.ww = camera.wh;
     }
-    screenSpace(camera,balloon);
+    screenSpace(camera,dc,balloon);
     for(var i = 0; i < n_pipes; i++)
-      screenSpace(camera,pipes[i]);
-    screenSpace(camera,grid);
+      screenSpace(camera,dc,pipes[i]);
+    screenSpace(camera,dc,grid);
 
     //collision
     for(var i = 0; i < n_pipes; i++)
@@ -90,7 +114,15 @@ var GamePlayScene = function(game, stage)
 
   self.draw = function()
   {
+    //sky
+    dc.context.fillStyle = "#8899AA";
+    dc.context.fillRect(0,0,dc.width,dc.height);
+
+    //balloon
     dc.context.drawImage(balloon_canv,balloon.x,balloon.y,balloon.w,balloon.h);
+    dc.context.fillStyle = "#000000";
+    dc.context.fillText(balloon.t,balloon.x,balloon.y+balloon.h);
+    //pipes
     for(var i = 0; i < n_pipes; i++)
     {
       if(pipes[i].colliding) dc.context.fillStyle = "#FF5500";
@@ -98,6 +130,7 @@ var GamePlayScene = function(game, stage)
       dc.context.fillRect(pipes[i].x,pipes[i].y,pipes[i].w,pipes[i].h);
     }
 
+    //ui
     grid.draw();
   };
 
@@ -159,6 +192,7 @@ var GamePlayScene = function(game, stage)
     self.wxv = 0.01;
     self.wyv = 0;
     self.m = 1;
+    self.t = 1;
   }
 
   var Pipe = function(wx, wy, ww, wh)
@@ -176,14 +210,6 @@ var GamePlayScene = function(game, stage)
     self.wh = wh;
 
     self.colliding = false;
-  }
-
-  var screenSpace = function(cam, obj)
-  {
-    obj.w = (obj.ww/cam.ww)*dc.width;
-    obj.h = (obj.wh/cam.wh)*dc.height;
-    obj.x = (((( obj.wx-obj.ww/2)-cam.wx)+(cam.ww/2))/cam.ww)*dc.width;
-    obj.y = ((((-obj.wy-obj.wh/2)-cam.wy)+(cam.wh/2))/cam.wh)*dc.height;
   }
 };
 
