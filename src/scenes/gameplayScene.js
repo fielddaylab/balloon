@@ -18,6 +18,7 @@ var GamePlayScene = function(game, stage)
   var pCollideDistSqr;
   var pmCollideDistSqr;
 
+  var ball_canv;
   var dragger;
 
   self.ready = function()
@@ -25,7 +26,7 @@ var GamePlayScene = function(game, stage)
     dragger = new Dragger({source:stage.dispCanv.canvas});
 
     particles = [];
-    n_particles = 10;
+    n_particles = 100;
     p_size = 0.02;
     p_vel = 0.005;
     m_size = 0.2;
@@ -35,6 +36,15 @@ var GamePlayScene = function(game, stage)
     hm_size = m_size/2;
     pCollideDistSqr = p_size; pCollideDistSqr *= pCollideDistSqr;
     pmCollideDistSqr = (p_size+m_size)/2; pmCollideDistSqr *= pmCollideDistSqr;
+
+    ball_canv = document.createElement('canvas');
+    ball_canv.width = 20;
+    ball_canv.height = 20;
+    ball_canv.context = ball_canv.getContext('2d');
+    ball_canv.context.fillStyle = "#FF0000";
+    ball_canv.context.beginPath();
+    ball_canv.context.arc(ball_canv.width/2,ball_canv.height/2,ball_canv.width/2,0,2*Math.PI);
+    ball_canv.context.fill();
 
     for(var i = 0; i < n_particles; i++)
       particles.push(new Particle(Math.random(),Math.random(),(Math.random()*p_vel*2)-p_vel,(Math.random()*p_vel*2)-p_vel));
@@ -86,7 +96,8 @@ var GamePlayScene = function(game, stage)
     var hph = ph/2;
     dc.context.fillStyle = "#000000";
     for(var i = 0; i < n_particles; i++)
-      dc.context.fillRect(particles[i].wx*w-hpw,particles[i].wy*h-hph,pw,ph);
+      //dc.context.fillRect(particles[i].wx*w-hpw,particles[i].wy*h-hph,pw,ph);
+      dc.context.drawImage(ball_canv,particles[i].wx*w-hpw,particles[i].wy*h-hph,pw,ph);
 
     if(inc_balloon)
     {
