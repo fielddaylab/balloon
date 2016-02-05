@@ -3,9 +3,9 @@ var GamePlayScene = function(game, stage)
   var self = this;
   var dc = stage.drawCanv;
 
-  var inc_balloon = true;
+  var inc_mass = true;
 
-  var balloon;
+  var mass;
   var particles;
   var n_particles;
   var p_size;
@@ -28,7 +28,7 @@ var GamePlayScene = function(game, stage)
 
     particles = [];
     n_particles = 1000;
-    p_size = 0.02;
+    p_size = 0.005;
     p_vel = 0.005;
     m_size = 0.2;
     m_vel = 0.005;
@@ -58,10 +58,10 @@ var GamePlayScene = function(game, stage)
 
     for(var i = 0; i < n_particles; i++)
       particles.push(new Particle(Math.random(),Math.random(),(Math.random()*p_vel*2)-p_vel,(Math.random()*p_vel*2)-p_vel));
-    if(inc_balloon)
+    if(inc_mass)
     {
-      balloon = new DraggableMass(Math.random(),Math.random(),(Math.random()*m_vel*2)-m_vel,(Math.random()*m_vel*2)-m_vel,m_m);
-      dragger.register(balloon);
+      mass = new DraggableMass(Math.random(),Math.random(),(Math.random()*m_vel*2)-m_vel,(Math.random()*m_vel*2)-m_vel,m_m);
+      dragger.register(mass);
     }
   };
 
@@ -72,28 +72,28 @@ var GamePlayScene = function(game, stage)
     //movement
     for(var i = 0; i < n_particles; i++)
       moveMass(particles[i]);
-    if(inc_balloon) moveMass(balloon);
+    if(inc_mass) moveMass(mass);
 
     //gravity
     for(var i = 0; i < n_particles; i++)
       particles[i].wyv += 0.0001;
-    if(inc_balloon) balloon.wyv += 0.0001;
+    if(inc_mass) mass.wyv += 0.0001;
 
     //collision - bounce
     for(var i = 0; i < n_particles; i++)
       for(var j = i+1; j < n_particles; j++)
         collideParticles(particles[i],particles[j]);
-    if(inc_balloon)
+    if(inc_mass)
     {
       for(var i = 0; i < n_particles; i++)
-        collideParticleMass(particles[i],balloon);
+        collideParticleMass(particles[i],mass);
     }
 
     //edge detection
     var p;
     for(var i = 0; i < n_particles; i++)
       collideParticleEdge(particles[i]);
-    if(inc_balloon) collideMassEdge(balloon);
+    if(inc_mass) collideMassEdge(mass);
   };
 
   self.draw = function()
@@ -108,12 +108,12 @@ var GamePlayScene = function(game, stage)
     for(var i = 0; i < n_particles; i++)
       dc.context.drawImage(ball_canv,particles[i].wx*w-hpw,particles[i].wy*h-hph,pw,ph);
 
-    if(inc_balloon)
+    if(inc_mass)
     {
       dc.context.fillStyle = "rgba(255,0,0,0.5)";
-      balloon.x = balloon.wx*w-balloon.w/2;
-      balloon.y = balloon.wy*h-balloon.h/2;
-      dc.context.drawImage(mass_canv,balloon.x,balloon.y,balloon.w,balloon.h);
+      mass.x = mass.wx*w-mass.w/2;
+      mass.y = mass.wy*h-mass.h/2;
+      dc.context.drawImage(mass_canv,mass.x,mass.y,mass.w,mass.h);
     }
   };
 
@@ -159,8 +159,10 @@ var GamePlayScene = function(game, stage)
     self.wyv = wyv;
     self.m = m;
 
+    self.dragging = false;
     self.dragStart = function(evt)
     {
+      self.dragging = true;
       self.drag(evt);
     }
     self.drag = function(evt)
@@ -172,7 +174,7 @@ var GamePlayScene = function(game, stage)
     }
     self.dragFinish = function(evt)
     {
-
+      self.dragging = false;
     }
   }
   var moveMass = function(m)
@@ -206,8 +208,9 @@ var GamePlayScene = function(game, stage)
     //push particles away
     if(d == 0) { a.wx += 0.001; a.wy += 0.001; return; }
     var md = (p_size-d)/2;
-    var mx = md*Math.cos(xd/d);
-    var my = md*Math.sin(yd/d);
+    var t = Math.atan2(yd,xd);
+    var mx = md*Math.cos(t);
+    var my = md*Math.sin(t);
     a.wx -= mx;
     a.wy -= my;
     b.wx += mx;
@@ -238,10 +241,13 @@ var GamePlayScene = function(game, stage)
     //push particle/mass away
     if(d == 0) { a.wx += 0.001; a.wy += 0.001; return; }
     var md = (((p_size+m_size)/2)-d)/2;
-    var mx = md*Math.cos(xd/d);
-    var my = md*Math.sin(yd/d);
+    var t = Math.atan2(yd,xd);
+    var mx = md*Math.cos(t);
+    var my = md*Math.sin(t);
+    if(my < 0) console.log('less');
     p.wx -= mx;
     p.wy -= my;
+    if(m.dragging) return;
     m.wx += mx;
     m.wy += my;
   }
@@ -258,12 +264,6 @@ var GamePlayScene = function(game, stage)
     if(m.wx < 0+hm_size) { m.wxv =  Math.abs(m.wxv); m.wx = 0+hm_size; }
     if(m.wy > 1-hm_size) { m.wyv = -Math.abs(m.wyv); m.wy = 1-hm_size; }
     if(m.wy < 0+hm_size) { m.wyv =  Math.abs(m.wyv); m.wy = 0+hm_size; }
-  }
-
-  var Balloon = function()
-  {
-    var self = this;
-
   }
 };
 
