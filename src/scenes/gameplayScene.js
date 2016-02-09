@@ -14,6 +14,9 @@ var GamePlayScene = function(game, stage)
   var hot_air_balloon_baggage = 362874; //g
   var fps = 30;
 
+  //state
+  var rope_cut;
+
   //utils
   var balloon_canv;
   var cloud_canv;
@@ -48,6 +51,9 @@ var GamePlayScene = function(game, stage)
   {
     //config
     n_pipes = 10;
+
+    //state
+    rope_cut = false;
 
     //utils
     balloon_canv = document.createElement('canvas');
@@ -128,6 +134,8 @@ var GamePlayScene = function(game, stage)
     else if(flap_pad.down)  balloon.t = lerp(balloon.t, env_temp,0.001)
     else                    balloon.t = lerp(balloon.t, env_temp,0.0001);
 
+    if(cut_pad.down) rope_cut = true;
+
     var gas_constant = 8.314;
     var air_molar_mass = 98.97; // g/mol
     var air_density = 1292;     // g/m^3
@@ -139,17 +147,24 @@ var GamePlayScene = function(game, stage)
 
     //accel     =               lift                             weight
     balloon.wya = ((air_density*balloon.v*gravity) - (balloon.m+balloon.bm)*gravity)/((balloon.m+balloon.bm)*fps);
-    console.log(balloon.wya);
     balloon.wyv += balloon.wya;
+    balloon.wyv *= 0.99;
 
     //motion
     balloon.wx += balloon.wxv;
     balloon.wy += balloon.wyv;
+
     if(balloon.wy < -10)
     {
       balloon.wy = -10;
       if(balloon.wyv < 0) balloon.wyv = 0;
     }
+    if(balloon.wy > 0 && !rope_cut)
+    {
+      balloon.wy  = 0;
+      balloon.wyv = 0;
+    }
+
     if(balloon.wy <= 0) balloon.wxv = 0;
     else                balloon.wxv = 0.01;
 
@@ -295,7 +310,8 @@ var GamePlayScene = function(game, stage)
   {
     dc.context.drawImage(balloon_canv,obj.x,obj.y,obj.w,obj.h);
     dc.context.fillStyle = "#000000";
-    dc.context.fillText((Math.round((obj.t*(9/5)-459)*100)/100)+"°",obj.x,obj.y+obj.h);
+    dc.context.textAlign = "center";
+    dc.context.fillText((Math.round((obj.t*(9/5)-459)*100)/100)+"°",obj.x+obj.w/2,obj.y+obj.h/2);
   }
   var drawArrow = function(obj)
   {
