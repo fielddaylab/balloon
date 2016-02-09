@@ -18,6 +18,7 @@ var GamePlayScene = function(game, stage)
   var camera;
   var grid;
   var balloon;
+  var arrow;
   var pipes;
 
   //ui
@@ -46,6 +47,7 @@ var GamePlayScene = function(game, stage)
     camera = new Camera();
     grid = new Grid();
     balloon = new Balloon();
+    arrow = new Arrow();
     pipes = [];
     for(var i = 0; i < n_pipes; i++)
       pipes.push(new Pipe(i*5,Math.random()*2-1,1,10));
@@ -72,14 +74,12 @@ var GamePlayScene = function(game, stage)
     presser.flush();
 
     //temp
-    if(boost_pad.pressed) balloon.t += 0.01;
-    else balloon.t = lerp(balloon.t,1,0.01);
+    if(boost_pad.pressed) balloon.t += 0.001;
+    else balloon.t = lerp(balloon.t,1,0.001);
 
-    //lift
-    balloon.wyv += (balloon.t-1)*0.001;
-
-    //gravity
-    balloon.wyv -= gravity;
+    //accel     =         lift             weight
+    balloon.wya = (balloon.t-1)*0.001 + -gravity;
+    balloon.wyv += balloon.wya;
 
     //motion
     balloon.wx += balloon.wxv;
@@ -89,6 +89,11 @@ var GamePlayScene = function(game, stage)
       balloon.wy = -10;
       if(balloon.wyv < 0) balloon.wyv = 0;
     }
+
+    arrow.wx = balloon.wx;
+    arrow.wy = balloon.wy;
+    arrow.ww = 0;
+    arrow.wh = balloon.wya*1000;
 
     //cam track
     camera.wx = balloon.wx;
@@ -103,6 +108,7 @@ var GamePlayScene = function(game, stage)
       camera.ww = camera.wh;
     }
     screenSpace(camera,dc,balloon);
+    screenSpace(camera,dc,arrow);
     for(var i = 0; i < n_pipes; i++)
       screenSpace(camera,dc,pipes[i]);
     screenSpace(camera,dc,grid);
@@ -122,6 +128,13 @@ var GamePlayScene = function(game, stage)
     dc.context.drawImage(balloon_canv,balloon.x,balloon.y,balloon.w,balloon.h);
     dc.context.fillStyle = "#000000";
     dc.context.fillText(balloon.t,balloon.x,balloon.y+balloon.h);
+
+    //arrow
+    dc.context.beginPath();
+    dc.context.moveTo(arrow.x        -arrow.w/2,arrow.y        -arrow.h/2);
+    dc.context.lineTo(arrow.x+arrow.w-arrow.w/2,arrow.y+arrow.h-arrow.h/2);
+    dc.context.stroke();
+
     //pipes
     for(var i = 0; i < n_pipes; i++)
     {
@@ -189,10 +202,26 @@ var GamePlayScene = function(game, stage)
     self.ww = 1;
     self.wh = 1;
 
+    self.wya = 0;
     self.wxv = 0.01;
     self.wyv = 0;
     self.m = 1;
     self.t = 1;
+  }
+  var Arrow = function()
+  {
+    var self = this;
+
+    self.x = 0;
+    self.y = 0;
+    self.w = 0;
+    self.h = 0;
+
+    self.wx = 0;
+    self.wy = 0;
+    //w/h better read as offx/offy
+    self.ww = 1;
+    self.wh = 1;
   }
 
   var Pipe = function(wx, wy, ww, wh)
