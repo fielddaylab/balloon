@@ -1,4 +1,4 @@
-var GamePlayScene = function(game, stage)
+var ExperimentScene = function(game, stage)
 {
   var self = this;
   var dc = stage.drawCanv;

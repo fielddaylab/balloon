@@ -310,8 +310,12 @@ var GamePlayScene = function(game, stage)
   {
     dc.context.drawImage(balloon_canv,obj.x,obj.y,obj.w,obj.h);
     dc.context.fillStyle = "#000000";
-    dc.context.textAlign = "center";
-    dc.context.fillText((Math.round((obj.t*(9/5)-459)*100)/100)+"°",obj.x+obj.w/2,obj.y+obj.h/2);
+    dc.context.textAlign = "right";
+    var dispTemp = Math.round((obj.t*(9/5)-459)*100)/100; //nn.nn
+    dc.context.fillText(Math.floor(dispTemp)+".",obj.x+obj.w/2,obj.y+obj.h/2-1);
+    dc.context.textAlign = "left";
+    var decString = (Math.round((dispTemp-Math.floor(dispTemp))*100)/100)+"°";
+    dc.context.fillText(decString.substring(decString.indexOf(".")+1),obj.x+obj.w/2,obj.y+obj.h/2-1);
   }
   var drawArrow = function(obj)
   {
