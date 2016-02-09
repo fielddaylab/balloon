@@ -5,7 +5,14 @@ var GamePlayScene = function(game, stage)
 
   //config
   var n_pipes;
-  var gravity;
+  var gravity = 9.8; //m/s^2
+  var env_temp  = 295; //k (72f = 295k)
+  var fire_temp = 900; //k (900f = 755k)
+  var gas_constant = 8.314;
+  var air_molar_mass = 98.97; // g/mol
+  var air_mass = 1.292; // kg/m^3
+  var hot_air_balloon_baggage = 362874; //g
+  var fps = 30;
 
   //utils
   var balloon_canv;
@@ -37,7 +44,6 @@ var GamePlayScene = function(game, stage)
   {
     //config
     n_pipes = 10;
-    gravity = 0.002;
 
     //utils
     balloon_canv = document.createElement('canvas');
@@ -85,8 +91,9 @@ var GamePlayScene = function(game, stage)
     presser = new Presser({source:stage.dispCanv.canvas});
 
     camera = new Camera();
-    grid = new Obj(0,0,10,10);
-    balloon = new Obj();
+    grid = new Obj(0,0,100,100);
+    balloon = new Obj(0,0,10,10);
+    balloon.bm = hot_air_balloon_baggage;
     arrow = new Obj();
     pipes = [];
     for(var i = 0; i < n_pipes; i++)
@@ -119,11 +126,21 @@ var GamePlayScene = function(game, stage)
     presser.flush();
 
     //temp
-    if(boost_pad.pressed) balloon.t += 0.01;
-    else balloon.t = lerp(balloon.t,1,0.001);
+    if(boost_pad.pressed) balloon.t = lerp(balloon.t,fire_temp,0.0001)
+    else                  balloon.t = lerp(balloon.t, env_temp,0.0001);
 
-    //accel     =         lift             weight
-    balloon.wya = (balloon.t-1)*0.001 + -gravity;
+    var gas_constant = 8.314;
+    var air_molar_mass = 98.97; // g/mol
+    var air_density = 1292;     // g/m^3
+    var displaced_mass = air_density*balloon.v;
+    var air_moles = displaced_mass/air_molar_mass;
+    var air_pressure = (air_moles*gas_constant*env_temp)/balloon.v;
+
+    balloon.m = air_molar_mass*air_pressure*balloon.v/(gas_constant*balloon.t)
+
+    //accel     =               lift                             weight
+    balloon.wya = ((air_density*balloon.v*gravity) - (balloon.m+balloon.bm)*gravity)/((balloon.m+balloon.bm)*fps);
+    console.log(balloon.wya);
     balloon.wyv += balloon.wya;
 
     //motion
@@ -151,14 +168,9 @@ var GamePlayScene = function(game, stage)
 
     //cam track
     camera.wx = balloon.wx;
-    if(balloon.wy > 4)
+    if(balloon.wy > 40)
     {
-      camera.wh = 10+((balloon.wy-4)*2);
-      camera.ww = camera.wh;
-    }
-    if(balloon.wy < -4)
-    {
-      camera.wh = 10+((-balloon.wy-4)*2);
+      camera.wh = 100+((balloon.wy-40)*2);
       camera.ww = camera.wh;
     }
 
@@ -201,10 +213,6 @@ var GamePlayScene = function(game, stage)
     o.y = 10;
     o.w = 10;
     o.h = 10;
-    o.x = 130.5890909090917;
-    o.y = 87.27272727272727;
-    o.w = 290.9090909090909;
-    o.h = 145.45454545454544;
     drawMountain(o);
 */
   };
@@ -219,8 +227,8 @@ var GamePlayScene = function(game, stage)
 
     self.wx = 0;
     self.wy = 0;
-    self.ww = 10; //1 = -0.5 -> 0.5
-    self.wh = 10; //1 = -0.5 -> 0.5
+    self.ww = 100; //1 = -0.5 -> 0.5
+    self.wh = 100; //1 = -0.5 -> 0.5
   }
 
   var drawObj = function(obj){};
@@ -253,8 +261,11 @@ var GamePlayScene = function(game, stage)
     self.wya = 0;
     self.wxv = 0.01;
     self.wyv = 0;
-    self.m = 1;
-    self.t = 1;
+
+    self.m = 0;
+    self.bm = 0; //baggage mass (added constant, whereas "mass" might fluctuate)
+    self.t = env_temp;
+    self.v = self.ww*self.wh*self.ww; //assume depth == width
 
     self.colliding = false;
     self.draw = drawObj; //to be replaced- hoping interpreter smart enough to pack w/ function ptr
