@@ -39,6 +39,7 @@ var GamePlayScene = function(game, stage)
 
   //ui
   var boost_pad;
+  var flap_pad;
 
   self.ready = function()
   {
@@ -92,7 +93,7 @@ var GamePlayScene = function(game, stage)
 
     camera = new Camera();
     grid = new Obj(0,0,100,100);
-    balloon = new Obj(0,0,10,10);
+    balloon = new Obj(0,0,13,13);
     balloon.bm = hot_air_balloon_baggage;
     arrow = new Obj();
     pipes = [];
@@ -104,20 +105,10 @@ var GamePlayScene = function(game, stage)
     fg = []; for(var i = 0; i < 2; i++) { fg.push(new Obj(i* 10, -1,  5,  5)); fg[i].draw = drawTree;     }
     ground = new Obj();
 
-    boost_pad = new function()
-    {
-      var self = this;
-
-      self.x = 0;
-      self.y = 0;
-      self.w = dc.width;
-      self.h = dc.height;
-
-      self.pressed = false;
-      self.press = function(evt) { self.pressed = true; }
-      self.unpress = function(evt) { self.pressed = false; }
-    }
+    boost_pad = new ButtonBox(10,10,20,20,function(){});
+    flap_pad  = new ButtonBox(10,40,20,20,function(){});
     presser.register(boost_pad);
+    presser.register(flap_pad);
   };
 
   self.tick = function()
@@ -125,9 +116,9 @@ var GamePlayScene = function(game, stage)
     dragger.flush();
     presser.flush();
 
-    //temp
-    if(boost_pad.pressed) balloon.t = lerp(balloon.t,fire_temp,0.0001)
-    else                  balloon.t = lerp(balloon.t, env_temp,0.0001);
+         if(boost_pad.down) balloon.t = lerp(balloon.t,fire_temp,0.0001)
+    else if(flap_pad.down)  balloon.t = lerp(balloon.t, env_temp,0.001)
+    else                    balloon.t = lerp(balloon.t, env_temp,0.0001);
 
     var gas_constant = 8.314;
     var air_molar_mass = 98.97; // g/mol
@@ -151,6 +142,8 @@ var GamePlayScene = function(game, stage)
       balloon.wy = -10;
       if(balloon.wyv < 0) balloon.wyv = 0;
     }
+    if(balloon.wy <= 0) balloon.wxv = 0;
+    else                balloon.wxv = 0.01;
 
     arrow.wx = balloon.wx;
     arrow.wy = balloon.wy;
@@ -171,7 +164,7 @@ var GamePlayScene = function(game, stage)
     if(balloon.wy > 40)
     {
       camera.wh = 100+((balloon.wy-40)*2);
-      camera.ww = camera.wh;
+      camera.ww = camera.wh*2;
     }
 
     //faux parallax
@@ -207,6 +200,8 @@ var GamePlayScene = function(game, stage)
     for(var i = 0; i < n_pipes; i++) drawPipe(pipes[i]);
     drawGrid(grid);
 
+    boost_pad.draw(dc);
+    flap_pad.draw(dc);
 /*
     var o = new Obj();
     o.x = 10;
@@ -227,8 +222,8 @@ var GamePlayScene = function(game, stage)
 
     self.wx = 0;
     self.wy = 0;
-    self.ww = 100; //1 = -0.5 -> 0.5
-    self.wh = 100; //1 = -0.5 -> 0.5
+    self.wh = 100;       //1 = -0.5 -> 0.5
+    self.ww = self.wh*2; //1 = -0.5 -> 0.5
   }
 
   var drawObj = function(obj){};
@@ -259,7 +254,7 @@ var GamePlayScene = function(game, stage)
 
     self.wxa = 0;
     self.wya = 0;
-    self.wxv = 0.01;
+    self.wxv = 0;
     self.wyv = 0;
 
     self.m = 0;
@@ -275,7 +270,7 @@ var GamePlayScene = function(game, stage)
   {
     dc.context.drawImage(balloon_canv,obj.x,obj.y,obj.w,obj.h);
     dc.context.fillStyle = "#000000";
-    dc.context.fillText(obj.t,obj.x,obj.y+obj.h);
+    dc.context.fillText(obj.t*(9/5)-459,obj.x,obj.y+obj.h);
   }
   var drawArrow = function(obj)
   {
