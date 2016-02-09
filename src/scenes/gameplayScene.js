@@ -28,7 +28,9 @@ var GamePlayScene = function(game, stage)
   var camera;
   var grid;
   var balloon;
-  var arrow;
+  var vel_arrow;
+  var acc_arrow;
+  var arrow_separator;
   var pipes;
 
   //scenery
@@ -40,6 +42,7 @@ var GamePlayScene = function(game, stage)
   //ui
   var boost_pad;
   var flap_pad;
+  var cut_pad;
 
   self.ready = function()
   {
@@ -92,23 +95,28 @@ var GamePlayScene = function(game, stage)
     presser = new Presser({source:stage.dispCanv.canvas});
 
     camera = new Camera();
+    camera.wh = 30;
+    camera.ww = camera.wh*2;
     grid = new Obj(0,0,100,100);
     balloon = new Obj(0,0,13,13);
     balloon.bm = hot_air_balloon_baggage;
-    arrow = new Obj();
-    pipes = [];
-    for(var i = 0; i < n_pipes; i++)
-      pipes.push(new Obj(i*5,Math.random()*2-1,1,10));
+    vel_arrow = new Obj();
+    acc_arrow = new Obj();
+    arrow_separator = new Obj();
 
-    bg = []; for(var i = 0; i < 2; i++) { bg.push(new Obj(i*100,  8,  1,  1)); bg[i].draw = drawCloud;    }
-    mg = []; for(var i = 0; i < 2; i++) { mg.push(new Obj(i* 50,  5,  5, 10)); mg[i].draw = drawMountain; }
-    fg = []; for(var i = 0; i < 2; i++) { fg.push(new Obj(i* 10, -1,  5,  5)); fg[i].draw = drawTree;     }
+    pipes = []; for(var i = 0; i < n_pipes; i++) pipes.push(new Obj(i*50,(Math.random()*2-1)*10,5,20));
+
+    bg = []; for(var i = 0; i < 100; i++) { bg.push(new Obj((i+Math.random())* 10, Math.random()*5+ 8,   3,  2)); bg[i].draw = drawCloud;    }
+    mg = []; for(var i = 0; i < 100; i++) { mg.push(new Obj((i+Math.random())* 50,                  5,  10, 10)); mg[i].draw = drawMountain; }
+    fg = []; for(var i = 0; i < 100; i++) { fg.push(new Obj((i+Math.random())* 20,                 -1,   8,  8)); fg[i].draw = drawTree;     }
     ground = new Obj();
 
     boost_pad = new ButtonBox(10,10,20,20,function(){});
     flap_pad  = new ButtonBox(10,40,20,20,function(){});
+    cut_pad  = new ButtonBox(10,70,20,20,function(){});
     presser.register(boost_pad);
     presser.register(flap_pad);
+    presser.register(cut_pad);
   };
 
   self.tick = function()
@@ -145,10 +153,18 @@ var GamePlayScene = function(game, stage)
     if(balloon.wy <= 0) balloon.wxv = 0;
     else                balloon.wxv = 0.01;
 
-    arrow.wx = balloon.wx;
-    arrow.wy = balloon.wy;
-    arrow.ww = 0;
-    arrow.wh = balloon.wya*1000;
+    vel_arrow.wx = balloon.wx;
+    vel_arrow.wy = balloon.wy;
+    vel_arrow.ww = 0;
+    vel_arrow.wh = balloon.wyv*10;
+    acc_arrow.wx = balloon.wx;
+    acc_arrow.wy = balloon.wy;
+    acc_arrow.ww = 0;
+    acc_arrow.wh = balloon.wya*1000;
+    arrow_separator.wx = balloon.wx;
+    arrow_separator.wy = balloon.wy;
+    arrow_separator.ww = 10;
+    arrow_separator.wh = 0;
 
     ground.wx = 0;
     ground.wy = -1;
@@ -161,9 +177,9 @@ var GamePlayScene = function(game, stage)
 
     //cam track
     camera.wx = balloon.wx;
-    if(balloon.wy > 40)
+    if(balloon.wy > 5)
     {
-      camera.wh = 100+((balloon.wy-40)*2);
+      camera.wh = 30+((balloon.wy-5)*2);
       camera.ww = camera.wh*2;
     }
 
@@ -174,7 +190,9 @@ var GamePlayScene = function(game, stage)
 
     //screen space resolution
     screenSpace(camera,dc,balloon);
-    screenSpace(camera,dc,arrow);
+    screenSpace(camera,dc,vel_arrow);
+    screenSpace(camera,dc,acc_arrow);
+    screenSpace(camera,dc,arrow_separator);
     for(var i = 0; i < n_pipes;   i++) screenSpace(camera,dc,pipes[i]);
     for(var i = 0; i < bg.length; i++) screenSpace(camera,dc,bg[i]);
     for(var i = 0; i < mg.length; i++) screenSpace(camera,dc,mg[i]);
@@ -195,13 +213,20 @@ var GamePlayScene = function(game, stage)
     dc.context.fillRect(0,ground.y,dc.width,dc.height-ground.y);
     for(var i = 0; i < fg.length; i++) fg[i].draw(fg[i]);
 
+    //for(var i = 0; i < n_pipes; i++) drawPipe(pipes[i]);
+    //drawGrid(grid);
+
     drawBalloon(balloon);
-    drawArrow(arrow);
-    for(var i = 0; i < n_pipes; i++) drawPipe(pipes[i]);
-    drawGrid(grid);
+    dc.context.strokeStyle = "#00FF00";
+    drawArrow(vel_arrow);
+    dc.context.strokeStyle = "#0000FF";
+    drawArrow(acc_arrow);
+    dc.context.strokeStyle = "#000000";
+    drawArrow(arrow_separator);
 
     boost_pad.draw(dc);
     flap_pad.draw(dc);
+    cut_pad.draw(dc);
 /*
     var o = new Obj();
     o.x = 10;
@@ -222,8 +247,8 @@ var GamePlayScene = function(game, stage)
 
     self.wx = 0;
     self.wy = 0;
-    self.wh = 100;       //1 = -0.5 -> 0.5
-    self.ww = self.wh*2; //1 = -0.5 -> 0.5
+    self.wh = 1; //1 = -0.5 -> 0.5
+    self.ww = 1; //1 = -0.5 -> 0.5
   }
 
   var drawObj = function(obj){};
@@ -270,7 +295,7 @@ var GamePlayScene = function(game, stage)
   {
     dc.context.drawImage(balloon_canv,obj.x,obj.y,obj.w,obj.h);
     dc.context.fillStyle = "#000000";
-    dc.context.fillText(obj.t*(9/5)-459,obj.x,obj.y+obj.h);
+    dc.context.fillText((Math.round((obj.t*(9/5)-459)*100)/100)+"°",obj.x,obj.y+obj.h);
   }
   var drawArrow = function(obj)
   {
