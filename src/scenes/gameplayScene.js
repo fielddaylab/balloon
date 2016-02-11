@@ -166,7 +166,7 @@ var GamePlayScene = function(game, stage)
     }
 
     if(balloon.wy <= 0) balloon.wxv = 0;
-    else                balloon.wxv = 0.01;
+    else                balloon.wxv = 0.05;
 
     vel_arrow.wx = balloon.wx;
     vel_arrow.wy = balloon.wy;
