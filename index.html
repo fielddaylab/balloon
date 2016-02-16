@@ -55,6 +55,46 @@ window.addEventListener("load",begin,false);
   <div id="debug_div" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; pointer-events:none; user-select:none;"> </div>
 </div>
 
+<div style="position:absolute; top:400px;">
+Hot Air Balloon Sim (Teacher's Beta)<br />
+<br />
+Easiest way to get a feel for what's going on, pre-art assets and pre-instructinoal prompts.<br />
+<br />
+1. Refresh the page (start from a new, untouched game)<br />
+2. Press and hold the top-left-most green button<br />
+- Notice the temperature rising in the balloon.<br />
+- The blue line (currently pointing down) will eventually shrink and invert, pointing up.<br />
+- - this represents the balloon's acceleration as a function of its size and temperature compared to that of the outside world.<br />
+3. The balloon will eventually rise slightly, then stop<br />
+4. You can press the bottom green button to "cut the invisible ropes" holding the balloon down before takeoff<br />
+- The purpose of these ropes is to just give you time to adjust your accelleration however you'd like before you accidentally launch into space<br />
+5. You can use the middle button to "release a bit of air" from the balloon, effectively lowering the temp of the balloon<br />
+6. See how long you can go without hitting the ground or launching into space!<br />
+<br />
+Some notes about the sim:<br />
+This simulation is reasonably physically accurate, taking into account changes in density due to temperature, and that compared to the volume of the balloon, etc...<br />
+All behind-the-scenes units (volume of balloon, weight of unfilled balloon, outside air dew pt, etc...) are reasonably accurate<br />
+One aspect of the sim <i>not</i> yet in place is that of diminishing atmospheric pressure as one gets higher (hence, the unhindered ability to launch into space)<br />
+<br />
+Some things we're especially interested in hearing your thoughts about:<br />
+How well does this topic fit into a ~6th grade curriculum?<br />
+Are the concepts explored age/complexity appropriate?<br />
+Is there some interesting aspect of bouyancy/convection we're missing?<br />
+Are we wasting time concerning ourselves with some aspect of bouyancy/convection that isn't interesting?<br />
+<br />
+Some prompts regarding those previous questions:<br />
+There is complex physics around differences in density resulting in bouyancy in the presence of gravity- this game doesn't really get at any of that.<br />
+It seems instead to just drive home "hot air goes up", without really exploring why.<br />
+Is that ok? Is this the stage at which we want to be engaging the students?<br />
+- If so, how can we make this more interesting? Create obstacles to avoid?<br />
+- - At this level, the physical correctness of the simulation seems less important- should we scrap that in favor of a more intuitive control scheme?<br />
+- - Does "indirectly" controlling the balloon add to the understanding? (add heat, which changes temp, which changes acceleration, which changes velocity, which changes position)<br />
+- - Or would it be better served "adding heat directly changes velocity" or even "position"?<br />
+- If not, what can we do to bring in the more complex concepts of how and why bouyancy works? what interesting visualizations, mechanics, interactions, etc... could be used?<br />
+<br />
+<br />
+</div>
+
 </body>
 </html>
 
