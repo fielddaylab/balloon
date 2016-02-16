@@ -55,6 +55,7 @@ window.addEventListener("load",begin,false);
   <div id="debug_div" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; pointer-events:none; user-select:none;"> </div>
 </div>
 
+<!--
 <div style="position:absolute; top:400px;">
 Hot Air Balloon Sim (Teacher's Beta)<br />
 <br />
@@ -92,6 +93,56 @@ Is that ok? Is this the stage at which we want to be engaging the students?<br /
 - - Or would it be better served "adding heat directly changes velocity" or even "position"?<br />
 - If not, what can we do to bring in the more complex concepts of how and why bouyancy works? what interesting visualizations, mechanics, interactions, etc... could be used?<br />
 <br />
+<br />
+</div>
+-->
+<div style="position:absolute; top:400px;">
+Bouyancy Sim (Teacher's Beta)<br />
+<br />
+This one is admittedly a bit experimental.
+<br />
+The goal was to simulate just the very basics of particle physics: collision/energy transfer, and gravity, and hope that the properties of bouyancy would naturally emerge.<br />
+Technically, this was a success. But it deviates from reality just enough to be a bit wonky.<br />
+<br />
+What we have here are a bunch of particles bouncing off of each other.<br />
+One particle is blue. You can alter the properties of the blue particle with the sliders on the left prefixed with "m_"<br />
+You can alter the properties of the red particles with the sliders prefixed with "p_".<br />
+A warning that many of the combinations of those sliders have pretty extreme results (the scale of many of them is very large and unwieldly to edit via a slider. not to mention adding "mass" via a slider violates some of newton's laws...)<br />
+<br />
+I'd recommend doing the following to get a feel for what I was getting at:<br >
+1. Hit refresh (start with a new, untouched game)<br />
+2. Watch the blue particle for a bit.<br />
+- Notice how it just bumps along just like any other particle.<br />
+- If it gets stuck to an edge, feel free to reset again.<br />
+- If anything it might tend to sink: it's mass is 10 times that of the other particles.<br />
+- - this means that when there is a collision, the other particle gets affected 10 times more severely than it does.<br />
+- - since gravity is pulling everything down, everything wants to, well, go down.<br />
+- - but since the blue particle is so much more massive, any bumping along the way only effects the blue particle a little bit- not enough to prevent it from sinking<br />
+3. Now, slide the m_size slider all the way to the right<br />
+- - the mass of the blue is still 10 times that of any mass its bumping into<br />
+- - but its <i>size</i> is much more than 10 times that of the other mass<br />
+- - that means that it's coming into contact with a lot more particles than before!<br />
+- - in fact, it's coming into contact with enough particles that the quantity of "small collisions" with other particles trying to fall down makes up for the fact that each collision is very weak.<br />
+- - and as a result, the blue particle "floats"!<br />
+<br />
+Some notes on the sim:<br />
+In reality, the number of particles would be on the order of trillions of trillions- not "1000".<br />
+The increase in particles playing this "bumping into eachother" game will just serve to even out and smooth the interaction.<br />
+Unfortunately, we can't simulate that many particles very easily on a computer.<br />
+Because of this, the simulation doesn't work 100% of the time, but hopefully it gets the idea across.<br />
+But hey, we simulated bouyancy <i>without needing to use any bouyancy equations</i>! That's pretty cool!<br />
+<br />
+Now that you have a feel for this, feel free to play around, but be wary that things can get wonky fast.<br />
+<br />
+
+Some things we're especially interested in hearing your thoughts about:<br />
+How well does this topic fit into a ~6th grade curriculum?<br />
+Are the concepts explored age/complexity appropriate?<br />
+Is there some interesting aspect of bouyancy/convection we're missing?<br />
+Are we wasting time concerning ourselves with some aspect of bouyancy/convection that isn't interesting?<br />
+<br />
+How could this be used in class?<br />
+Could this be modified in any helpful ways to make it more useful?<br />
 <br />
 </div>
 
