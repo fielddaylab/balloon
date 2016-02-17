@@ -11,7 +11,13 @@ var Game = function(init)
   doMapInitDefaults(init,init,default_init);
 
   var stage = new Stage({width:init.width,height:init.height,container:init.container});
-  var scenes = [new NullScene(self, stage), new LoadingScene(self, stage), /*new TestScene(self, stage),*/ new ExperimentScene(self, stage) /*, new GamePlayScene(self, stage)*/ ];
+  var scenes = [new NullScene(self, stage), 
+    new LoadingScene(self, stage), 
+    //new TestScene(self, stage),
+    new ExperimentScene(self, stage),
+    //new GamePlayScene(self, stage), 
+    null
+    ];
   var cur_scene = 0;
   var old_cur_scene = -1;
 

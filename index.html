@@ -57,94 +57,44 @@ window.addEventListener("load",begin,false);
 
 <!--
 <div style="position:absolute; top:400px;">
-Hot Air Balloon Sim (Teacher's Beta)<br />
-<br />
-Easiest way to get a feel for what's going on, pre-art assets and pre-instructinoal prompts.<br />
-<br />
-1. Refresh the page (start from a new, untouched game)<br />
-2. Press and hold the top-left-most green button<br />
-- Notice the temperature rising in the balloon.<br />
-- The blue line (currently pointing down) will eventually shrink and invert, pointing up.<br />
-- - this represents the balloon's acceleration as a function of its size and temperature compared to that of the outside world.<br />
-3. The balloon will eventually rise slightly, then stop<br />
-4. You can press the bottom green button to "cut the invisible ropes" holding the balloon down before takeoff<br />
-- The purpose of these ropes is to just give you time to adjust your accelleration however you'd like before you accidentally launch into space<br />
-5. You can use the middle button to "release a bit of air" from the balloon, effectively lowering the temp of the balloon<br />
-6. See how long you can go without hitting the ground or launching into space!<br />
-<br />
-Some notes about the sim:<br />
-This simulation is reasonably physically accurate, taking into account changes in density due to temperature, and that compared to the volume of the balloon, etc...<br />
-All behind-the-scenes units (volume of balloon, weight of unfilled balloon, outside air dew pt, etc...) are reasonably accurate<br />
-One aspect of the sim <i>not</i> yet in place is that of diminishing atmospheric pressure as one gets higher (hence, the unhindered ability to launch into space)<br />
-<br />
-Some things we're especially interested in hearing your thoughts about:<br />
-How well does this topic fit into a ~6th grade curriculum?<br />
-Are the concepts explored age/complexity appropriate?<br />
-Is there some interesting aspect of bouyancy/convection we're missing?<br />
-Are we wasting time concerning ourselves with some aspect of bouyancy/convection that isn't interesting?<br />
-<br />
-Some prompts regarding those previous questions:<br />
-There is complex physics around differences in density resulting in bouyancy in the presence of gravity- this game doesn't really get at any of that.<br />
-It seems instead to just drive home "hot air goes up", without really exploring why.<br />
-Is that ok? Is this the stage at which we want to be engaging the students?<br />
-- If so, how can we make this more interesting? Create obstacles to avoid?<br />
-- - At this level, the physical correctness of the simulation seems less important- should we scrap that in favor of a more intuitive control scheme?<br />
-- - Does "indirectly" controlling the balloon add to the understanding? (add heat, which changes temp, which changes acceleration, which changes velocity, which changes position)<br />
-- - Or would it be better served "adding heat directly changes velocity" or even "position"?<br />
-- If not, what can we do to bring in the more complex concepts of how and why bouyancy works? what interesting visualizations, mechanics, interactions, etc... could be used?<br />
-<br />
-<br />
+<h1>Hot Air Balloon Sim</h1>
+<h2>Description</h2>
+<ul>
+<li>The top-most green button fires the engine and heats the air in the balloon</li>
+<li>The middle green button releases a bit of hot air from the top, causing it to cool</li>
+<li>The bottom green button cuts the rope that holds the balloon to the ground</li>
+<li>Inside the red balloon, the blue vertical line indicates vertical force/acceleration due to lift, and the black horizontal line indicates the horizontal force/acceleration due to wind.</li>
+</ul>
+<h2>To Play</h2>
+<ol>
+<li>When the balloon rises, it will get stuck at a certain altitude due to an invisible rope</li> 
+<li>Cut the rope with the bottom button</li>
+<li>See how long you can control the altitude of the balloon</li>
+<li>Refresh your browser to restart</li>
+</ol>
 </div>
 -->
-<div style="position:absolute; top:400px;">
-Bouyancy Sim (Teacher's Beta)<br />
-<br />
-This one is admittedly a bit experimental.
-<br />
-The goal was to simulate just the very basics of particle physics: collision/energy transfer, and gravity, and hope that the properties of bouyancy would naturally emerge.<br />
-Technically, this was a success. But it deviates from reality just enough to be a bit wonky.<br />
-<br />
-What we have here are a bunch of particles bouncing off of each other.<br />
-One particle is blue. You can alter the properties of the blue particle with the sliders on the left prefixed with "m_"<br />
-You can alter the properties of the red particles with the sliders prefixed with "p_".<br />
-A warning that many of the combinations of those sliders have pretty extreme results (the scale of many of them is very large and unwieldly to edit via a slider. not to mention adding "mass" via a slider violates some of newton's laws...)<br />
-<br />
-I'd recommend doing the following to get a feel for what I was getting at:<br >
-1. Hit refresh (start with a new, untouched game)<br />
-2. Watch the blue particle for a bit.<br />
-- Notice how it just bumps along just like any other particle.<br />
-- If it gets stuck to an edge, feel free to reset again.<br />
-- If anything it might tend to sink: it's mass is 10 times that of the other particles.<br />
-- - this means that when there is a collision, the other particle gets affected 10 times more severely than it does.<br />
-- - since gravity is pulling everything down, everything wants to, well, go down.<br />
-- - but since the blue particle is so much more massive, any bumping along the way only effects the blue particle a little bit- not enough to prevent it from sinking<br />
-3. Now, slide the m_size slider all the way to the right<br />
-- - the mass of the blue is still 10 times that of any mass its bumping into<br />
-- - but its <i>size</i> is much more than 10 times that of the other mass<br />
-- - that means that it's coming into contact with a lot more particles than before!<br />
-- - in fact, it's coming into contact with enough particles that the quantity of "small collisions" with other particles trying to fall down makes up for the fact that each collision is very weak.<br />
-- - and as a result, the blue particle "floats"!<br />
-<br />
-Some notes on the sim:<br />
-In reality, the number of particles would be on the order of trillions of trillions- not "1000".<br />
-The increase in particles playing this "bumping into eachother" game will just serve to even out and smooth the interaction.<br />
-Unfortunately, we can't simulate that many particles very easily on a computer.<br />
-Because of this, the simulation doesn't work 100% of the time, but hopefully it gets the idea across.<br />
-But hey, we simulated bouyancy <i>without needing to use any bouyancy equations</i>! That's pretty cool!<br />
-<br />
-Now that you have a feel for this, feel free to play around, but be wary that things can get wonky fast.<br />
-<br />
 
-Some things we're especially interested in hearing your thoughts about:<br />
-How well does this topic fit into a ~6th grade curriculum?<br />
-Are the concepts explored age/complexity appropriate?<br />
-Is there some interesting aspect of bouyancy/convection we're missing?<br />
-Are we wasting time concerning ourselves with some aspect of bouyancy/convection that isn't interesting?<br />
-<br />
-How could this be used in class?<br />
-Could this be modified in any helpful ways to make it more useful?<br />
-<br />
+
+<div style="position:absolute; top:400px;">
+<h1>Bouyancy Simulation</h1>
+<h2>Description</h2>
+<ul>
+	<li>You are looking at a bunch of particles bouncing off of each other, transferring energy.</li>
+	<li>One particle is blue. You can alter the properties of the blue particle with the sliders on the left prefixed with "m_"</li>
+	<li>By increasing the “m_size”, you are effectively reducing it’s density</li>
+	<li>You can alter the properties of the red particles with the sliders prefixed with "p_"</li>
+	<li>A warning that many of the combinations of those sliders have pretty extreme results (the scale of many of them is very large and unwieldy to edit via a slider. not to mention adding "mass" via a slider violates some of newton's laws...)</li>
+</ul>
+
+<h2>To Play</h2>
+<ol>
+	<li>Watch the blue particle for a bit. Notice how it just bumps along just like any other particle. If anything it might tend to sink: it's mass is 10 times that of the other particles.</li>
+	<li>Slide the m_size slider all the way to the right. The mass of the blue is still 10 times that of any mass its bumping into but its <i>size</i> is much more than 10 times that of the other mass. That means that it's coming into contact with a lot more particles than before! In fact, it's coming into contact with enough particles that the quantity of "small collisions" with other particles trying to fall down makes up for the fact that each collision is very weak, and as a result, the blue particle "floats!"</li>
+</ol>
+
 </div>
+
 
 </body>
 </html>
