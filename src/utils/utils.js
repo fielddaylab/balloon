@@ -245,6 +245,6 @@ var screenSpace = function(cam, canv, obj)
   obj.w = (obj.ww/cam.ww)*canv.width;
   obj.h = (obj.wh/cam.wh)*canv.height;
   obj.x = (((( obj.wx-obj.ww/2)-cam.wx)+(cam.ww/2))/cam.ww)*canv.width;
-  obj.y = ((((-obj.wy-obj.wh/2)-cam.wy)+(cam.wh/2))/cam.wh)*canv.height;
+  obj.y = ((((-obj.wy-obj.wh/2)+cam.wy)+(cam.wh/2))/cam.wh)*canv.height;
 }
 
