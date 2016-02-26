@@ -8,10 +8,23 @@ var GamePlayScene = function(game, stage)
   var gravity = 9.8; //m/s^2
   var env_temp  = 295; //k (72f = 295k)
   var fire_temp = 900; //k (900f = 755k)
-  var gas_constant = 8.314;
   var air_molar_mass = 98.97; // g/mol
   var air_mass = 1.292; // kg/m^3
   var hot_air_balloon_baggage = 362874; //g
+  var specific_gas_constant = 287.058; // J/(kg*K) //for dry air
+  var gas_constant = 8.314;
+
+  var air_density = 1292; // g/m^3 //externally found
+  var densityForPressure = function(pressure) //density = kg/m^3, pressure = Pa
+  {
+    return pressure / (specific_gas_constant * env_temp);
+  }
+
+  var air_pressure_0 = 101.3; //kPa
+  var air_pressure_2400 = 75.2; //kPa
+  var air_density_0    = (densityForPressure(air_pressure_0   *1000))*1000;
+  var air_density_2400 = (densityForPressure(air_pressure_2400*1000))*1000;
+
   var fps = 30;
 
   //state
@@ -136,17 +149,16 @@ var GamePlayScene = function(game, stage)
 
     if(cut_pad.down) rope_cut = true;
 
-    var gas_constant = 8.314;
-    var air_molar_mass = 98.97; // g/mol
-    var air_density = 1292;     // g/m^3
-    var displaced_mass = air_density*balloon.v;
+    var air_density_at_height = mapVal(0,2400,air_density_0,air_density_2400,balloon.wy);
+
+    var displaced_mass = air_density_at_height*balloon.v;
     var air_moles = displaced_mass/air_molar_mass;
     var air_pressure = (air_moles*gas_constant*env_temp)/balloon.v;
 
     balloon.m = air_molar_mass*air_pressure*balloon.v/(gas_constant*balloon.t)
 
     //accel     =               lift                             weight
-    balloon.wya = ((air_density*balloon.v*gravity) - (balloon.m+balloon.bm)*gravity)/((balloon.m+balloon.bm)*fps);
+    balloon.wya = ((air_density_at_height*balloon.v*gravity) - (balloon.m+balloon.bm)*gravity)/((balloon.m+balloon.bm)*fps);
     balloon.wyv += balloon.wya;
     balloon.wyv *= 0.99;
 
