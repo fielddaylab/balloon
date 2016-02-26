@@ -15,15 +15,21 @@ var GamePlayScene = function(game, stage)
   var gas_constant = 8.314;
 
   var air_density = 1292; // g/m^3 //externally found
-  var densityForPressure = function(pressure) //density = kg/m^3, pressure = Pa
+  var tempForHeight = function(ground,height) //k
   {
-    return pressure / (specific_gas_constant * env_temp);
+    return ground-(9.8*height/1000);
+  }
+  var pressureForHeight = function(height) //Pa
+  {
+    return (mapVal(0,2400,air_pressure_0,air_pressure_2400,balloon.wy))*1000;
+  }
+  var densityForHeight = function(height) //g/m^3
+  {
+    return (pressureForHeight(height) / (specific_gas_constant * tempForHeight(env_temp,height)))*1000;
   }
 
   var air_pressure_0 = 101.3; //kPa
   var air_pressure_2400 = 75.2; //kPa
-  var air_density_0    = (densityForPressure(air_pressure_0   *1000))*1000;
-  var air_density_2400 = (densityForPressure(air_pressure_2400*1000))*1000;
 
   var fps = 30;
 
@@ -149,7 +155,7 @@ var GamePlayScene = function(game, stage)
 
     if(cut_pad.down) rope_cut = true;
 
-    var air_density_at_height = mapVal(0,2400,air_density_0,air_density_2400,balloon.wy);
+    var air_density_at_height = densityForHeight(balloon.wy);
 
     var displaced_mass = air_density_at_height*balloon.v;
     var air_moles = displaced_mass/air_molar_mass;
