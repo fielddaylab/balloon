@@ -42,8 +42,9 @@ var GamePlayScene = function(game, stage)
   var basket_canv;
   var balloon_canv;
   var cloud_canv;
-  var tree_canv;
   var mountain_canv;
+  var tree_canv;
+  var part_canv;
 
   //doqueues
   var dragger;
@@ -60,6 +61,8 @@ var GamePlayScene = function(game, stage)
   var acc_arrow;
   var arrow_separator;
   var pipes;
+  var balloon_parts;
+  var air_parts;
 
   //scenery
   var bg;
@@ -148,6 +151,15 @@ var GamePlayScene = function(game, stage)
     tree_canv.context.arc(tree_canv.width/2,tree_canv.height/3,tree_canv.width/3,0,2*Math.PI);
     tree_canv.context.fill();
 
+    part_canv = document.createElement('canvas');
+    part_canv.width = 100;
+    part_canv.height = 100;
+    part_canv.context = part_canv.getContext('2d');
+    part_canv.context.fillStyle = "#FFFFFF";
+    part_canv.context.beginPath();
+    part_canv.context.arc(part_canv.width/2,part_canv.height/2,part_canv.width/2,0,2*Math.PI);
+    part_canv.context.fill();
+
     //doqueues
     dragger = new Dragger({source:stage.dispCanv.canvas});
     presser = new Presser({source:stage.dispCanv.canvas});
@@ -164,6 +176,17 @@ var GamePlayScene = function(game, stage)
     vel_arrow = new Obj();
     acc_arrow = new Obj();
     arrow_separator = new Obj();
+
+    screenSpace(camera,dc,balloon); //needs balloon space to init parts
+    balloon_parts = [];
+    for(var i = 0; i < 500; i++)
+    {
+      balloon_parts.push(new Part());
+      resetPart(balloon_parts[balloon_parts.length-1]);
+    }
+    air_parts = [];
+    for(var i = 0; i < 500; i++)
+      air_parts.push(new Part());
 
     pipes = []; for(var i = 0; i < n_pipes; i++) pipes.push(new Obj(i*50,(Math.random()*2-1)*10,5,20));
 
@@ -300,6 +323,8 @@ var GamePlayScene = function(game, stage)
     //for(var i = 0; i < n_pipes; i++) drawPipe(pipes[i]);
     //drawGrid(grid);
 
+    drawAirParticles();
+
     dc.context.globalAlpha = clamp(0,1,1-(balloon.wy/20));
     drawShadow(shadow);
     dc.context.globalAlpha = 1;
@@ -315,6 +340,7 @@ var GamePlayScene = function(game, stage)
     }
     drawBasket(basket);
     drawBalloon(balloon);
+    drawBalloonParticles();
     dc.context.strokeStyle = "#00FF00";
     drawArrow(vel_arrow);
     dc.context.strokeStyle = "#0000FF";
@@ -389,6 +415,70 @@ var GamePlayScene = function(game, stage)
     self.draw = drawObj; //to be replaced- hoping interpreter smart enough to pack w/ function ptr
   }
 
+  var Part = function()
+  {
+    this.x = 0;
+    this.y = 0;
+    this.s = 3;
+    this.xv = 0;
+    this.yv = 0;
+    this.t = 0;
+  }
+  var resetPart = function(p)
+  {
+    var r = balloon.w/2;
+
+    p.t = randIntBelow(100);
+    p.xv = rand0()*0.1;
+    p.yv = rand0()*0.1;
+    p.x = balloon.x+(rand()*(2*r));
+    p.y = balloon.y+(rand()*(2*r));
+
+    var x = (p.x-balloon.x)-r;
+    var y = (p.y-balloon.y)-r;
+    while((x*x)+(y*y) > r*r)
+    {
+      p.x = balloon.x+(rand()*(2*r));
+      p.y = balloon.y+(rand()*(2*r));
+
+      x = (p.x-balloon.x)-r;
+      y = (p.y-balloon.y)-r;
+    }
+  }
+
+  var drawAirParticles = function()
+  {
+
+  }
+  var drawBalloonParticles = function()
+  {
+    var p;
+    var x;
+    var y;
+    var r = balloon.w/2;
+    var temp = balloon.t-290; //~5 to ~70
+    temp = mapVal(5,70,0,1,temp); //0-1
+    for(var i = 0; i < (1-temp)*150 && i < balloon_parts.length; i++)
+    {
+      p = balloon_parts[i];
+      if(p.t > 100)
+      {
+        p.t = 0;
+        p.x = balloon.x+(rand()*(2*r));
+        p.y = balloon.y+(rand()*(2*r));
+        p.xv = rand0()*temp*5;
+        p.yv = rand0()*temp*5;
+      }
+      p.x += p.xv;
+      p.y += p.yv;
+      p.t++;
+
+      x = (p.x-balloon.x)-r;
+      y = (p.y-balloon.y)-r;
+      if((x*x)+(y*y) > r*r) p.t = 101;
+      else dc.context.drawImage(part_canv,p.x-p.s/2,p.y-p.s/2,p.s,p.s);
+    }
+  }
   var drawFlame = function(obj)
   {
     dc.context.drawImage(flame_canv,obj.x,obj.y,obj.w,obj.h);
