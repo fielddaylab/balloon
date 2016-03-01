@@ -38,6 +38,7 @@ var GamePlayScene = function(game, stage)
 
   //utils
   var shadow_canv;
+  var flame_canv;
   var basket_canv;
   var balloon_canv;
   var cloud_canv;
@@ -52,6 +53,7 @@ var GamePlayScene = function(game, stage)
   var camera;
   var grid;
   var shadow;
+  var flame;
   var basket;
   var balloon;
   var vel_arrow;
@@ -88,6 +90,16 @@ var GamePlayScene = function(game, stage)
     shadow_canv.context.beginPath();
     shadow_canv.context.arc(shadow_canv.width/2,shadow_canv.height/2,shadow_canv.width/2,0,2*Math.PI);
     shadow_canv.context.fill();
+
+    flame_canv = document.createElement('canvas');
+    flame_canv.width = 100;
+    flame_canv.height = 100;
+    flame_canv.context = flame_canv.getContext('2d');
+    flame_canv.context.fillStyle = "#FF7700";
+    flame_canv.context.globalAlpha=0.8;
+    flame_canv.context.beginPath();
+    flame_canv.context.arc(flame_canv.width/2,flame_canv.height/2,flame_canv.width/2,0,2*Math.PI);
+    flame_canv.context.fill();
 
     basket_canv = document.createElement('canvas');
     basket_canv.width = 100;
@@ -144,10 +156,11 @@ var GamePlayScene = function(game, stage)
     camera.wh = 30;
     camera.ww = camera.wh*2;
     grid = new Obj(0,0,100,100);
+    shadow = new Obj(0,0,10,2);
+    flame = new Obj(0,0,2,2);
+    basket = new Obj(0,0,10,10);
     balloon = new Obj(0,0,13,13);
     balloon.bm = hot_air_balloon_baggage;
-    basket = new Obj(0,0,10,10);
-    shadow = new Obj(0,0,10,2);
     vel_arrow = new Obj();
     acc_arrow = new Obj();
     arrow_separator = new Obj();
@@ -167,8 +180,11 @@ var GamePlayScene = function(game, stage)
     presser.register(cut_pad);
   };
 
+  var n_ticks = 0;
   self.tick = function()
   {
+    n_ticks++;
+
     dragger.flush();
     presser.flush();
 
@@ -228,6 +244,9 @@ var GamePlayScene = function(game, stage)
     shadow.wx = balloon.wx;
     shadow.wy = 0-balloon.wh/2-basket.wh/2;
 
+    flame.wx = balloon.wx;
+    flame.wy = balloon.wy-balloon.wh/2;
+
     ground.wx = 0;
     ground.wy = -1;
     ground.ww = 1;
@@ -252,6 +271,7 @@ var GamePlayScene = function(game, stage)
 
     //screen space resolution
     screenSpace(camera,dc,shadow);
+    screenSpace(camera,dc,flame);
     screenSpace(camera,dc,basket);
     screenSpace(camera,dc,balloon);
     screenSpace(camera,dc,vel_arrow);
@@ -283,6 +303,16 @@ var GamePlayScene = function(game, stage)
     dc.context.globalAlpha = clamp(0,1,1-(balloon.wy/20));
     drawShadow(shadow);
     dc.context.globalAlpha = 1;
+    if(boost_pad.down) drawFlame(flame);
+    if(!rope_cut)
+    {
+      dc.context.beginPath();
+      dc.context.moveTo(shadow.x,shadow.y+shadow.h);
+      dc.context.lineTo(basket.x+basket.w/2,basket.y+basket.h*3/4);
+      dc.context.moveTo(shadow.x+shadow.w,shadow.y+shadow.h);
+      dc.context.lineTo(basket.x+basket.w/2,basket.y+basket.h*3/4);
+      dc.context.stroke();
+    }
     drawBasket(basket);
     drawBalloon(balloon);
     dc.context.strokeStyle = "#00FF00";
@@ -359,6 +389,10 @@ var GamePlayScene = function(game, stage)
     self.draw = drawObj; //to be replaced- hoping interpreter smart enough to pack w/ function ptr
   }
 
+  var drawFlame = function(obj)
+  {
+    dc.context.drawImage(flame_canv,obj.x,obj.y,obj.w,obj.h);
+  }
   var drawShadow = function(obj)
   {
     dc.context.drawImage(shadow_canv,obj.x,obj.y,obj.w,obj.h);
