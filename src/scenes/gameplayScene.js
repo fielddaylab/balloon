@@ -37,6 +37,8 @@ var GamePlayScene = function(game, stage)
   var rope_cut;
 
   //utils
+  var shadow_canv;
+  var basket_canv;
   var balloon_canv;
   var cloud_canv;
   var tree_canv;
@@ -49,6 +51,8 @@ var GamePlayScene = function(game, stage)
   //objects
   var camera;
   var grid;
+  var shadow;
+  var basket;
   var balloon;
   var vel_arrow;
   var acc_arrow;
@@ -75,6 +79,23 @@ var GamePlayScene = function(game, stage)
     rope_cut = false;
 
     //utils
+    shadow_canv = document.createElement('canvas');
+    shadow_canv.width = 100;
+    shadow_canv.height = 100;
+    shadow_canv.context = shadow_canv.getContext('2d');
+    shadow_canv.context.fillStyle = "#FF0000";
+    shadow_canv.context.globalAlpha=0.1;
+    shadow_canv.context.beginPath();
+    shadow_canv.context.arc(shadow_canv.width/2,shadow_canv.height/2,shadow_canv.width/2,0,2*Math.PI);
+    shadow_canv.context.fill();
+
+    basket_canv = document.createElement('canvas');
+    basket_canv.width = 100;
+    basket_canv.height = 100;
+    basket_canv.context = basket_canv.getContext('2d');
+    basket_canv.context.fillStyle = "#AA8833";
+    basket_canv.context.fillRect(basket_canv.width/3,basket_canv.height*3/4,basket_canv.width/3,basket_canv.height/4);
+
     balloon_canv = document.createElement('canvas');
     balloon_canv.width = 100;
     balloon_canv.height = 100;
@@ -125,6 +146,8 @@ var GamePlayScene = function(game, stage)
     grid = new Obj(0,0,100,100);
     balloon = new Obj(0,0,13,13);
     balloon.bm = hot_air_balloon_baggage;
+    basket = new Obj(0,0,10,10);
+    shadow = new Obj(0,0,10,2);
     vel_arrow = new Obj();
     acc_arrow = new Obj();
     arrow_separator = new Obj();
@@ -172,19 +195,19 @@ var GamePlayScene = function(game, stage)
     balloon.wx += balloon.wxv;
     balloon.wy += balloon.wyv;
 
-    if(balloon.wy < -10)
+    if(balloon.wy < 0)
     {
-      balloon.wy = -10;
+      balloon.wy = 0;
       if(balloon.wyv < 0) balloon.wyv = 0;
     }
-    if(balloon.wy > 0 && !rope_cut)
+    if(balloon.wy > 2 && !rope_cut)
     {
-      balloon.wy  = 0;
+      balloon.wy  = 2;
       balloon.wyv = 0;
     }
 
-    if(balloon.wy <= 0) balloon.wxv = 0;
-    else                balloon.wxv = 0.05;
+    if(balloon.wy <= 0 || !rope_cut) balloon.wxv = 0;
+    else                             balloon.wxv = 0.05;
 
     vel_arrow.wx = balloon.wx;
     vel_arrow.wy = balloon.wy;
@@ -198,6 +221,12 @@ var GamePlayScene = function(game, stage)
     arrow_separator.wy = balloon.wy;
     arrow_separator.ww = 10;
     arrow_separator.wh = 0;
+
+    basket.wx = balloon.wx;
+    basket.wy = balloon.wy-balloon.wh/2;
+
+    shadow.wx = balloon.wx;
+    shadow.wy = 0-balloon.wh/2-basket.wh/2;
 
     ground.wx = 0;
     ground.wy = -1;
@@ -222,6 +251,8 @@ var GamePlayScene = function(game, stage)
     for(var i = 0; i < fg.length; i++) fg[i].wx = fg[i].hwx+camera.wx*0.2;
 
     //screen space resolution
+    screenSpace(camera,dc,shadow);
+    screenSpace(camera,dc,basket);
     screenSpace(camera,dc,balloon);
     screenSpace(camera,dc,vel_arrow);
     screenSpace(camera,dc,acc_arrow);
@@ -249,6 +280,10 @@ var GamePlayScene = function(game, stage)
     //for(var i = 0; i < n_pipes; i++) drawPipe(pipes[i]);
     //drawGrid(grid);
 
+    dc.context.globalAlpha = clamp(0,1,1-(balloon.wy/20));
+    drawShadow(shadow);
+    dc.context.globalAlpha = 1;
+    drawBasket(basket);
     drawBalloon(balloon);
     dc.context.strokeStyle = "#00FF00";
     drawArrow(vel_arrow);
@@ -324,6 +359,14 @@ var GamePlayScene = function(game, stage)
     self.draw = drawObj; //to be replaced- hoping interpreter smart enough to pack w/ function ptr
   }
 
+  var drawShadow = function(obj)
+  {
+    dc.context.drawImage(shadow_canv,obj.x,obj.y,obj.w,obj.h);
+  }
+  var drawBasket = function(obj)
+  {
+    dc.context.drawImage(basket_canv,obj.x,obj.y,obj.w,obj.h);
+  }
   var drawBalloon = function(obj)
   {
     dc.context.drawImage(balloon_canv,obj.x,obj.y,obj.w,obj.h);

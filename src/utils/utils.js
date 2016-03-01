@@ -65,6 +65,13 @@ function feq(f1,f2,e)
   return (f1 < f2+e && f1 > f2-e);
 }
 
+function clamp(a,b,v)
+{
+  if(v < a) return a;
+  if(v > b) return b;
+  return v;
+}
+
 function lerp(s,e,t)
 {
   return s+((e-s)*t);
