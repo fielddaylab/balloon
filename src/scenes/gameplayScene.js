@@ -4,6 +4,8 @@ var GamePlayScene = function(game, stage)
   var dc = stage.drawCanv;
 
   //config
+  var part_damp = 0.2;
+
   var n_pipes;
   var gravity = 9.8; //m/s^2
   var env_temp  = 295; //k (72f = 295k)
@@ -159,8 +161,8 @@ var GamePlayScene = function(game, stage)
     tree_canv.context.fill();
 
     part_canv = document.createElement('canvas');
-    part_canv.width = 100;
-    part_canv.height = 100;
+    part_canv.width = 4;
+    part_canv.height = 4;
     part_canv.context = part_canv.getContext('2d');
     part_canv.context.fillStyle = "#FFFFFF";
     part_canv.context.beginPath();
@@ -195,7 +197,7 @@ var GamePlayScene = function(game, stage)
     for(var i = 0; i < 5000; i++)
     {
       air_parts.push(new Part());
-      initBalloonPart(air_parts[air_parts.length-1]);
+      initAirPart(air_parts[air_parts.length-1]);
     }
 
     pipes = []; for(var i = 0; i < n_pipes; i++) pipes.push(new Obj(i*50,(Math.random()*2-1)*10,5,20));
@@ -471,7 +473,7 @@ var GamePlayScene = function(game, stage)
     var y;
     var temp = tempForHeight(env_temp,balloon.wy)-290; //~0 to ~5
     temp /= 70; //0-1
-    for(var i = 0; i < (1-temp)*150*((dc.width*dc.height)/(balloon.w*balloon.h)) && i < air_parts.length; i++)
+    for(var i = 0; i < ((1-temp)*150*((dc.width*dc.height)/(balloon.w*balloon.h)))*part_damp && i < air_parts.length; i++)
     {
       p = air_parts[i];
       if(p.t > 100)
@@ -498,7 +500,7 @@ var GamePlayScene = function(game, stage)
     var r = balloon.w/2;
     var temp = balloon.t-290; //~5 to ~70
     temp /= 70; //0-1
-    for(var i = 0; i < (1-temp)*150 && i < balloon_parts.length; i++)
+    for(var i = 0; i < ((1-temp)*150)*part_damp && i < balloon_parts.length; i++)
     {
       p = balloon_parts[i];
       if(p.t > 100)
