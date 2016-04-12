@@ -35,9 +35,6 @@ var GamePlayScene = function(game, stage)
 
   var fps = 30;
 
-  //state
-  var rope_cut;
-
   //utils
   var shadow_canv;
   var flame_canv;
@@ -51,6 +48,13 @@ var GamePlayScene = function(game, stage)
   //doqueues
   var dragger;
   var presser;
+  var dom;
+  var bmwrangler;
+
+  ENUM = 0;
+  var IGNORE_INPUT = ENUM; ENUM++;
+  var RESUME_INPUT = ENUM; ENUM++;
+  var input_state;
 
   //objects
   var camera;
@@ -65,7 +69,6 @@ var GamePlayScene = function(game, stage)
   var pipes;
   var balloon_parts;
   var air_parts;
-  var part_disp;
 
   //scenery
   var bg;
@@ -77,6 +80,11 @@ var GamePlayScene = function(game, stage)
   var boost_pad;
   var flap_pad;
   var cut_pad;
+
+  //data
+  var rope_cut;
+  var wind;
+  var part_disp;
 
   self.ready = function()
   {
@@ -173,6 +181,8 @@ var GamePlayScene = function(game, stage)
     //doqueues
     dragger = new Dragger({source:stage.dispCanv.canvas});
     presser = new Presser({source:stage.dispCanv.canvas});
+    bmwrangler = new BottomMessageWrangler();
+    input_state = RESUME_INPUT;
 
     camera = new Camera();
     camera.wh = 30;
@@ -200,7 +210,6 @@ var GamePlayScene = function(game, stage)
       air_parts.push(new Part());
       initAirPart(air_parts[air_parts.length-1]);
     }
-    part_disp = 0;
 
     pipes = []; for(var i = 0; i < n_pipes; i++) pipes.push(new Obj(i*50,(rand()*2-1)*10,5,20));
 
@@ -215,6 +224,13 @@ var GamePlayScene = function(game, stage)
     presser.register(boost_pad);
     presser.register(flap_pad);
     presser.register(cut_pad);
+
+    part_disp = 0;
+    wind = [];
+    for(var i = 0; i < 100; i++)
+      wind[i] = 0.05;
+
+    setTimeout(function(){ pop(['hi there','this is a test','here we go','ok']); },1000);
   };
 
   var n_ticks = 0;
@@ -223,8 +239,17 @@ var GamePlayScene = function(game, stage)
     n_ticks++;
     part_disp = (sin(n_ticks/100)+1)/2;
 
-    dragger.flush();
-    presser.flush();
+    bmwrangler.tick();
+    if(input_state == RESUME_INPUT)
+    {
+      dragger.flush();
+      presser.flush();
+    }
+    else
+    {
+      dragger.ignore();
+      presser.ignore();
+    }
 
          if(boost_pad.down) balloon.t = lerp(balloon.t,fire_temp,0.0001)
     else if(flap_pad.down)  balloon.t = lerp(balloon.t, env_temp,0.001)
@@ -261,7 +286,7 @@ var GamePlayScene = function(game, stage)
     }
 
     if(balloon.wy <= 0 || !rope_cut) balloon.wxv = 0;
-    else                             balloon.wxv = 0.05;
+    else                             balloon.wxv = wind[min(floor(balloon.wy),wind.length-1)];
 
     vel_arrow.wx = balloon.wx-1;
     vel_arrow.wy = balloon.wy;
@@ -608,5 +633,8 @@ var GamePlayScene = function(game, stage)
   var drawCloud    = function(obj) { dc.context.drawImage(cloud_canv,obj.x,obj.y,obj.w,obj.h); }
   var drawMountain = function(obj) { dc.context.drawImage(mountain_canv,obj.x,obj.y,obj.w,obj.h); }
   var drawTree     = function(obj) { dc.context.drawImage(tree_canv,obj.x,obj.y,obj.w,obj.h); }
+
+  var pop = function(msg) { input_state = IGNORE_INPUT; bmwrangler.popMessage(msg,dismissed); }
+  var dismissed = function() { input_state = RESUME_INPUT; }
 };
 
