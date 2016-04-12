@@ -338,6 +338,11 @@ var GamePlayScene = function(game, stage)
       camera.wh = lerp(camera.wh,30+((balloon.wy-5)*2),0.01);
       camera.wy = lerp(camera.wy,0,0.1);
     }
+    else
+    {
+      camera.wh = lerp(camera.wh,30,0.01);
+      camera.wy = lerp(camera.wy,0,0.1);
+    }
     camera.ww = camera.wh*2;
 
     //faux parallax
