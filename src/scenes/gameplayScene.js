@@ -467,8 +467,8 @@ var GamePlayScene = function(game, stage)
     var p;
     var temp = (tempForHeight(env_temp,balloon.wy)-290)/5; //~0 to ~1
     var n_parts = min(round((15-temp)*20),air_parts.length);
-    var bwsqr = balloon.w*balloon.w;
-    bwsqr *= 4;
+    var br = balloon.w;
+    var brsqr = br*br;
     n_parts *= 4;
     var s = balloon.w/30;
     var minx = balloon.x-balloon.w/2-2/2;
@@ -494,7 +494,7 @@ var GamePlayScene = function(game, stage)
       p.y += p.yv;
       p.t++;
 
-      d = distsqr(p,balloon)/bwsqr;
+      d = distsqr(p,balloon)/brsqr;
 
       if(d > 1) p.t = 101;
       else
@@ -510,9 +510,8 @@ var GamePlayScene = function(game, stage)
     var p;
     var temp = (balloon.t-290)/5; //~1 to ~14 (at same scale used by drawAirParts)
     var n_parts = min(round((15-temp)*20),balloon_parts.length);
-    var bwsqr = balloon.w*balloon.w;
-    bwsqr /= 4;
-    n_parts /= 4;
+    var br = balloon.w/2;
+    var brsqr = br*br;
     var s = balloon.w/30;
     var minx = balloon.x-balloon.w/2-s/2;
     var maxx = balloon.x+balloon.w+balloon.w/2-s/2;
@@ -537,7 +536,7 @@ var GamePlayScene = function(game, stage)
       p.y += p.yv;
       p.t++;
 
-      d = distsqr(p,balloon)/bwsqr;
+      d = distsqr(p,balloon)/brsqr;
 
       if(d > 1) p.t = 101;
       else
