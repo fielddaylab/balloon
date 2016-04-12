@@ -263,17 +263,17 @@ var GamePlayScene = function(game, stage)
     if(balloon.wy <= 0 || !rope_cut) balloon.wxv = 0;
     else                             balloon.wxv = 0.05;
 
-    vel_arrow.wx = balloon.wx;
+    vel_arrow.wx = balloon.wx-1;
     vel_arrow.wy = balloon.wy;
     vel_arrow.ww = 0;
     vel_arrow.wh = balloon.wyv*10;
-    acc_arrow.wx = balloon.wx;
+    acc_arrow.wx = balloon.wx+1;
     acc_arrow.wy = balloon.wy;
     acc_arrow.ww = 0;
     acc_arrow.wh = balloon.wya*1000;
-    arrow_separator.wx = balloon.wx;
+    arrow_separator.wx = balloon.wx-1;
     arrow_separator.wy = balloon.wy;
-    arrow_separator.ww = 10;
+    arrow_separator.ww = 2;
     arrow_separator.wh = 0;
 
     basket.wx = balloon.wx;
@@ -579,8 +579,8 @@ var GamePlayScene = function(game, stage)
   var drawArrow = function(obj)
   {
     dc.context.beginPath();
-    dc.context.moveTo(obj.x      -obj.w/2,obj.y      -obj.h/2);
-    dc.context.lineTo(obj.x+obj.w-obj.w/2,obj.y+obj.h-obj.h/2);
+    dc.context.moveTo(obj.x      +obj.w/2,obj.y      -obj.h/2);
+    dc.context.lineTo(obj.x+obj.w+obj.w/2,obj.y+obj.h-obj.h/2);
     dc.context.stroke();
   }
   var drawPipe = function(obj)
