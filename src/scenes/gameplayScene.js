@@ -65,6 +65,7 @@ var GamePlayScene = function(game, stage)
   var pipes;
   var balloon_parts;
   var air_parts;
+  var part_disp;
 
   //scenery
   var bg;
@@ -199,6 +200,7 @@ var GamePlayScene = function(game, stage)
       air_parts.push(new Part());
       initAirPart(air_parts[air_parts.length-1]);
     }
+    part_disp = 0;
 
     pipes = []; for(var i = 0; i < n_pipes; i++) pipes.push(new Obj(i*50,(rand()*2-1)*10,5,20));
 
@@ -219,6 +221,7 @@ var GamePlayScene = function(game, stage)
   self.tick = function()
   {
     n_ticks++;
+    part_disp = (sin(n_ticks/100)+1)/2;
 
     dragger.flush();
     presser.flush();
@@ -464,6 +467,7 @@ var GamePlayScene = function(game, stage)
 
   var drawAirParticles = function()
   {
+    if(part_disp == 0) return;
     var p;
     var temp = (tempForHeight(env_temp,balloon.wy)-290)/5; //~0 to ~1
     var n_parts = min(round((15-temp)*20),air_parts.length);
@@ -499,7 +503,7 @@ var GamePlayScene = function(game, stage)
       if(d > 1) p.t = 101;
       else
       {
-        dc.context.globalAlpha = min(1,(1-d)*2);
+        dc.context.globalAlpha = min(1,(1-d)*2)*part_disp;
         dc.context.drawImage(part_canv,p.x,p.y,p.w,p.h);
       }
     }
@@ -507,6 +511,7 @@ var GamePlayScene = function(game, stage)
   }
   var drawBalloonParticles = function()
   {
+    if(part_disp == 0) return;
     var p;
     var temp = (balloon.t-290)/5; //~1 to ~14 (at same scale used by drawAirParts)
     var n_parts = min(round((15-temp)*20),balloon_parts.length);
@@ -541,7 +546,7 @@ var GamePlayScene = function(game, stage)
       if(d > 1) p.t = 101;
       else
       {
-        dc.context.globalAlpha = min(1,(1-d)*2);
+        dc.context.globalAlpha = min(1,(1-d)*2)*part_disp;
         dc.context.drawImage(part_canv,p.x,p.y,p.w,p.h);
       }
     }
