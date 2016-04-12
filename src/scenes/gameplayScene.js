@@ -192,6 +192,7 @@ var GamePlayScene = function(game, stage)
     flame = new Obj(0,0,2,2);
     basket = new Obj(0,0,10,10);
     balloon = new Obj(0,0,13,13);
+    balloon.t = 340;
     balloon.bm = hot_air_balloon_baggage;
     vel_arrow = new Obj();
     acc_arrow = new Obj();
@@ -230,7 +231,7 @@ var GamePlayScene = function(game, stage)
     for(var i = 0; i < 100; i++)
       wind[i] = 0.05;
 
-    setTimeout(function(){ pop(['hi there','this is a test','here we go','ok']); },1000);
+    //setTimeout(function(){ pop(['hi there','this is a test','here we go','ok']); },1000);
   };
 
   var n_ticks = 0;
@@ -320,12 +321,24 @@ var GamePlayScene = function(game, stage)
       pipes[i].colliding = queryRectCollide(balloon,pipes[i]);
 
     //cam track
-    camera.wx = balloon.wx;
-    if(balloon.wy > 5)
+    camera.wx = lerp(camera.wx,balloon.wx,0.1);
+    if(balloon.wy > 20) //20+
     {
-      camera.wh = 30+((balloon.wy-5)*2);
-      camera.ww = camera.wh*2;
+      camera.wh = lerp(camera.wh,30+((20-5)*2),0.01);
+      camera.wy = lerp(camera.wy,balloon.wy-15,0.1);
     }
+    else if(balloon.wy > 10) //10-20
+    {
+      camera.wh = lerp(camera.wh,30+((balloon.wy-5)*2),0.01);
+      var b = ((balloon.wy-10)/10); //blend- ensure 0 to 1
+      camera.wy = lerp(camera.wy,b*5,0.1);
+    }
+    else if(balloon.wy > 5) //5-10
+    {
+      camera.wh = lerp(camera.wh,30+((balloon.wy-5)*2),0.01);
+      camera.wy = lerp(camera.wy,0,0.1);
+    }
+    camera.ww = camera.wh*2;
 
     //faux parallax
     for(var i = 0; i < bg.length; i++) bg[i].wx = bg[i].hwx+camera.wx*0.8;
