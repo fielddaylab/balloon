@@ -69,14 +69,28 @@ function randIntBelow(n)
 {
   return Math.floor(Math.random()*n);
 }
-function rand()
-{
-  return Math.random();
-}
 function rand0()
 {
   return (Math.random()*2)-1;
 }
+var randR = function(f,t)
+{
+  return lerp(f,t,Math.random());
+}
+//because the Math namespace is probably unnecessary for our purposes
+var rand = Math.random;
+var round = Math.round;
+var floor = Math.floor;
+var ceil = Math.ceil;
+var min = Math.min;
+var max = Math.max;
+var sqrt = Math.sqrt;
+var sin = Math.sin;
+var cos = Math.cos;
+var atan2 = Math.atan2;
+var pi = Math.PI;
+var twopi = 2*pi;
+var halfpi = pi/2;
 
 function clamp(a,b,v)
 {
@@ -266,5 +280,41 @@ var screenSpace = function(cam, canv, obj)
   obj.h = (obj.wh/cam.wh)*canv.height;
   obj.x = (((( obj.wx-obj.ww/2)-cam.wx)+(cam.ww/2))/cam.ww)*canv.width;
   obj.y = ((((-obj.wy-obj.wh/2)+cam.wy)+(cam.wh/2))/cam.wh)*canv.height;
+}
+function tldistsqr(a,b)
+{
+  var x = b.x-a.x;
+  var y = b.y-a.y;
+  return x*x+y*y;
+}
+function tldist(a,b)
+{
+  var x = b.x-a.x;
+  var y = b.y-a.y;
+  return Math.sqrt(x*x+y*y);
+}
+function distsqr(a,b)
+{
+  var x = (b.x+b.w/2)-(a.x+a.w/2);
+  var y = (b.y+b.h/2)-(a.y+a.h/2);
+  return x*x+y*y;
+}
+function dist(a,b)
+{
+  var x = (b.x+b.w/2)-(a.x+a.w/2);
+  var y = (b.y+b.h/2)-(a.y+a.h/2);
+  return Math.sqrt(x*x+y*y);
+}
+function wdistsqr(a,b)
+{
+  var x = b.wx-a.wx;
+  var y = b.wy-a.wy;
+  return x*x+y*y;
+}
+function wdist(a,b)
+{
+  var x = b.wx-a.wx;
+  var y = b.wy-a.wy;
+  return Math.sqrt(x*x+y*y);
 }
 

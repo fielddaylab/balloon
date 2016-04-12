@@ -7,6 +7,7 @@
 <script type="text/javascript" src="src/canv.js"></script>
 <script type="text/javascript" src="src/stage.js"></script>
 <script type="text/javascript" src="src/game.js"></script>
+<script type="text/javascript" src="src/dom.js"></script>
 
 <script type="text/javascript" src="src/doqueues/assetter.js"></script>
 <script type="text/javascript" src="src/doqueues/clicker.js"></script>
@@ -55,45 +56,16 @@ window.addEventListener("load",begin,false);
   <div id="debug_div" style="display:block; width:640px; height:320px; position:absolute; top:0px; left:0px; pointer-events:none; user-select:none;"> </div>
 </div>
 
-<div style="position:absolute; top:400px;">
-<h1>Hot Air Balloon Sim</h1>
-<h2>Description</h2>
-<ul>
-<li>The top-most green button fires the engine and heats the air in the balloon</li>
-<li>The middle green button releases a bit of hot air from the top, causing it to cool</li>
-<li>The bottom green button cuts the rope that holds the balloon to the ground</li>
-<li>Inside the red balloon, the blue vertical line indicates vertical force/acceleration due to lift, and the black horizontal line indicates the horizontal force/acceleration due to wind.</li>
-</ul>
-<h2>To Play</h2>
-<ol>
-<li>When the balloon rises, it will get stuck at a certain altitude due to an invisible rope</li> 
-<li>Cut the rope with the bottom button</li>
-<li>See how long you can control the altitude of the balloon</li>
-<li>Refresh your browser to restart</li>
-</ol>
+<div id="fade" style="pointer-events:none; display:none; width:100%; height:100%; background-color:rgba(255,255,255,0.5); position:absolute; top:0px; left:0px;">
 </div>
 
-
-<!--
-<div style="position:absolute; top:400px;">
-<h1>Bouyancy Simulation</h1>
-<h2>Description</h2>
-<ul>
-	<li>You are looking at a bunch of particles bouncing off of each other, transferring energy.</li>
-	<li>One particle is blue. You can alter the properties of the blue particle with the sliders on the left prefixed with "m_"</li>
-	<li>By increasing the “m_size”, you are effectively reducing it’s density</li>
-	<li>You can alter the properties of the red particles with the sliders prefixed with "p_"</li>
-	<li>A warning that many of the combinations of those sliders have pretty extreme results (the scale of many of them is very large and unwieldy to edit via a slider. not to mention adding "mass" via a slider violates some of newton's laws...)</li>
-</ul>
-
-<h2>To Play</h2>
-<ol>
-	<li>Watch the blue particle for a bit. Notice how it just bumps along just like any other particle. If anything it might tend to sink: it's mass is 10 times that of the other particles.</li>
-	<li>Slide the m_size slider all the way to the right. The mass of the blue is still 10 times that of any mass its bumping into but its <i>size</i> is much more than 10 times that of the other mass. That means that it's coming into contact with a lot more particles than before! In fact, it's coming into contact with enough particles that the quantity of "small collisions" with other particles trying to fall down makes up for the fact that each collision is very weak, and as a result, the blue particle "floats!"</li>
-</ol>
-
+<div id="bottom_display" style="display:block; position:fixed; bottom:-200px; width:100%; height:200px; background-color:rgba(255,255,255,0.8);">
+  <div id="bottom_text" style="position:absolute; top:20px; left:20px; width:100px;">
+  </div>
+  <div id="bottom_button" style="width:100px; height:20px; position:absolute; right:20px; top:20px; background-color:#BBBBBB;">
+    Continue
+  </div>
 </div>
--->
 
 </body>
 </html>

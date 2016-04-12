@@ -93,7 +93,7 @@ var GamePlayScene = function(game, stage)
     shadow_canv.context.fillStyle = "#FF0000";
     shadow_canv.context.globalAlpha=0.1;
     shadow_canv.context.beginPath();
-    shadow_canv.context.arc(shadow_canv.width/2,shadow_canv.height/2,shadow_canv.width/2,0,2*Math.PI);
+    shadow_canv.context.arc(shadow_canv.width/2,shadow_canv.height/2,shadow_canv.width/2,0,2*pi);
     shadow_canv.context.fill();
 
     flame_canv = document.createElement('canvas');
@@ -103,7 +103,7 @@ var GamePlayScene = function(game, stage)
     flame_canv.context.fillStyle = "#FF7700";
     flame_canv.context.globalAlpha=0.8;
     flame_canv.context.beginPath();
-    flame_canv.context.arc(flame_canv.width/2,flame_canv.height/2,flame_canv.width/2,0,2*Math.PI);
+    flame_canv.context.arc(flame_canv.width/2,flame_canv.height/2,flame_canv.width/2,0,2*pi);
     flame_canv.context.fill();
 
     basket_canv = document.createElement('canvas');
@@ -126,7 +126,7 @@ var GamePlayScene = function(game, stage)
     balloon_canv.context = balloon_canv.getContext('2d');
     balloon_canv.context.fillStyle = "#FF0000";
     balloon_canv.context.beginPath();
-    balloon_canv.context.arc(balloon_canv.width/2,balloon_canv.height/2,balloon_canv.width/2,0,2*Math.PI);
+    balloon_canv.context.arc(balloon_canv.width/2,balloon_canv.height/2,balloon_canv.width/2,0,2*pi);
     balloon_canv.context.fill();
 
     cloud_canv = document.createElement('canvas');
@@ -135,7 +135,7 @@ var GamePlayScene = function(game, stage)
     cloud_canv.context = cloud_canv.getContext('2d');
     cloud_canv.context.fillStyle = "#FFFFFF";
     cloud_canv.context.beginPath();
-    cloud_canv.context.arc(cloud_canv.width/2,cloud_canv.height/2,cloud_canv.width/2,0,2*Math.PI);
+    cloud_canv.context.arc(cloud_canv.width/2,cloud_canv.height/2,cloud_canv.width/2,0,2*pi);
     cloud_canv.context.fill();
 
     mountain_canv = document.createElement('canvas');
@@ -157,7 +157,7 @@ var GamePlayScene = function(game, stage)
     tree_canv.context.fillRect(40,20,20,80);
     tree_canv.context.fillStyle = "#00FF00";
     tree_canv.context.beginPath();
-    tree_canv.context.arc(tree_canv.width/2,tree_canv.height/3,tree_canv.width/3,0,2*Math.PI);
+    tree_canv.context.arc(tree_canv.width/2,tree_canv.height/3,tree_canv.width/3,0,2*pi);
     tree_canv.context.fill();
 
     part_canv = document.createElement('canvas');
@@ -166,7 +166,7 @@ var GamePlayScene = function(game, stage)
     part_canv.context = part_canv.getContext('2d');
     part_canv.context.fillStyle = "#FFFFFF";
     part_canv.context.beginPath();
-    part_canv.context.arc(part_canv.width/2,part_canv.height/2,part_canv.width/2,0,2*Math.PI);
+    part_canv.context.arc(part_canv.width/2,part_canv.height/2,part_canv.width/2,0,2*pi);
     part_canv.context.fill();
 
     //doqueues
@@ -200,11 +200,11 @@ var GamePlayScene = function(game, stage)
       initAirPart(air_parts[air_parts.length-1]);
     }
 
-    pipes = []; for(var i = 0; i < n_pipes; i++) pipes.push(new Obj(i*50,(Math.random()*2-1)*10,5,20));
+    pipes = []; for(var i = 0; i < n_pipes; i++) pipes.push(new Obj(i*50,(rand()*2-1)*10,5,20));
 
-    bg = []; for(var i = 0; i < 100; i++) { bg.push(new Obj((i+Math.random())* 10, Math.random()*5+ 8,   3,  2)); bg[i].draw = drawCloud;    }
-    mg = []; for(var i = 0; i < 100; i++) { mg.push(new Obj((i+Math.random())* 50,                  5,  10, 10)); mg[i].draw = drawMountain; }
-    fg = []; for(var i = 0; i < 100; i++) { fg.push(new Obj((i+Math.random())* 20,                 -1,   8,  8)); fg[i].draw = drawTree;     }
+    bg = []; for(var i = 0; i < 100; i++) { bg.push(new Obj((i+rand())* 10, rand()*5+ 8,   3,  2)); bg[i].draw = drawCloud;    }
+    mg = []; for(var i = 0; i < 100; i++) { mg.push(new Obj((i+rand())* 50,                  5,  10, 10)); mg[i].draw = drawMountain; }
+    fg = []; for(var i = 0; i < 100; i++) { fg.push(new Obj((i+rand())* 20,                 -1,   8,  8)); fg[i].draw = drawTree;     }
     ground = new Obj();
 
     boost_pad = new ButtonBox(10,10,20,20,function(){});
@@ -332,11 +332,6 @@ var GamePlayScene = function(game, stage)
     dc.context.fillRect(0,ground.y,dc.width,dc.height-ground.y);
     for(var i = 0; i < fg.length; i++) fg[i].draw(fg[i]);
 
-    //for(var i = 0; i < n_pipes; i++) drawPipe(pipes[i]);
-    //drawGrid(grid);
-
-    drawAirParticles();
-
     dc.context.globalAlpha = clamp(0,1,1-(balloon.wy/20));
     drawShadow(shadow);
     dc.context.globalAlpha = 1;
@@ -431,7 +426,8 @@ var GamePlayScene = function(game, stage)
   {
     this.x = 0;
     this.y = 0;
-    this.s = 3;
+    this.w = 3;
+    this.h = 3;
     this.xv = 0;
     this.yv = 0;
     this.t = 0;
@@ -469,57 +465,88 @@ var GamePlayScene = function(game, stage)
   var drawAirParticles = function()
   {
     var p;
-    var x;
-    var y;
-    var temp = tempForHeight(env_temp,balloon.wy)-290; //~0 to ~5
-    temp /= 70; //0-1
-    for(var i = 0; i < ((1-temp)*150*((dc.width*dc.height)/(balloon.w*balloon.h)))*part_damp && i < air_parts.length; i++)
+    var temp = (tempForHeight(env_temp,balloon.wy)-290)/5; //~0 to ~1
+    var n_parts = min(round((15-temp)*20),air_parts.length);
+    var bwsqr = balloon.w*balloon.w;
+    bwsqr *= 4;
+    n_parts *= 4;
+    var s = balloon.w/30;
+    var minx = balloon.x-balloon.w/2-2/2;
+    var maxx = balloon.x+balloon.w+balloon.w/2-2/2;
+    var miny = balloon.y-balloon.h/2-s/2;
+    var maxy = balloon.y+balloon.h+balloon.h/2-s/2;
+    var d;
+
+    for(var i = 0; i < n_parts; i++)
     {
       p = air_parts[i];
+      p.w = s;
+      p.h = s;
       if(p.t > 100)
       {
         p.t = 0;
-        p.x = rand()*dc.width;
-        p.y = rand()*dc.height;
-        p.xv = rand0()*temp*5;
-        p.yv = rand0()*temp*5;
+        p.x = randR(minx,maxx);
+        p.y = randR(miny,maxy);
+        p.xv = rand0()*temp*balloon.w/100;
+        p.yv = rand0()*temp*balloon.w/100;
       }
       p.x += p.xv;
       p.y += p.yv;
       p.t++;
 
-      if(p.x < 0 || p.x > dc.width || p.y < 0 || p.y > dc.height) p.t = 101;
-      else dc.context.drawImage(part_canv,p.x-p.s/2,p.y-p.s/2,p.s,p.s);
+      d = distsqr(p,balloon)/bwsqr;
+
+      if(d > 1) p.t = 101;
+      else
+      {
+        dc.context.globalAlpha = min(1,(1-d)*2);
+        dc.context.drawImage(part_canv,p.x,p.y,p.w,p.h);
+      }
     }
+    dc.context.globalAlpha = 1;
   }
   var drawBalloonParticles = function()
   {
     var p;
-    var x;
-    var y;
-    var r = balloon.w/2;
-    var temp = balloon.t-290; //~5 to ~70
-    temp /= 70; //0-1
-    for(var i = 0; i < ((1-temp)*150)*part_damp && i < balloon_parts.length; i++)
+    var temp = (balloon.t-290)/5; //~1 to ~14 (at same scale used by drawAirParts)
+    var n_parts = min(round((15-temp)*20),balloon_parts.length);
+    var bwsqr = balloon.w*balloon.w;
+    bwsqr /= 4;
+    n_parts /= 4;
+    var s = balloon.w/30;
+    var minx = balloon.x-balloon.w/2-s/2;
+    var maxx = balloon.x+balloon.w+balloon.w/2-s/2;
+    var miny = balloon.y-balloon.h/2-s/2;
+    var maxy = balloon.y+balloon.h+balloon.h/2-s/2;
+    var d;
+
+    for(var i = 0; i < n_parts; i++)
     {
       p = balloon_parts[i];
+      p.w = s;
+      p.h = s;
       if(p.t > 100)
       {
         p.t = 0;
-        p.x = balloon.x+(rand()*(2*r));
-        p.y = balloon.y+(rand()*(2*r));
-        p.xv = rand0()*temp*5;
-        p.yv = rand0()*temp*5;
+        p.x = randR(minx,maxx);
+        p.y = randR(miny,maxy);
+        p.xv = rand0()*temp*balloon.w/100;
+        p.yv = rand0()*temp*balloon.w/100;
       }
       p.x += p.xv;
       p.y += p.yv;
       p.t++;
 
-      x = (p.x-balloon.x)-r;
-      y = (p.y-balloon.y)-r;
-      if((x*x)+(y*y) > r*r) p.t = 101;
-      else dc.context.drawImage(part_canv,p.x-p.s/2,p.y-p.s/2,p.s,p.s);
+      d = distsqr(p,balloon)/bwsqr;
+
+      if(d > 1) p.t = 101;
+      else
+      {
+        dc.context.globalAlpha = min(1,(1-d)*2);
+        dc.context.drawImage(part_canv,p.x,p.y,p.w,p.h);
+      }
     }
+    dc.context.globalAlpha = 1;
   }
   var drawFlame = function(obj)
   {
@@ -539,10 +566,10 @@ var GamePlayScene = function(game, stage)
     drawBalloonParticles();
     dc.context.fillStyle = "#000000";
     dc.context.textAlign = "right";
-    var dispTemp = Math.round((obj.t*(9/5)-459)*100)/100; //nn.nn
-    dc.context.fillText(Math.floor(dispTemp)+".",obj.x+obj.w/2,obj.y+obj.h/2-1);
+    var dispTemp = round((obj.t*(9/5)-459)*100)/100; //nn.nn
+    dc.context.fillText(floor(dispTemp)+".",obj.x+obj.w/2,obj.y+obj.h/2-1);
     dc.context.textAlign = "left";
-    var decString = (Math.round((dispTemp-Math.floor(dispTemp))*100)/100)+"°";
+    var decString = (round((dispTemp-floor(dispTemp))*100)/100)+"°";
     dc.context.fillText(decString.substring(decString.indexOf(".")+1),obj.x+obj.w/2,obj.y+obj.h/2-1);
   }
   var drawArrow = function(obj)
