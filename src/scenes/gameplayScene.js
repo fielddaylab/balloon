@@ -417,6 +417,16 @@ var GamePlayScene = function(game, stage)
     yvel_gauge.val = balloon.wyv;
     fuel_gauge.val = 1;
 
+    outside_temp_gauge.tick();
+    inside_temp_gauge.tick();
+    density_gauge.tick();
+    weight_gauge.tick();
+    bouyancy_gauge.tick();
+    altitude_gauge.tick();
+    xvel_gauge.tick();
+    yvel_gauge.tick();
+    fuel_gauge.tick();
+
     //faux parallax
     tickParallax();
     centerGrounds();
@@ -897,7 +907,14 @@ var GamePlayScene = function(game, stage)
     self.val = self.min;
     self.r = Math.min(self.w,self.h)/2;
 
+    self.tick = function()
+    {
+      if(self.dragging && altered)
+        altered(self.last_val)
+    }
+
     self.dragging = false;
+    self.last_val = self.min;
     self.dragStart = function(evt)
     {
       self.dragging = true;
@@ -909,8 +926,7 @@ var GamePlayScene = function(game, stage)
       var y = -(evt.doY-self.cy);
       var t = atan2(y,x);
       var val = mapVal(self.mint,self.maxt,self.min,self.max,t)
-      if(val != self.val && altered)
-        altered(val);
+      self.last_val = val;
     }
     self.dragFinish = function()
     {
