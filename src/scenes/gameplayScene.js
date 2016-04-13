@@ -82,6 +82,14 @@ var GamePlayScene = function(game, stage)
   var flap_pad;
   var cut_pad;
 
+  //gauges
+  var outside_temp_gauge;
+  var inside_temp_gauge;
+  var density_gauge;
+  var weight_gauge;
+  var bouyancy_gauge;
+  var fuel_gauge;
+
   //data
   var rope_cut;
   var wind;
@@ -179,6 +187,19 @@ var GamePlayScene = function(game, stage)
     part_canv.context.arc(part_canv.width/2,part_canv.height/2,part_canv.width/2,0,2*pi);
     part_canv.context.fill();
 
+    gauge_canv = document.createElement('canvas');
+    gauge_canv.width = 100;
+    gauge_canv.height = 100;
+    gauge_canv.context = gauge_canv.getContext('2d');
+    gauge_canv.context.fillStyle = "#000000";
+    gauge_canv.context.beginPath();
+    gauge_canv.context.arc(gauge_canv.width/2,gauge_canv.height/2,gauge_canv.width/2,0,2*pi);
+    gauge_canv.context.fill();
+    gauge_canv.context.fillStyle = "#FFFFFF";
+    gauge_canv.context.beginPath();
+    gauge_canv.context.arc(gauge_canv.width/2,gauge_canv.height/2,gauge_canv.width/2*0.9,0,2*pi);
+    gauge_canv.context.fill();
+
     //doqueues
     dragger = new Dragger({source:stage.dispCanv.canvas});
     presser = new Presser({source:stage.dispCanv.canvas});
@@ -198,7 +219,7 @@ var GamePlayScene = function(game, stage)
     flame = new Obj(0,0,2,2);
     basket = new Obj(0,0,10,10);
     balloon = new Obj(0,0,13,13);
-    balloon.t = 340;
+    //balloon.t = 340;
     balloon.bm = hot_air_balloon_baggage;
     vel_arrow = new Obj();
     acc_arrow = new Obj();
@@ -228,6 +249,16 @@ var GamePlayScene = function(game, stage)
     presser.register(boost_pad);
     presser.register(flap_pad);
     presser.register(cut_pad);
+
+    var w = dc.width/6;
+    var mint = pi*(3/4);
+    var maxt = pi*(1/4);
+    outside_temp_gauge = new Gauge(w*0,dc.height-w*2/3,w,w,mint,maxt,250,380);
+    inside_temp_gauge  = new Gauge(w*1,dc.height-w*2/3,w,w,mint,maxt,250,380);
+    density_gauge      = new Gauge(w*2,dc.height-w*2/3,w,w,mint,maxt,950,1200);
+    weight_gauge       = new Gauge(w*3,dc.height-w*2/3,w,w,mint,maxt,2100000,2600000);
+    bouyancy_gauge     = new Gauge(w*4,dc.height-w*2/3,w,w,mint,maxt,-.03,.03);
+    fuel_gauge         = new Gauge(w*5,dc.height-w*2/3,w,w,mint,maxt,0,10);
 
     part_disp = 0;
     wind = [];
@@ -348,6 +379,13 @@ var GamePlayScene = function(game, stage)
     }
     camera.ww = camera.wh*2;
 
+    outside_temp_gauge.val = env_temp;
+    inside_temp_gauge.val = balloon.t;
+    density_gauge.val = balloon.m/balloon.v;
+    weight_gauge.val = balloon.m;
+    bouyancy_gauge.val = balloon.wya;
+    fuel_gauge.val = 1;
+
     //faux parallax
     tickParallax();
     centerGrounds();
@@ -399,16 +437,24 @@ var GamePlayScene = function(game, stage)
     }
     drawBasket(basket);
     drawBalloon(balloon);
-    dc.context.strokeStyle = "#00FF00";
-    drawArrow(vel_arrow);
-    dc.context.strokeStyle = "#0000FF";
-    drawArrow(acc_arrow);
-    dc.context.strokeStyle = "#000000";
-    drawArrow(arrow_separator);
+    //dc.context.strokeStyle = "#00FF00";
+    //drawArrow(vel_arrow);
+    //dc.context.strokeStyle = "#0000FF";
+    //drawArrow(acc_arrow);
+    //dc.context.strokeStyle = "#000000";
+    //drawArrow(arrow_separator);
 
     boost_pad.draw(dc);
     flap_pad.draw(dc);
     cut_pad.draw(dc);
+
+    drawGauge(outside_temp_gauge);
+    drawGauge(inside_temp_gauge);
+    drawGauge(density_gauge);
+    drawGauge(weight_gauge);
+    drawGauge(bouyancy_gauge);
+    drawGauge(fuel_gauge);
+
 /*
     var o = new Obj();
     o.x = 10;
@@ -790,6 +836,33 @@ var GamePlayScene = function(game, stage)
   var drawCloud    = function(obj) { dc.context.drawImage(cloud_canv,obj.x,obj.y,obj.w,obj.h); }
   var drawMountain = function(obj) { dc.context.drawImage(mountain_canv,obj.x,obj.y,obj.w,obj.h); }
   var drawTree     = function(obj) { dc.context.drawImage(tree_canv,obj.x,obj.y,obj.w,obj.h); }
+  var drawGauge    = function(g)
+  {
+    dc.context.drawImage(gauge_canv,g.x,g.y,g.w,g.h);
+    dc.context.strokeStyle = "#000000";
+    dc.context.beginPath();
+    dc.context.moveTo(g.cx,g.cy);
+    var t = mapVal(g.min,g.max,g.mint,g.maxt,g.val);
+    dc.context.lineTo(g.cx+cos(t)*g.r,g.cy+-sin(t)*g.r);
+    dc.context.stroke();
+  }
+
+  var Gauge = function(x,y,w,h,mint,maxt,min,max)
+  {
+    var self = this;
+    self.x = x;
+    self.y = y;
+    self.w = w;
+    self.h = h;
+    self.cx = self.x+self.w/2;
+    self.cy = self.y+self.h/2;
+    self.mint = mint;
+    self.maxt = maxt;
+    self.min = min;
+    self.max = max;
+    self.val = self.min;
+    self.r = Math.min(self.w,self.h)/2;
+  }
 
   var pop = function(msg) { input_state = IGNORE_INPUT; bmwrangler.popMessage(msg,dismissed); }
   var dismissed = function() { input_state = RESUME_INPUT; }
