@@ -225,7 +225,7 @@ var GamePlayScene = function(game, stage)
     part_disp = 0;
     wind = [];
     for(var i = 0; i < 100; i++)
-      wind[i] = 0.05;
+      wind[i] = 0.05+psin(i/20);//+rand0()*0.01;
 
     //setTimeout(function(){ pop(['hi there','this is a test','here we go','ok']); },1000);
   };
@@ -234,7 +234,7 @@ var GamePlayScene = function(game, stage)
   self.tick = function()
   {
     n_ticks++;
-    part_disp = (sin(n_ticks/100)+1)/2;
+    part_disp = (sin(n_ticks/500)+1)/2;
 
     bmwrangler.tick();
     if(input_state == RESUME_INPUT)
@@ -380,6 +380,7 @@ var GamePlayScene = function(game, stage)
     dc.context.globalAlpha = clamp(0,1,1-(balloon.wy/20));
     drawShadow(shadow);
     dc.context.globalAlpha = 1;
+    drawWind();
     drawAirParticles();
     if(boost_pad.down) drawFlame(flame);
     if(!rope_cut)
@@ -522,6 +523,47 @@ var GamePlayScene = function(game, stage)
     }
   }
 
+  var drawWind = function()
+  {
+    dc.context.fillStyle = "#FFFFFF";
+
+    var x;
+    var screeno =
+    {
+      x:0,
+      y:0,
+      w:1,
+      h:1,
+      wx:0,
+      wy:0,
+      ww:0,
+      wh:0,
+    };
+    worldSpace(camera,dc,screeno);
+    var maxy = Math.ceil(screeno.wy);
+    screeno.y = dc.height-1;
+    worldSpace(camera,dc,screeno);
+    var miny = Math.floor(screeno.wy);
+
+    var worldo =
+    {
+      x:0,
+      y:0,
+      w:0,
+      h:0,
+      wx:camera.wx,
+      wy:0,
+      ww:camera.ww,
+      wh:1,
+    };
+    for(var i = miny; i < maxy+1 && i < wind.length; i++)
+    {
+      x = (wind[i]*20*n_ticks)%dc.width;
+      worldo.wy = i;
+      screenSpace(camera,dc,worldo);
+      dc.context.fillRect(x,worldo.y,10,worldo.h);
+    }
+  }
   var tickAirParticles = function()
   {
     if(part_disp == 0) return;
