@@ -89,6 +89,8 @@ var GamePlayScene = function(game, stage)
   var weight_gauge;
   var bouyancy_gauge;
   var altitude_gauge;
+  var xvel_gauge;
+  var yvel_gauge;
   var fuel_gauge;
 
   //data
@@ -263,7 +265,7 @@ var GamePlayScene = function(game, stage)
     presser.register(flap_pad);
     presser.register(cut_pad);
 
-    var w = dc.width/7;
+    var w = dc.width/9;
     var mint = pi*(5/6);
     var maxt = pi*(1/6);
     outside_temp_gauge = new Gauge(w*0,dc.height-w*5/9,w,w,mint,maxt,250,380,function(v){ env_temp = v; });
@@ -272,7 +274,9 @@ var GamePlayScene = function(game, stage)
     weight_gauge       = new Gauge(w*3,dc.height-w*5/9,w,w,mint,maxt,2100000,2600000,function(v){ balloon.m = v; });
     bouyancy_gauge     = new Gauge(w*4,dc.height-w*5/9,w,w,mint,maxt,-.03,.03,function(v){ balloon.wya = v; });
     altitude_gauge     = new Gauge(w*5,dc.height-w*5/9,w,w,mint,maxt,0,100,function(v){ balloon.wy = v; });
-    fuel_gauge         = new Gauge(w*6,dc.height-w*5/9,w,w,mint,maxt,0,10,function(v){ });
+    xvel_gauge         = new Gauge(w*6,dc.height-w*5/9,w,w,mint,maxt,-1,1,function(v){ balloon.wxv = v; });
+    yvel_gauge         = new Gauge(w*7,dc.height-w*5/9,w,w,mint,maxt,-1,1,function(v){ balloon.wyv = v; });
+    fuel_gauge         = new Gauge(w*8,dc.height-w*5/9,w,w,mint,maxt,0,10,function(v){ });
 
     dragger.register(outside_temp_gauge);
     dragger.register(inside_temp_gauge);
@@ -280,6 +284,8 @@ var GamePlayScene = function(game, stage)
     dragger.register(weight_gauge);
     dragger.register(bouyancy_gauge);
     dragger.register(altitude_gauge);
+    dragger.register(xvel_gauge);
+    dragger.register(yvel_gauge);
     dragger.register(fuel_gauge);
 
     part_disp = 1;
@@ -343,7 +349,7 @@ var GamePlayScene = function(game, stage)
     }
 
     if(balloon.wy <= 0 || !rope_cut) balloon.wxv = 0;
-    else                             balloon.wxv = wind[min(floor(balloon.wy),wind.length-1)];
+    else                             balloon.wxv = lerp(balloon.wxv,wind[min(floor(balloon.wy),wind.length-1)],0.1);
 
     vel_arrow.wx = balloon.wx-1;
     vel_arrow.wy = balloon.wy;
@@ -407,6 +413,8 @@ var GamePlayScene = function(game, stage)
     weight_gauge.val = balloon.m;
     bouyancy_gauge.val = balloon.wya;
     altitude_gauge.val = balloon.wy;
+    xvel_gauge.val = balloon.wxv;
+    yvel_gauge.val = balloon.wyv;
     fuel_gauge.val = 1;
 
     //faux parallax
@@ -477,6 +485,8 @@ var GamePlayScene = function(game, stage)
     drawGauge(weight_gauge);
     drawGauge(bouyancy_gauge);
     drawGauge(altitude_gauge);
+    drawGauge(xvel_gauge);
+    drawGauge(yvel_gauge);
     drawGauge(fuel_gauge);
 
 /*
