@@ -232,7 +232,7 @@ var GamePlayScene = function(game, stage)
     part_disp = 0;
     wind = [];
     for(var i = 0; i < 100; i++)
-      wind[i] = 0.05+psin(i/20);//+rand0()*0.01;
+      wind[i] = 0.05+psin((99-i)/20);
 
     //setTimeout(function(){ pop(['hi there','this is a test','here we go','ok']); },1000);
   };
