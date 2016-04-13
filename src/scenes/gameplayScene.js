@@ -196,10 +196,22 @@ var GamePlayScene = function(game, stage)
     gauge_canv.context.beginPath();
     gauge_canv.context.arc(gauge_canv.width/2,gauge_canv.height/2,gauge_canv.width/2,0,2*pi);
     gauge_canv.context.fill();
+    var mint = pi*(5/6);
+    var maxt = pi*(1/6);
     gauge_canv.context.fillStyle = "#FFFFFF";
     gauge_canv.context.beginPath();
     gauge_canv.context.arc(gauge_canv.width/2,gauge_canv.height/2,gauge_canv.width/2*0.9,0,2*pi);
     gauge_canv.context.fill();
+    gauge_canv.context.fillStyle = "#88FF88";
+    gauge_canv.context.beginPath();
+    gauge_canv.context.moveTo(gauge_canv.width/2,gauge_canv.height/2)
+    gauge_canv.context.arc(gauge_canv.width/2,gauge_canv.height/2,gauge_canv.width/2,pi+mint,pi+maxt,true);
+    gauge_canv.context.fill();
+    gauge_canv.context.strokeStyle = "#000000";
+    gauge_canv.context.lineWidth = 8;
+    gauge_canv.context.beginPath();
+    gauge_canv.context.arc(gauge_canv.width/2,gauge_canv.height/2,gauge_canv.width/2*0.9,0,2*pi);
+    gauge_canv.context.stroke();
 
     //doqueues
     dragger = new Dragger({source:stage.dispCanv.canvas});
@@ -254,13 +266,13 @@ var GamePlayScene = function(game, stage)
     var w = dc.width/7;
     var mint = pi*(5/6);
     var maxt = pi*(1/6);
-    outside_temp_gauge = new Gauge(w*0,dc.height-w*2/3,w,w,mint,maxt,250,380);
-    inside_temp_gauge  = new Gauge(w*1,dc.height-w*2/3,w,w,mint,maxt,250,380);
-    density_gauge      = new Gauge(w*2,dc.height-w*2/3,w,w,mint,maxt,950,1200);
-    weight_gauge       = new Gauge(w*3,dc.height-w*2/3,w,w,mint,maxt,2100000,2600000);
-    bouyancy_gauge     = new Gauge(w*4,dc.height-w*2/3,w,w,mint,maxt,-.03,.03);
-    altitude_gauge     = new Gauge(w*5,dc.height-w*2/3,w,w,mint,maxt,0,100);
-    fuel_gauge         = new Gauge(w*6,dc.height-w*2/3,w,w,mint,maxt,0,10);
+    outside_temp_gauge = new Gauge(w*0,dc.height-w*5/9,w,w,mint,maxt,250,380);
+    inside_temp_gauge  = new Gauge(w*1,dc.height-w*5/9,w,w,mint,maxt,250,380);
+    density_gauge      = new Gauge(w*2,dc.height-w*5/9,w,w,mint,maxt,950,1200);
+    weight_gauge       = new Gauge(w*3,dc.height-w*5/9,w,w,mint,maxt,2100000,2600000);
+    bouyancy_gauge     = new Gauge(w*4,dc.height-w*5/9,w,w,mint,maxt,-.03,.03);
+    altitude_gauge     = new Gauge(w*5,dc.height-w*5/9,w,w,mint,maxt,0,100);
+    fuel_gauge         = new Gauge(w*6,dc.height-w*5/9,w,w,mint,maxt,0,10);
 
     part_disp = 1;
     wind = [];
