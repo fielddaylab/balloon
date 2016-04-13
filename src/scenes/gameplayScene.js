@@ -539,51 +539,60 @@ var GamePlayScene = function(game, stage)
     ri = (bgi+bg.length-1)%bg.length;
     ldist = abs(bg[li].wx-bgcam.wx);
     rdist = abs(bg[ri].wx-bgcam.wx);
-    if(ldist > rdist) //l further than r- move to r
+    if(abs(ldist-rdist) > bgsep)
     {
-      bg[li].wx = bg[ri].wx+bgsep+rand0()*bgsep;
-      bg[li].wy = rand0()*5+10;
-      bgi = (bgi+1)%bg.length;
-    }
-    else
-    {
-      bg[ri].wx = bg[li].wx-bgsep-rand0()*bgsep;
-      bg[ri].wy = rand0()*5+10;
-      bgi = (bgi+bg.length-1)%bg.length;
+      if(ldist > rdist) //l further than r- move to r
+      {
+        bg[li].wx = bg[ri].wx+bgsep+rand0()*bgsep/2;
+        bg[li].wy = rand0()*5+10;
+        bgi = (bgi+1)%bg.length;
+      }
+      else
+      {
+        bg[ri].wx = bg[li].wx-bgsep-rand0()*bgsep/2;
+        bg[ri].wy = rand0()*5+10;
+        bgi = (bgi+bg.length-1)%bg.length;
+      }
     }
 
     li = mgi;
     ri = (mgi+mg.length-1)%mg.length;
     ldist = abs(mg[li].wx-mgcam.wx);
     rdist = abs(mg[ri].wx-mgcam.wx);
-    if(ldist > rdist) //l further than r- move to r
+    if(abs(ldist-rdist) > bgsep)
     {
-      mg[li].wx = mg[ri].wx+mgsep+rand0()*mgsep;
-      mg[li].wy = rand0()*2+ 3;
-      mgi = (mgi+1)%mg.length;
-    }
-    else
-    {
-      mg[ri].wx = mg[li].wx-mgsep-rand0()*mgsep;
-      mg[ri].wy = rand0()*2+ 3;
-      mgi = (mgi+mg.length-1)%mg.length;
+      if(ldist > rdist) //l further than r- move to r
+      {
+        mg[li].wx = mg[ri].wx+mgsep+rand0()*mgsep/2;
+        mg[li].wy = rand0()*2+ 3;
+        mgi = (mgi+1)%mg.length;
+      }
+      else
+      {
+        mg[ri].wx = mg[li].wx-mgsep-rand0()*mgsep/2;
+        mg[ri].wy = rand0()*2+ 3;
+        mgi = (mgi+mg.length-1)%mg.length;
+      }
     }
 
     li = fgi;
     ri = (fgi+fg.length-1)%fg.length;
     ldist = abs(fg[li].wx-fgcam.wx);
     rdist = abs(fg[ri].wx-fgcam.wx);
-    if(ldist > rdist) //l further than r- move to r
+    if(abs(ldist-rdist) > bgsep)
     {
-      fg[li].wx = fg[ri].wx+fgsep+rand0()*fgsep;
-      fg[li].wy = rand0()*1+-1;
-      fgi = (fgi+1)%fg.length;
-    }
-    else
-    {
-      fg[ri].wx = fg[li].wx-fgsep-rand0()*fgsep;
-      fg[ri].wy = rand0()*1+-1;
-      fgi = (fgi+fg.length-1)%fg.length;
+      if(ldist > rdist) //l further than r- move to r
+      {
+        fg[li].wx = fg[ri].wx+fgsep+rand0()*fgsep/2;
+        fg[li].wy = rand0()*1+-1;
+        fgi = (fgi+1)%fg.length;
+      }
+      else
+      {
+        fg[ri].wx = fg[li].wx-fgsep-rand0()*fgsep/2;
+        fg[ri].wy = rand0()*1+-1;
+        fgi = (fgi+fg.length-1)%fg.length;
+      }
     }
   }
   var drawWind = function()
