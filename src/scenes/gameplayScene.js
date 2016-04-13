@@ -58,6 +58,7 @@ var GamePlayScene = function(game, stage)
 
   //objects
   var camera;
+  var tmp; //used for any non-persistent calcs
   var grid;
   var shadow;
   var flame;
@@ -188,6 +189,7 @@ var GamePlayScene = function(game, stage)
     camera.wh = 30;
     camera.ww = camera.wh*2;
     grid = new Obj(0,0,100,100);
+    tmp = new Obj(0,0,0,0);
     shadow = new Obj(0,0,10,2);
     flame = new Obj(0,0,2,2);
     basket = new Obj(0,0,10,10);
@@ -527,41 +529,28 @@ var GamePlayScene = function(game, stage)
   {
     dc.context.fillStyle = "#FFFFFF";
 
-    var x;
-    var screeno =
-    {
-      x:0,
-      y:0,
-      w:1,
-      h:1,
-      wx:0,
-      wy:0,
-      ww:0,
-      wh:0,
-    };
-    worldSpace(camera,dc,screeno);
-    var maxy = Math.ceil(screeno.wy);
-    screeno.y = dc.height-1;
-    worldSpace(camera,dc,screeno);
-    var miny = Math.floor(screeno.wy);
+    tmp.x = 0;
+    tmp.y = 0;
+    tmp.w = 1;
+    tmp.h = 1;
+    worldSpace(camera,dc,tmp);
+    var maxy = Math.ceil(tmp.wy);
+    tmp.y = dc.height-1;
+    worldSpace(camera,dc,tmp);
+    var miny = Math.floor(tmp.wy);
 
-    var worldo =
-    {
-      x:0,
-      y:0,
-      w:0,
-      h:0,
-      wx:camera.wx,
-      wy:0,
-      ww:camera.ww,
-      wh:1,
-    };
+    tmp.wx = camera.wx;
+    tmp.wy = 0;
+    tmp.ww = camera.ww;
+    tmp.wh = 1;
+
+    var x;
     for(var i = miny; i < maxy+1 && i < wind.length; i++)
     {
       x = (wind[i]*20*n_ticks)%dc.width;
-      worldo.wy = i;
-      screenSpace(camera,dc,worldo);
-      dc.context.fillRect(x,worldo.y,10,worldo.h);
+      tmp.wy = i;
+      screenSpace(camera,dc,tmp);
+      dc.context.fillRect(x,tmp.y,10,tmp.h);
     }
   }
   var tickAirParticles = function()
@@ -668,7 +657,8 @@ var GamePlayScene = function(game, stage)
       if(d > 1) p.t = 101; //kinda tick-ish
       else
       {
-        dc.context.globalAlpha = min(1,(1-d)*2)*part_disp;
+        //dc.context.globalAlpha = min(1,(1-d)*2)*part_disp;
+        dc.context.globalAlpha = part_disp;
         dc.context.drawImage(part_canv,p.x,p.y,p.w,p.h);
       }
     }
