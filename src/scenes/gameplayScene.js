@@ -266,13 +266,21 @@ var GamePlayScene = function(game, stage)
     var w = dc.width/7;
     var mint = pi*(5/6);
     var maxt = pi*(1/6);
-    outside_temp_gauge = new Gauge(w*0,dc.height-w*5/9,w,w,mint,maxt,250,380);
-    inside_temp_gauge  = new Gauge(w*1,dc.height-w*5/9,w,w,mint,maxt,250,380);
-    density_gauge      = new Gauge(w*2,dc.height-w*5/9,w,w,mint,maxt,950,1200);
-    weight_gauge       = new Gauge(w*3,dc.height-w*5/9,w,w,mint,maxt,2100000,2600000);
-    bouyancy_gauge     = new Gauge(w*4,dc.height-w*5/9,w,w,mint,maxt,-.03,.03);
-    altitude_gauge     = new Gauge(w*5,dc.height-w*5/9,w,w,mint,maxt,0,100);
-    fuel_gauge         = new Gauge(w*6,dc.height-w*5/9,w,w,mint,maxt,0,10);
+    outside_temp_gauge = new Gauge(w*0,dc.height-w*5/9,w,w,mint,maxt,250,380,function(v){ env_temp = v; });
+    inside_temp_gauge  = new Gauge(w*1,dc.height-w*5/9,w,w,mint,maxt,250,380,function(v){ balloon.t = v; });
+    density_gauge      = new Gauge(w*2,dc.height-w*5/9,w,w,mint,maxt,950,1200,function(v){ });
+    weight_gauge       = new Gauge(w*3,dc.height-w*5/9,w,w,mint,maxt,2100000,2600000,function(v){ balloon.m = v; });
+    bouyancy_gauge     = new Gauge(w*4,dc.height-w*5/9,w,w,mint,maxt,-.03,.03,function(v){ balloon.wya = v; });
+    altitude_gauge     = new Gauge(w*5,dc.height-w*5/9,w,w,mint,maxt,0,100,function(v){ balloon.wy = v; });
+    fuel_gauge         = new Gauge(w*6,dc.height-w*5/9,w,w,mint,maxt,0,10,function(v){ });
+
+    dragger.register(outside_temp_gauge);
+    dragger.register(inside_temp_gauge);
+    dragger.register(density_gauge);
+    dragger.register(weight_gauge);
+    dragger.register(bouyancy_gauge);
+    dragger.register(altitude_gauge);
+    dragger.register(fuel_gauge);
 
     part_disp = 1;
     wind = [];
@@ -863,7 +871,7 @@ var GamePlayScene = function(game, stage)
     dc.context.stroke();
   }
 
-  var Gauge = function(x,y,w,h,mint,maxt,min,max)
+  var Gauge = function(x,y,w,h,mint,maxt,min,max,altered)
   {
     var self = this;
     self.x = x;
@@ -878,6 +886,27 @@ var GamePlayScene = function(game, stage)
     self.max = max;
     self.val = self.min;
     self.r = Math.min(self.w,self.h)/2;
+
+    self.dragging = false;
+    self.dragStart = function(evt)
+    {
+      self.dragging = true;
+      self.drag(evt);
+    }
+    self.drag = function(evt)
+    {
+      var x = evt.doX-self.cx;
+      var y = -(evt.doY-self.cy);
+      var t = atan2(y,x);
+      var val = mapVal(self.mint,self.maxt,self.min,self.max,t)
+      if(val != self.val && altered)
+        altered(val);
+    }
+    self.dragFinish = function()
+    {
+      self.dragging = false;
+    }
+
   }
 
   var pop = function(msg) { input_state = IGNORE_INPUT; bmwrangler.popMessage(msg,dismissed); }
