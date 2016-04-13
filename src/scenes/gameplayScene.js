@@ -72,9 +72,9 @@ var GamePlayScene = function(game, stage)
   var air_parts;
 
   //scenery
-  var bg;
-  var mg;
-  var fg;
+  var bg; var bgi; var bgsep; var bgcam;
+  var mg; var mgi; var mgsep; var mgcam;
+  var fg; var fgi; var fgsep; var fgcam;
   var ground;
 
   //ui
@@ -188,6 +188,10 @@ var GamePlayScene = function(game, stage)
     camera = new Camera();
     camera.wh = 30;
     camera.ww = camera.wh*2;
+    bgcam = new Camera();
+    mgcam = new Camera();
+    fgcam = new Camera();
+    tickParallax();
     grid = new Obj(0,0,100,100);
     tmp = new Obj(0,0,0,0);
     shadow = new Obj(0,0,10,2);
@@ -212,9 +216,10 @@ var GamePlayScene = function(game, stage)
 
     pipes = []; for(var i = 0; i < n_pipes; i++) pipes.push(new Obj(i*50,(rand()*2-1)*10,5,20));
 
-    bg = []; for(var i = 0; i < 100; i++) { bg.push(new Obj((i+rand())* 10, rand()*5+ 8,   3,  2)); bg[i].draw = drawCloud;    }
-    mg = []; for(var i = 0; i < 100; i++) { mg.push(new Obj((i+rand())* 50,                  5,  10, 10)); mg[i].draw = drawMountain; }
-    fg = []; for(var i = 0; i < 100; i++) { fg.push(new Obj((i+rand())* 20,                 -1,   8,  8)); fg[i].draw = drawTree;     }
+    bgsep = 10; bg = []; for(var i = 0; i < 30; i++) { bg.push(new Obj(i*bgsep+rand0()*bgsep, rand0()*5+10,  3,  2)); bg[i].draw = drawCloud;    } bgi = 0;
+    mgsep = 50; mg = []; for(var i = 0; i < 10; i++) { mg.push(new Obj(i*mgsep+rand0()*mgsep, rand0()*2+ 3, 10, 10)); mg[i].draw = drawMountain; } mgi = 0;
+    fgsep = 20; fg = []; for(var i = 0; i < 30; i++) { fg.push(new Obj(i*fgsep+rand0()*fgsep, rand0()*1+-1,  8,  8)); fg[i].draw = drawTree;     } fgi = 0;
+    centerGrounds();
     ground = new Obj();
 
     boost_pad = new ButtonBox(10,10,20,20,function(){});
@@ -344,10 +349,8 @@ var GamePlayScene = function(game, stage)
     camera.ww = camera.wh*2;
 
     //faux parallax
-    for(var i = 0; i < bg.length; i++) bg[i].wx = bg[i].hwx+camera.wx*0.8;
-    for(var i = 0; i < mg.length; i++) mg[i].wx = mg[i].hwx+camera.wx*0.5;
-    for(var i = 0; i < fg.length; i++) fg[i].wx = fg[i].hwx+camera.wx*0.2;
-
+    tickParallax();
+    centerGrounds();
     tickBalloonParticles();
     tickAirParticles();
 
@@ -360,9 +363,9 @@ var GamePlayScene = function(game, stage)
     screenSpace(camera,dc,acc_arrow);
     screenSpace(camera,dc,arrow_separator);
     for(var i = 0; i < n_pipes;   i++) screenSpace(camera,dc,pipes[i]);
-    for(var i = 0; i < bg.length; i++) screenSpace(camera,dc,bg[i]);
-    for(var i = 0; i < mg.length; i++) screenSpace(camera,dc,mg[i]);
-    for(var i = 0; i < fg.length; i++) screenSpace(camera,dc,fg[i]);
+    for(var i = 0; i < bg.length; i++) screenSpace(bgcam,dc,bg[i]);
+    for(var i = 0; i < mg.length; i++) screenSpace(mgcam,dc,mg[i]);
+    for(var i = 0; i < fg.length; i++) screenSpace(fgcam,dc,fg[i]);
     screenSpace(camera,dc,ground);
     screenSpace(camera,dc,grid);
   }
@@ -445,12 +448,6 @@ var GamePlayScene = function(game, stage)
     self.w = 0;
     self.h = 0;
 
-    //'home' world position (in case of need of relative positioning)
-    self.hwx = wx;
-    self.hwy = wy;
-    self.hww = ww;
-    self.hwh = wh;
-
     self.wx = wx;
     self.wy = wy;
     self.ww = ww;
@@ -525,6 +522,70 @@ var GamePlayScene = function(game, stage)
     }
   }
 
+  var tickParallax = function()
+  {
+    bgcam.wx = camera.wx*0.2; bgcam.wy = camera.wy; bgcam.ww = camera.ww; bgcam.wh = camera.wh;
+    mgcam.wx = camera.wx*0.5; mgcam.wy = camera.wy; mgcam.ww = camera.ww; mgcam.wh = camera.wh;
+    fgcam.wx = camera.wx*0.8; fgcam.wy = camera.wy; fgcam.ww = camera.ww; fgcam.wh = camera.wh;
+  }
+  var centerGrounds = function()
+  {
+    var li;
+    var ri;
+    var ldist;
+    var rdist;
+
+    li = bgi;
+    ri = (bgi+bg.length-1)%bg.length;
+    ldist = abs(bg[li].wx-bgcam.wx);
+    rdist = abs(bg[ri].wx-bgcam.wx);
+    if(ldist > rdist) //l further than r- move to r
+    {
+      bg[li].wx = bg[ri].wx+bgsep+rand0()*bgsep;
+      bg[li].wy = rand0()*5+10;
+      bgi = (bgi+1)%bg.length;
+    }
+    else
+    {
+      bg[ri].wx = bg[li].wx-bgsep-rand0()*bgsep;
+      bg[ri].wy = rand0()*5+10;
+      bgi = (bgi+bg.length-1)%bg.length;
+    }
+
+    li = mgi;
+    ri = (mgi+mg.length-1)%mg.length;
+    ldist = abs(mg[li].wx-mgcam.wx);
+    rdist = abs(mg[ri].wx-mgcam.wx);
+    if(ldist > rdist) //l further than r- move to r
+    {
+      mg[li].wx = mg[ri].wx+mgsep+rand0()*mgsep;
+      mg[li].wy = rand0()*2+ 3;
+      mgi = (mgi+1)%mg.length;
+    }
+    else
+    {
+      mg[ri].wx = mg[li].wx-mgsep-rand0()*mgsep;
+      mg[ri].wy = rand0()*2+ 3;
+      mgi = (mgi+mg.length-1)%mg.length;
+    }
+
+    li = fgi;
+    ri = (fgi+fg.length-1)%fg.length;
+    ldist = abs(fg[li].wx-fgcam.wx);
+    rdist = abs(fg[ri].wx-fgcam.wx);
+    if(ldist > rdist) //l further than r- move to r
+    {
+      fg[li].wx = fg[ri].wx+fgsep+rand0()*fgsep;
+      fg[li].wy = rand0()*1+-1;
+      fgi = (fgi+1)%fg.length;
+    }
+    else
+    {
+      fg[ri].wx = fg[li].wx-fgsep-rand0()*fgsep;
+      fg[ri].wy = rand0()*1+-1;
+      fgi = (fgi+fg.length-1)%fg.length;
+    }
+  }
   var drawWind = function()
   {
     dc.context.fillStyle = "#FFFFFF";

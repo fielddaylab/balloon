@@ -82,6 +82,7 @@ var rand = Math.random;
 var round = Math.round;
 var floor = Math.floor;
 var ceil = Math.ceil;
+var abs = Math.abs;
 var min = Math.min;
 var max = Math.max;
 var sqrt = Math.sqrt;
