@@ -88,6 +88,7 @@ var GamePlayScene = function(game, stage)
   var density_gauge;
   var weight_gauge;
   var bouyancy_gauge;
+  var altitude_gauge;
   var fuel_gauge;
 
   //data
@@ -250,17 +251,18 @@ var GamePlayScene = function(game, stage)
     presser.register(flap_pad);
     presser.register(cut_pad);
 
-    var w = dc.width/6;
-    var mint = pi*(3/4);
-    var maxt = pi*(1/4);
+    var w = dc.width/7;
+    var mint = pi*(5/6);
+    var maxt = pi*(1/6);
     outside_temp_gauge = new Gauge(w*0,dc.height-w*2/3,w,w,mint,maxt,250,380);
     inside_temp_gauge  = new Gauge(w*1,dc.height-w*2/3,w,w,mint,maxt,250,380);
     density_gauge      = new Gauge(w*2,dc.height-w*2/3,w,w,mint,maxt,950,1200);
     weight_gauge       = new Gauge(w*3,dc.height-w*2/3,w,w,mint,maxt,2100000,2600000);
     bouyancy_gauge     = new Gauge(w*4,dc.height-w*2/3,w,w,mint,maxt,-.03,.03);
-    fuel_gauge         = new Gauge(w*5,dc.height-w*2/3,w,w,mint,maxt,0,10);
+    altitude_gauge     = new Gauge(w*5,dc.height-w*2/3,w,w,mint,maxt,0,100);
+    fuel_gauge         = new Gauge(w*6,dc.height-w*2/3,w,w,mint,maxt,0,10);
 
-    part_disp = 0;
+    part_disp = 1;
     wind = [];
     for(var i = 0; i < 100; i++)
       wind[i] = 0.05+psin((99-i)/20);
@@ -272,7 +274,7 @@ var GamePlayScene = function(game, stage)
   self.tick = function()
   {
     n_ticks++;
-    part_disp = (sin(n_ticks/500)+1)/2;
+    //part_disp = (sin(n_ticks/500)+1)/2;
 
     bmwrangler.tick();
     if(input_state == RESUME_INPUT)
@@ -384,6 +386,7 @@ var GamePlayScene = function(game, stage)
     density_gauge.val = balloon.m/balloon.v;
     weight_gauge.val = balloon.m;
     bouyancy_gauge.val = balloon.wya;
+    altitude_gauge.val = balloon.wy;
     fuel_gauge.val = 1;
 
     //faux parallax
@@ -453,6 +456,7 @@ var GamePlayScene = function(game, stage)
     drawGauge(density_gauge);
     drawGauge(weight_gauge);
     drawGauge(bouyancy_gauge);
+    drawGauge(altitude_gauge);
     drawGauge(fuel_gauge);
 
 /*
