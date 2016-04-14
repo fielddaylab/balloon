@@ -44,6 +44,8 @@ var GamePlayScene = function(game, stage)
   var mountain_canv;
   var tree_canv;
   var part_canv;
+  var gauge_canv;
+  var arrow_canv;
 
   //doqueues
   var dragger;
@@ -218,6 +220,18 @@ var GamePlayScene = function(game, stage)
     gauge_canv.context.arc(gauge_canv.width/2,gauge_canv.height/2,gauge_canv.width/2*0.9,0,2*pi);
     gauge_canv.context.stroke();
 
+    arrow_canv = document.createElement('canvas');
+    arrow_canv.width = 100;
+    arrow_canv.height = 100;
+    arrow_canv.context = arrow_canv.getContext('2d');
+    arrow_canv.context.fillStyle = "#00FF00";
+    arrow_canv.context.fillRect(arrow_canv.width/4,arrow_canv.height/4,arrow_canv.width/2,arrow_canv.height);
+    arrow_canv.context.beginPath();
+    arrow_canv.context.moveTo(0,arrow_canv.height/4);
+    arrow_canv.context.lineTo(arrow_canv.width/2,0);
+    arrow_canv.context.moveTo(arrow_canv.width,arrow_canv.height/4);
+    arrow_canv.context.fill();
+
     //doqueues
     dragger = new Dragger({source:stage.dispCanv.canvas});
     presser = new Presser({source:stage.dispCanv.canvas});
@@ -271,16 +285,16 @@ var GamePlayScene = function(game, stage)
     var w = dc.width/10;
     var mint = pi*(8/9);
     var maxt = pi*(1/9);
-    outside_temp_gauge = new Gauge(w*0,dc.height-w*5/9,w,w,mint,maxt,250,380,function(v){ env_temp = v; });
-    inside_temp_gauge  = new Gauge(w*1,dc.height-w*5/9,w,w,mint,maxt,250,380,function(v){ balloon.t = v; });
-    weight_gauge       = new Gauge(w*2,dc.height-w*5/9,w,w,mint,maxt,2200000,3000000,function(v){ balloon.bm = v-balloon.m; });
-    volume_gauge       = new Gauge(w*3,dc.height-w*5/9,w,w,mint,maxt,1000,4000,function(v){ balloon.v = v; balloon.ww = sqrt(balloon.v/(balloon.wh)); });
-    density_gauge      = new Gauge(w*4,dc.height-w*5/9,w,w,mint,maxt,950,1200,function(v){ });
-    bouyancy_gauge     = new Gauge(w*5,dc.height-w*5/9,w,w,mint,maxt,-.03,.03,function(v){ balloon.wya = v; });
-    altitude_gauge     = new Gauge(w*6,dc.height-w*5/9,w,w,mint,maxt,0,100,function(v){ balloon.wy = v; });
-    xvel_gauge         = new Gauge(w*7,dc.height-w*5/9,w,w,mint,maxt,-1,1,function(v){ balloon.wxv = v; });
-    yvel_gauge         = new Gauge(w*8,dc.height-w*5/9,w,w,mint,maxt,-1,1,function(v){ balloon.wyv = v; });
-    fuel_gauge         = new Gauge(w*9,dc.height-w*5/9,w,w,mint,maxt,0,40,function(v){ fuel = v; });
+    outside_temp_gauge = new Gauge("Outside Temp",w*0,dc.height-w*5/9,w,w,mint,maxt,250,380,function(v){ env_temp = v; });
+    inside_temp_gauge  = new Gauge("Inside Temp", w*1,dc.height-w*5/9,w,w,mint,maxt,250,380,function(v){ balloon.t = v; });
+    weight_gauge       = new Gauge("Weight",      w*2,dc.height-w*5/9,w,w,mint,maxt,2200000,3000000,function(v){ balloon.bm = v-balloon.m; });
+    volume_gauge       = new Gauge("Volume",      w*3,dc.height-w*5/9,w,w,mint,maxt,1000,4000,function(v){ balloon.v = v; balloon.ww = sqrt(balloon.v/(balloon.wh)); });
+    density_gauge      = new Gauge("Density",     w*4,dc.height-w*5/9,w,w,mint,maxt,950,1200,function(v){ });
+    bouyancy_gauge     = new Gauge("Net Force",   w*5,dc.height-w*5/9,w,w,mint,maxt,-.03,.03,function(v){ balloon.wya = v; });
+    altitude_gauge     = new Gauge("Altitude",    w*6,dc.height-w*5/9,w,w,mint,maxt,0,100,function(v){ balloon.wy = v; });
+    xvel_gauge         = new Gauge("Horiz. Vel.", w*7,dc.height-w*5/9,w,w,mint,maxt,-1,1,function(v){ balloon.wxv = v; });
+    yvel_gauge         = new Gauge("Vert. Vel.",  w*8,dc.height-w*5/9,w,w,mint,maxt,-1,1,function(v){ balloon.wyv = v; });
+    fuel_gauge         = new Gauge("Fuel",        w*9,dc.height-w*5/9,w,w,mint,maxt,0,40,function(v){ fuel = v; });
 
     dragger.register(outside_temp_gauge);
     dragger.register(inside_temp_gauge);
@@ -510,16 +524,16 @@ var GamePlayScene = function(game, stage)
     dc.context.fillStyle = "#000000";
     dc.context.fillText(fdisp(balloon.wx,1)+"m",dc.width-10,12);
 
-    drawGauge(outside_temp_gauge,"Outside Temp");
-    drawGauge(inside_temp_gauge,"Inside Temp");
-    drawGauge(weight_gauge,"Weight");
-    drawGauge(volume_gauge,"Volume");
-    drawGauge(density_gauge,"Density");
-    drawGauge(bouyancy_gauge,"Net Force");
-    drawGauge(altitude_gauge,"Altitude");
-    drawGauge(xvel_gauge,"Horiz. Speed");
-    drawGauge(yvel_gauge,"Vert. Speed");
-    drawGauge(fuel_gauge,"Fuel");
+    drawGauge(outside_temp_gauge);
+    drawGauge(inside_temp_gauge);
+    drawGauge(weight_gauge);
+    drawGauge(volume_gauge);
+    drawGauge(density_gauge);
+    drawGauge(bouyancy_gauge);
+    drawGauge(altitude_gauge);
+    drawGauge(xvel_gauge);
+    drawGauge(yvel_gauge);
+    drawGauge(fuel_gauge);
 
 /*
     var o = new Obj();
@@ -902,8 +916,9 @@ var GamePlayScene = function(game, stage)
   var drawCloud    = function(obj) { dc.context.drawImage(cloud_canv,obj.x,obj.y,obj.w,obj.h); }
   var drawMountain = function(obj) { dc.context.drawImage(mountain_canv,obj.x,obj.y,obj.w,obj.h); }
   var drawTree     = function(obj) { dc.context.drawImage(tree_canv,obj.x,obj.y,obj.w,obj.h); }
-  var drawGauge    = function(g,txt)
+  var drawGauge    = function(g)
   {
+    if(!g.vis) return;
     dc.context.drawImage(gauge_canv,g.x,g.y,g.w,g.h);
     dc.context.strokeStyle = "#000000";
     dc.context.beginPath();
@@ -913,12 +928,14 @@ var GamePlayScene = function(game, stage)
     dc.context.stroke();
     dc.context.fillStyle = "#000000";
     dc.context.textAlign = "center";
-    dc.context.fillText(txt,g.x+g.w/2,g.y-5);
+    dc.context.fillText(g.title,g.x+g.w/2,g.y-5);
   }
 
-  var Gauge = function(x,y,w,h,mint,maxt,min,max,altered)
+  var Gauge = function(title,x,y,w,h,mint,maxt,min,max,altered)
   {
     var self = this;
+    self.title = title;
+
     self.x = x;
     self.y = y;
     self.w = w;
@@ -932,8 +949,12 @@ var GamePlayScene = function(game, stage)
     self.val = self.min;
     self.r = Math.min(self.w,self.h)/2;
 
+    self.vis = true;
+    self.enabled = true;
+
     self.tick = function()
     {
+      if(!visible || !enabled) { self.dragging = false; }
       if(self.dragging && altered)
         altered(self.last_val)
     }
@@ -942,11 +963,13 @@ var GamePlayScene = function(game, stage)
     self.last_val = self.min;
     self.dragStart = function(evt)
     {
+      if(!visible || !enabled) { self.dragging = false; return; }
       self.dragging = true;
       self.drag(evt);
     }
     self.drag = function(evt)
     {
+      if(!visible || !enabled) { self.dragging = false; return; }
       var x = evt.doX-self.cx;
       var y = -(evt.doY-self.cy);
       var t = atan2(y,x);
@@ -955,6 +978,7 @@ var GamePlayScene = function(game, stage)
     }
     self.dragFinish = function()
     {
+      if(!visible || !enabled) { self.dragging = false; return; }
       self.dragging = false;
     }
 
