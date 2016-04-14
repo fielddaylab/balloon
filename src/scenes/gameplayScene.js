@@ -337,7 +337,31 @@ var GamePlayScene = function(game, stage)
       noop,
       noop,
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Hold to heat balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
-      function() { if(balloon.wy > 1) { cloneObj(balloon,clone_balloon); burn_pad.unpress(); return true; } return false; }
+      function() { return balloon.t > 305; }
+    ));
+    steps.push(new Step(
+      noop,
+      noop,
+      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Keep holding!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { return balloon.t > 315; }
+    ));
+    steps.push(new Step(
+      noop,
+      noop,
+      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Almost there!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { return balloon.t > 325; }
+    ));
+    steps.push(new Step(
+      noop,
+      noop,
+      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Just a little longer!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { return balloon.t > 335; }
+    ));
+    steps.push(new Step(
+      noop,
+      noop,
+      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Aaaaannnndd...",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { if(balloon.t > 345) { cloneObj(balloon,clone_balloon); burn_pad.unpress(); return true; } return false; }
     ));
     steps.push(new Step(
       function(){ pop(['We\'ve heated the ballon enough to generate some <b>upward lift</b>!',"<b>Cut the rope</b> to let us go!</b>"]); },
