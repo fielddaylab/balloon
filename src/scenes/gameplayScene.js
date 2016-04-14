@@ -100,7 +100,11 @@ var GamePlayScene = function(game, stage)
   var rope_cut;
   var wind;
   var part_disp;
+  var target_part_disp;
   var fuel;
+
+  var steps;
+  var cur_step;
 
   self.ready = function()
   {
@@ -307,19 +311,25 @@ var GamePlayScene = function(game, stage)
     dragger.register(yvel_gauge);
     dragger.register(fuel_gauge);
 
-    part_disp = 1;
+    part_disp = 0;
+    target_part_disp = 0;
     wind = [];
     for(var i = 0; i < 100; i++)
       wind[i] = 0.05+psin((99-i)/20);
 
-    //setTimeout(function(){ pop(['hi there','this is a test','here we go','ok']); },1000);
+    steps = [];
+    steps.push(new Step(noop,noop));
+    cur_step = 0;
+
+    setTimeout(function(){ pop(['hi there','this is a test','here we go','ok']); },1000);
+    setDisp(0,false,false,false,false,false,false,false,false,false,false);
   };
 
   var n_ticks = 0;
   self.tick = function()
   {
     n_ticks++;
-    //part_disp = (sin(n_ticks/500)+1)/2;
+    part_disp = lerp(part_disp,target_part_disp,0.01);
 
     bmwrangler.tick();
     if(input_state == RESUME_INPUT)
@@ -468,6 +478,8 @@ var GamePlayScene = function(game, stage)
     for(var i = 0; i < fg.length; i++) screenSpace(fgcam,dc,fg[i]);
     screenSpace(camera,dc,ground);
     screenSpace(camera,dc,grid);
+
+    steps[cur_step].tick();
   }
 
   self.draw = function()
@@ -524,6 +536,7 @@ var GamePlayScene = function(game, stage)
     dc.context.fillStyle = "#000000";
     dc.context.fillText(fdisp(balloon.wx,1)+"m",dc.width-10,12);
 
+    d.log(outside_temp_gauge.vis);
     drawGauge(outside_temp_gauge);
     drawGauge(inside_temp_gauge);
     drawGauge(weight_gauge);
@@ -543,6 +556,7 @@ var GamePlayScene = function(game, stage)
     o.h = 10;
     drawMountain(o);
 */
+    steps[cur_step].draw();
   };
 
   self.cleanup = function()
@@ -954,7 +968,7 @@ var GamePlayScene = function(game, stage)
 
     self.tick = function()
     {
-      if(!visible || !enabled) { self.dragging = false; }
+      if(!self.vis || !self.enabled) { self.dragging = false; }
       if(self.dragging && altered)
         altered(self.last_val)
     }
@@ -963,13 +977,13 @@ var GamePlayScene = function(game, stage)
     self.last_val = self.min;
     self.dragStart = function(evt)
     {
-      if(!visible || !enabled) { self.dragging = false; return; }
+      if(!self.vis || !self.enabled) { self.dragging = false; return; }
       self.dragging = true;
       self.drag(evt);
     }
     self.drag = function(evt)
     {
-      if(!visible || !enabled) { self.dragging = false; return; }
+      if(!self.vis || !self.enabled) { self.dragging = false; return; }
       var x = evt.doX-self.cx;
       var y = -(evt.doY-self.cy);
       var t = atan2(y,x);
@@ -978,13 +992,30 @@ var GamePlayScene = function(game, stage)
     }
     self.dragFinish = function()
     {
-      if(!visible || !enabled) { self.dragging = false; return; }
+      if(!self.vis || !self.enabled) { self.dragging = false; return; }
       self.dragging = false;
     }
 
   }
 
+  var setDisp = function(parts,outsidet,insidet,weight,vol,dens,bouy,alt,xvel,yvel,fuel)
+  {
+    target_part_disp = parts;
+    outside_temp_gauge.vis = outsidet;
+    inside_temp_gauge.vis = insidet;
+    weight_gauge.vis = weight;
+    volume_gauge.vis = vol;
+    density_gauge.vis = dens;
+    bouyancy_gauge.vis = bouy;
+    altitude_gauge.vis = alt;
+    xvel_gauge.vis = xvel;
+    yvel_gauge.vis = yvel;
+    fuel_gauge.vis = fuel;
+  }
+
   var pop = function(msg) { input_state = IGNORE_INPUT; bmwrangler.popMessage(msg,dismissed); }
   var dismissed = function() { input_state = RESUME_INPUT; }
+
+  var Step = function(tick,draw) { this.tick = tick; this.draw = draw; }
 };
 

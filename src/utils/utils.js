@@ -335,3 +335,5 @@ function wdist(a,b)
   return Math.sqrt(x*x+y*y);
 }
 
+function noop(){}
+
