@@ -50,6 +50,7 @@ var GamePlayScene = function(game, stage)
   //doqueues
   var dragger;
   var presser;
+  var domclicker;
   var dom;
   var bmwrangler;
 
@@ -66,6 +67,7 @@ var GamePlayScene = function(game, stage)
   var flame;
   var basket;
   var balloon;
+  var clone_balloon;
   var vel_arrow;
   var acc_arrow;
   var arrow_separator;
@@ -239,6 +241,8 @@ var GamePlayScene = function(game, stage)
     //doqueues
     dragger = new Dragger({source:stage.dispCanv.canvas});
     presser = new Presser({source:stage.dispCanv.canvas});
+    domclicker = new Clicker({source:stage.dispCanv.canvas});
+    dom = new CanvDom(dc);
     bmwrangler = new BottomMessageWrangler();
     input_state = RESUME_INPUT;
 
@@ -257,6 +261,8 @@ var GamePlayScene = function(game, stage)
     balloon = new Obj(0,0,13,13);
     //balloon.t = 340;
     balloon.bm = hot_air_balloon_baggage;
+    clone_balloon = new Obj();
+    cloneObj(balloon,clone_balloon);
     vel_arrow = new Obj();
     acc_arrow = new Obj();
     arrow_separator = new Obj();
@@ -318,11 +324,62 @@ var GamePlayScene = function(game, stage)
       wind[i] = 0.05+psin((99-i)/20);
 
     setDisp(0,false,false,false,false,false,false,false,false,false,false);
+    //self.popDismissableMessage = function(text,x,y,w,h,callback)
 
     steps = [];
-    steps.push(new Step(function(){ pop(['Hey there!','This is a hot Air Balloon.','Let\'s see how they work!',]); },noop,noop,ffunc));
+    steps.push(new Step(
+      function(){ pop(['Hey there!','This is a hot Air Balloon.','Let\'s see how they work!',]); },
+      noop,
+      noop,
+      function() { return input_state == RESUME_INPUT; }
+    ));
+    steps.push(new Step(
+      noop,
+      noop,
+      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Hold to heat balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { if(balloon.wy > 1) { cloneObj(balloon,clone_balloon); burn_pad.unpress(); return true; } return false; }
+    ));
+    steps.push(new Step(
+      function(){ pop(['We\'ve heated the ballon enough to generate some <b>upward lift</b>!',"<b>Cut the rope</b> to let us go!</b>"]); },
+      function() { cloneObj(clone_balloon,balloon); },
+      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2); },
+      function() { return input_state == RESUME_INPUT; }
+    ));
+    steps.push(new Step(
+      noop,
+      function() { cloneObj(clone_balloon,balloon); },
+      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2); },
+      function() { return rope_cut; }
+    ));
+    steps.push(new Step(
+      noop,
+      noop,
+      noop,
+      function() { if(balloon.wy > 10) { cloneObj(balloon,clone_balloon); return true; }; return false; }
+    ));
+    steps.push(new Step(
+      function(){ pop(['And off we go!','Ok ok... I\'ll let you fly around for now-','<b>To fly:</b><br />Press <b>burn</b> to <b>increase the temperature inside the balloon</b>,<br />open the <b>flap</b> to <b>release hot air</b>,<br />and be sure to <b>watch your fuel consumption</b>!','I\'ll be waiting on the ground!','(See how long you can fly!)',]); },
+      function() { cloneObj(clone_balloon,balloon); },
+      noop,
+      function() { return input_state == RESUME_INPUT; }
+    ));
+    steps.push(new Step(
+      function() { fuel = 10; xvel_gauge.vis = true;yvel_gauge.vis = true;fuel_gauge.vis = true; },
+      noop,
+      noop,
+      function() { return balloon.wy < 0.01; }
+    ));
+    steps.push(new Step(
+      function(){ pop(['Well that was fun.',]); },
+      noop,
+      noop,
+      function() { return input_state == RESUME_INPUT; }
+    ));
+
     cur_step = -1;
+
     self.nextStep();
+
   };
 
   self.nextStep = function()
@@ -348,6 +405,7 @@ var GamePlayScene = function(game, stage)
       dragger.ignore();
       presser.ignore();
     }
+    domclicker.flush();
 
          if(burn_pad.down && fuel > 0) { balloon.t = lerp(balloon.t,fire_temp,0.0001); fuel -= 0.04; if(fuel < 0) fuel = 0; }
     else if(flap_pad.down)             { balloon.t = lerp(balloon.t, env_temp,0.001);  }
@@ -562,6 +620,7 @@ var GamePlayScene = function(game, stage)
     o.h = 10;
     drawMountain(o);
 */
+    dom.draw(dc);
     steps[cur_step].draw();
   };
 
@@ -970,7 +1029,7 @@ var GamePlayScene = function(game, stage)
     self.r = Math.min(self.w,self.h)/2;
 
     self.vis = true;
-    self.enabled = true;
+    self.enabled = false;
 
     self.tick = function()
     {
@@ -1004,6 +1063,31 @@ var GamePlayScene = function(game, stage)
 
   }
 
+  var cloneObj = function(from,to)
+  {
+    to.x = from.x;
+    to.y = from.y;
+    to.w = from.w;
+    to.h = from.h;
+
+    to.wx = from.wx;
+    to.wy = from.wy;
+    to.ww = from.ww;
+    to.wh = from.wh;
+
+    to.wxa = from.wxa;
+    to.wya = from.wya;
+    to.wxv = from.wxv;
+    to.wyv = from.wyv;
+
+    to.m = from.m;
+    to.bm = from.bm;
+    to.t = from.t;
+    to.v = from.v;
+
+    to.colliding = from.colliding;
+  }
+
   var setDisp = function(parts,outsidet,insidet,weight,vol,dens,bouy,alt,xvel,yvel,fuel)
   {
     target_part_disp = parts;
@@ -1019,7 +1103,7 @@ var GamePlayScene = function(game, stage)
     fuel_gauge.vis = fuel;
   }
 
-  var pop = function(msg) { input_state = IGNORE_INPUT; bmwrangler.popMessage(msg,dismissed); }
+  var pop = function(msg,callback) { if(!callback) callback = dismissed; input_state = IGNORE_INPUT; bmwrangler.popMessage(msg,callback); }
   var dismissed = function() { input_state = RESUME_INPUT; }
 
   var Step = function(begin,tick,draw,test) { this.begin = begin; this.tick = tick; this.draw = draw; this.test = test; }
