@@ -323,72 +323,73 @@ var GamePlayScene = function(game, stage)
     for(var i = 0; i < 100; i++)
       wind[i] = 0.05+psin((99-i)/20);
 
-    setDisp(0,false,false,false,false,false,false,false,false,false,false);
+    outside_temp_gauge.vis = true;
+    inside_temp_gauge.vis = true;
     //self.popDismissableMessage = function(text,x,y,w,h,callback)
 
     steps = [];
     steps.push(new Step(
-      function(){ pop(['Hey there!','This is a hot Air Balloon.','Let\'s see how they work!',]); },
+      function(){ pop(['Hey there!','This is a hot Air Balloon.','Let\'s see how this thing works!',]); },
       noop,
       noop,
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
-      noop,
+      function() { fuel = 10; },
       noop,
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Hold to heat balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { return balloon.t > 305; }
     ));
     steps.push(new Step(
-      noop,
+      function() { fuel = 10; },
       noop,
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Keep holding!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { return balloon.t > 315; }
     ));
     steps.push(new Step(
-      noop,
+      function() { fuel = 10; },
       noop,
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Almost there!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { return balloon.t > 325; }
     ));
     steps.push(new Step(
-      noop,
+      function() { fuel = 10; },
       noop,
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Just a little longer!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { return balloon.t > 335; }
     ));
     steps.push(new Step(
-      noop,
+      function() { fuel = 10; },
       noop,
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Aaaaannnndd...",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
-      function() { if(balloon.t > 345) { cloneObj(balloon,clone_balloon); burn_pad.unpress(); return true; } return false; }
+      function() { if(balloon.t > 344) { cloneObj(balloon,clone_balloon); burn_pad.unpress(); return true; } return false; }
     ));
     steps.push(new Step(
       function(){ pop(['We\'ve heated the ballon enough to generate some <b>upward lift</b>!',"<b>Cut the rope</b> to let us go!</b>"]); },
-      function() { cloneObj(clone_balloon,balloon); },
+      function() { balloon.t = clone_balloon.t; },
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2); },
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
       noop,
-      function() { cloneObj(clone_balloon,balloon); },
+      function() { balloon.t = clone_balloon.t; },
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2); },
       function() { return rope_cut; }
     ));
     steps.push(new Step(
       noop,
-      noop,
+      function() { fuel = 10; flap_pad.unpress(); },
       noop,
       function() { if(balloon.wy > 10) { cloneObj(balloon,clone_balloon); return true; }; return false; }
     ));
     steps.push(new Step(
-      function(){ pop(['And off we go!','Ok ok... I\'ll let you fly around for now-','<b>To fly:</b><br />Press <b>burn</b> to <b>increase the temperature inside the balloon</b>,<br />open the <b>flap</b> to <b>release hot air</b>,<br />and be sure to <b>watch your fuel consumption</b>!','I\'ll be waiting on the ground!','(See how long you can fly!)',]); },
-      function() { cloneObj(clone_balloon,balloon); },
+      function(){ pop(['And off we go!','Ok enough talking... I\'ll let you fly around for now.','<b>To fly:</b><br />Press <b>burn</b> to <b>increase the temperature inside the balloon</b>,<br />open the <b>flap</b> to <b>release hot air</b>,<br />and be sure to <b>watch your fuel consumption</b>!','I\'ll be waiting on the ground!','(See how long you can fly!)',]); },
+      function() { balloon.t = clone_balloon.t; balloon.wx = clone_balloon.wx; balloon.wy = clone_balloon.wy; },
       noop,
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
-      function() { fuel = 10; xvel_gauge.vis = true;yvel_gauge.vis = true;fuel_gauge.vis = true; },
+      function() { fuel = 2; altitude_gauge.vis = true;xvel_gauge.vis = true;yvel_gauge.vis = true;fuel_gauge.vis = true; },
       noop,
       noop,
       function() { return balloon.wy < 0.01; }
@@ -610,7 +611,7 @@ var GamePlayScene = function(game, stage)
     dc.context.textAlign = "center";
     burn_pad.draw(dc);
     dc.context.fillStyle = "#000000";
-    dc.context.fillText("Fire",burn_pad.x+burn_pad.w/2,burn_pad.y+burn_pad.h/2);
+    dc.context.fillText("Burn",burn_pad.x+burn_pad.w/2,burn_pad.y+burn_pad.h/2);
     flap_pad.draw(dc);
     dc.context.fillStyle = "#000000";
     dc.context.fillText("Open Flap",flap_pad.x+flap_pad.w/2,flap_pad.y+flap_pad.h/2);
@@ -1052,7 +1053,7 @@ var GamePlayScene = function(game, stage)
     self.val = self.min;
     self.r = Math.min(self.w,self.h)/2;
 
-    self.vis = true;
+    self.vis = false;
     self.enabled = false;
 
     self.tick = function()
