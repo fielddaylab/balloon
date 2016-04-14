@@ -317,13 +317,19 @@ var GamePlayScene = function(game, stage)
     for(var i = 0; i < 100; i++)
       wind[i] = 0.05+psin((99-i)/20);
 
-    steps = [];
-    steps.push(new Step(noop,noop));
-    cur_step = 0;
-
-    setTimeout(function(){ pop(['hi there','this is a test','here we go','ok']); },1000);
     setDisp(0,false,false,false,false,false,false,false,false,false,false);
+
+    steps = [];
+    steps.push(new Step(function(){ pop(['Hey there!','This is a hot Air Balloon.','Let\'s see how they work!',]); },noop,noop,ffunc));
+    cur_step = -1;
+    self.nextStep();
   };
+
+  self.nextStep = function()
+  {
+    cur_step = (cur_step+1)%steps.length;
+    steps[cur_step].begin();
+  }
 
   var n_ticks = 0;
   self.tick = function()
@@ -480,6 +486,7 @@ var GamePlayScene = function(game, stage)
     screenSpace(camera,dc,grid);
 
     steps[cur_step].tick();
+    if(steps[cur_step].test()) self.nextStep();
   }
 
   self.draw = function()
@@ -536,7 +543,6 @@ var GamePlayScene = function(game, stage)
     dc.context.fillStyle = "#000000";
     dc.context.fillText(fdisp(balloon.wx,1)+"m",dc.width-10,12);
 
-    d.log(outside_temp_gauge.vis);
     drawGauge(outside_temp_gauge);
     drawGauge(inside_temp_gauge);
     drawGauge(weight_gauge);
@@ -1016,6 +1022,6 @@ var GamePlayScene = function(game, stage)
   var pop = function(msg) { input_state = IGNORE_INPUT; bmwrangler.popMessage(msg,dismissed); }
   var dismissed = function() { input_state = RESUME_INPUT; }
 
-  var Step = function(tick,draw) { this.tick = tick; this.draw = draw; }
+  var Step = function(begin,tick,draw,test) { this.begin = begin; this.tick = tick; this.draw = draw; this.test = test; }
 };
 

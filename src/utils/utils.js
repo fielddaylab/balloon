@@ -336,4 +336,6 @@ function wdist(a,b)
 }
 
 function noop(){}
+function ffunc(){return false;}
+function tfunc(){return true;}
 
