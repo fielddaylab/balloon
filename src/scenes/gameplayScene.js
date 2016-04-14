@@ -295,8 +295,8 @@ var GamePlayScene = function(game, stage)
     var w = dc.width/10;
     var mint = pi*(8/9);
     var maxt = pi*(1/9);
-    outside_temp_gauge = new Gauge("Outside Temp",w*0,dc.height-w*5/9,w,w,mint,maxt,250,380,function(v){ env_temp = v; });
-    inside_temp_gauge  = new Gauge("Inside Temp", w*1,dc.height-w*5/9,w,w,mint,maxt,250,380,function(v){ balloon.t = v; });
+    outside_temp_gauge = new Gauge("Temp",w*0,dc.height-w*5/9,w,w,mint,maxt,250,380,function(v){ env_temp = v; });
+    inside_temp_gauge  = new Gauge("Balloon Temp", w*1,dc.height-w*5/9,w,w,mint,maxt,250,380,function(v){ balloon.t = v; });
     weight_gauge       = new Gauge("Weight",      w*2,dc.height-w*5/9,w,w,mint,maxt,2200000,3000000,function(v){ balloon.bm = v-balloon.m; });
     volume_gauge       = new Gauge("Volume",      w*3,dc.height-w*5/9,w,w,mint,maxt,1000,4000,function(v){ balloon.v = v; balloon.ww = sqrt(balloon.v/(balloon.wh)); });
     density_gauge      = new Gauge("Density",     w*4,dc.height-w*5/9,w,w,mint,maxt,950,1200,function(v){ });
@@ -362,10 +362,10 @@ var GamePlayScene = function(game, stage)
       function() { fuel = 10; },
       noop,
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Aaaaannnndd...",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
-      function() { if(balloon.t > 344) { cloneObj(balloon,clone_balloon); burn_pad.unpress(); return true; } return false; }
+      function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); burn_pad.unpress(); return true; } return false; }
     ));
     steps.push(new Step(
-      function(){ pop(['We\'ve heated the ballon enough to generate some <b>upward lift</b>!',"<b>Cut the rope</b> to let us go!</b>"]); },
+      function(){ pop(['We\'ve heated the ballon just enough to generate some <b>upward lift</b>!',"<b>Cut the anchor rope</b> and let us go!</b>"]); },
       function() { balloon.t = clone_balloon.t; },
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2); },
       function() { return input_state == RESUME_INPUT; }
@@ -389,16 +389,34 @@ var GamePlayScene = function(game, stage)
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
-      function() { fuel = 2; altitude_gauge.vis = true;xvel_gauge.vis = true;yvel_gauge.vis = true;fuel_gauge.vis = true; },
+      function() { fuel = 4; altitude_gauge.vis = true;xvel_gauge.vis = true;yvel_gauge.vis = true;fuel_gauge.vis = true; },
       noop,
       noop,
       function() { return balloon.wy < 0.01; }
     ));
     steps.push(new Step(
-      function(){ pop(['Well that was fun.',]); },
+      function(){ pop(['Well that was fun.','But how did it work?','Why does <b>hot air rise</b>?','Let\'s reset everything, and try again']); },
       noop,
       noop,
       function() { return input_state == RESUME_INPUT; }
+    ));
+    steps.push(new Step(
+      function(){ resetBalloon(); fuel = 40; rope_cut = false; setTimeout(function(){target_part_disp = 1;},1000); },
+      noop,
+      noop,
+      function() { return part_disp > 0.8; }
+    ));
+    steps.push(new Step(
+      function(){ pop(['We\'ve <b>reset the temperature</b> inside the balloon.','We\'re also <b>visualizing</b> the air particles <b>bouncing around</b> both <b>inside</b> <i>and</i> <b>outside</b> of the balloon.','See how <b>the particles</b> are moving at just about <b>the same speed</b>?','Try to <b>get the balloon off the ground</b> again.','This time, <b>watch how the air particles are affected</b>.']); },
+      noop,
+      noop,
+      function() { return input_state == RESUME_INPUT; }
+    ));
+    steps.push(new Step(
+      noop,
+      noop,
+      noop,
+      function() { return balloon.wy > 10; }
     ));
 
     cur_step = -1;
@@ -1088,6 +1106,16 @@ var GamePlayScene = function(game, stage)
 
   }
 
+  var resetBalloon = function()
+  {
+    balloon.wx = 0;
+    balloon.wy = 0;
+    balloon.wxa = 0;
+    balloon.wya = 0;
+    balloon.wxv = 0;
+    balloon.wyv = 0;
+    balloon.t = env_temp;
+  }
   var cloneObj = function(from,to)
   {
     to.x = from.x;
