@@ -78,7 +78,7 @@ var GamePlayScene = function(game, stage)
   var ground;
 
   //ui
-  var boost_pad;
+  var burn_pad;
   var flap_pad;
   var cut_pad;
 
@@ -98,6 +98,7 @@ var GamePlayScene = function(game, stage)
   var rope_cut;
   var wind;
   var part_disp;
+  var fuel;
 
   self.ready = function()
   {
@@ -106,6 +107,7 @@ var GamePlayScene = function(game, stage)
 
     //state
     rope_cut = false;
+    fuel = 40;
 
     //utils
     shadow_canv = document.createElement('canvas');
@@ -259,14 +261,14 @@ var GamePlayScene = function(game, stage)
     centerGrounds();
     ground = new Obj();
 
-    boost_pad = new ButtonBox(10,10,60,40,function(){});
-    flap_pad  = new ButtonBox(10,60,60,40,function(){});
+    burn_pad = new ButtonBox(10,10,60,40,function(){});
+    flap_pad = new ButtonBox(10,60,60,40,function(){});
     cut_pad  = new ButtonBox(10,110,60,20,function(){});
-    presser.register(boost_pad);
+    presser.register(burn_pad);
     presser.register(flap_pad);
     presser.register(cut_pad);
 
-    var w = dc.width/9;
+    var w = dc.width/10;
     var mint = pi*(8/9);
     var maxt = pi*(1/9);
     outside_temp_gauge = new Gauge(w*0,dc.height-w*5/9,w,w,mint,maxt,250,380,function(v){ env_temp = v; });
@@ -278,7 +280,7 @@ var GamePlayScene = function(game, stage)
     altitude_gauge     = new Gauge(w*6,dc.height-w*5/9,w,w,mint,maxt,0,100,function(v){ balloon.wy = v; });
     xvel_gauge         = new Gauge(w*7,dc.height-w*5/9,w,w,mint,maxt,-1,1,function(v){ balloon.wxv = v; });
     yvel_gauge         = new Gauge(w*8,dc.height-w*5/9,w,w,mint,maxt,-1,1,function(v){ balloon.wyv = v; });
-    fuel_gauge         = new Gauge(w*9,dc.height-w*5/9,w,w,mint,maxt,0,10,function(v){ });
+    fuel_gauge         = new Gauge(w*9,dc.height-w*5/9,w,w,mint,maxt,0,40,function(v){ fuel = v; });
 
     dragger.register(outside_temp_gauge);
     dragger.register(inside_temp_gauge);
@@ -317,9 +319,9 @@ var GamePlayScene = function(game, stage)
       presser.ignore();
     }
 
-         if(boost_pad.down) balloon.t = lerp(balloon.t,fire_temp,0.0001)
-    else if(flap_pad.down)  balloon.t = lerp(balloon.t, env_temp,0.001)
-    else                    balloon.t = lerp(balloon.t, env_temp,0.0001);
+         if(burn_pad.down && fuel > 0) { balloon.t = lerp(balloon.t,fire_temp,0.0001); fuel -= 0.04; if(fuel < 0) fuel = 0; }
+    else if(flap_pad.down)             { balloon.t = lerp(balloon.t, env_temp,0.001);  }
+    else                               { balloon.t = lerp(balloon.t, env_temp,0.0001); }
 
     if(cut_pad.down) rope_cut = true;
 
@@ -419,7 +421,7 @@ var GamePlayScene = function(game, stage)
     altitude_gauge.val = balloon.wy;
     xvel_gauge.val = balloon.wxv;
     yvel_gauge.val = balloon.wyv;
-    fuel_gauge.val = 1;
+    fuel_gauge.val = fuel;
 
     outside_temp_gauge.tick();
     inside_temp_gauge.tick();
@@ -471,7 +473,7 @@ var GamePlayScene = function(game, stage)
     dc.context.globalAlpha = 1;
     drawWind();
     drawAirParticles();
-    if(boost_pad.down) drawFlame(flame);
+    if(burn_pad.down && fuel > 0) drawFlame(flame);
     if(!rope_cut)
     {
       dc.context.beginPath();
@@ -491,9 +493,9 @@ var GamePlayScene = function(game, stage)
     //drawArrow(arrow_separator);
 
     dc.context.textAlign = "center";
-    boost_pad.draw(dc);
+    burn_pad.draw(dc);
     dc.context.fillStyle = "#000000";
-    dc.context.fillText("Fire",boost_pad.x+boost_pad.w/2,boost_pad.y+boost_pad.h/2);
+    dc.context.fillText("Fire",burn_pad.x+burn_pad.w/2,burn_pad.y+burn_pad.h/2);
     flap_pad.draw(dc);
     dc.context.fillStyle = "#000000";
     dc.context.fillText("Open Flap",flap_pad.x+flap_pad.w/2,flap_pad.y+flap_pad.h/2);
@@ -503,6 +505,10 @@ var GamePlayScene = function(game, stage)
       dc.context.fillStyle = "#000000";
       dc.context.fillText("Cut Rope",cut_pad.x+cut_pad.w/2,cut_pad.y+cut_pad.h/2);
     }
+
+    dc.context.textAlign = "right";
+    dc.context.fillStyle = "#000000";
+    dc.context.fillText(fdisp(balloon.wx,1)+"m",dc.width-10,12);
 
     drawGauge(outside_temp_gauge,"Outside Temp");
     drawGauge(inside_temp_gauge,"Inside Temp");

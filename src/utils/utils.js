@@ -95,6 +95,13 @@ var pi = Math.PI;
 var twopi = 2*pi;
 var halfpi = pi/2;
 
+var fdisp = function(f,n) //formats float for display (from 8.124512 to 8.12)
+{
+  if(n == undefined) n = 2;
+  n = Math.pow(10,n);
+  return Math.round(f*n)/n;
+}
+
 function clamp(a,b,v)
 {
   if(v < a) return a;
