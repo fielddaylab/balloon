@@ -789,11 +789,13 @@ var GamePlayScene = function(game, stage)
       function() {
         dc.context.textAlign = "left";
         dc.context.fillText("X Heating disabled! Try increasing volume instead!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
+        dc.context.textAlign = "right";
+        dc.context.fillText("Drag the volume needle to change!",volume_gauge.x+volume_gauge.w/2,volume_gauge.y-50);
         volume_gauge.vis = true;
         volume_gauge.enabled = true;
         drawForceArrows();
       },
-      function() { return balloon.v > 6000 && !volume_gauge.dragging; }
+      function() { return balloon.v > 5000 && !volume_gauge.dragging; }
     ));
     steps.push(new Step(
       function(){
