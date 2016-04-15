@@ -45,7 +45,10 @@ var GamePlayScene = function(game, stage)
   var tree_canv;
   var part_canv;
   var gauge_canv;
-  var arrow_canv;
+  var up_arrow_canv;
+  var down_arrow_canv;
+  var left_arrow_canv;
+  var right_arrow_canv;
 
   //doqueues
   var dragger;
@@ -104,6 +107,7 @@ var GamePlayScene = function(game, stage)
   var part_disp;
   var target_part_disp;
   var fuel;
+  var clone_fuel;
 
   var steps;
   var cur_step;
@@ -116,6 +120,7 @@ var GamePlayScene = function(game, stage)
     //state
     rope_cut = false;
     fuel = 40;
+    clone_fuel = fuel;
 
     //utils
     shadow_canv = document.createElement('canvas');
@@ -226,17 +231,66 @@ var GamePlayScene = function(game, stage)
     gauge_canv.context.arc(gauge_canv.width/2,gauge_canv.height/2,gauge_canv.width/2*0.9,0,2*pi);
     gauge_canv.context.stroke();
 
-    arrow_canv = document.createElement('canvas');
-    arrow_canv.width = 100;
-    arrow_canv.height = 100;
-    arrow_canv.context = arrow_canv.getContext('2d');
-    arrow_canv.context.fillStyle = "#00FF00";
-    arrow_canv.context.fillRect(arrow_canv.width/4,arrow_canv.height/4,arrow_canv.width/2,arrow_canv.height);
-    arrow_canv.context.beginPath();
-    arrow_canv.context.moveTo(0,arrow_canv.height/4);
-    arrow_canv.context.lineTo(arrow_canv.width/2,0);
-    arrow_canv.context.moveTo(arrow_canv.width,arrow_canv.height/4);
-    arrow_canv.context.fill();
+    up_arrow_canv = document.createElement('canvas');
+    up_arrow_canv.width = 100;
+    up_arrow_canv.height = 100;
+    up_arrow_canv.context = up_arrow_canv.getContext('2d');
+    up_arrow_canv.context.fillStyle = "#00FF00";
+    up_arrow_canv.context.fillRect(up_arrow_canv.width/4,up_arrow_canv.height/4,up_arrow_canv.width/2,up_arrow_canv.height*3/4);
+    up_arrow_canv.context.beginPath();
+    up_arrow_canv.context.moveTo(0,up_arrow_canv.height/4);
+    up_arrow_canv.context.lineTo(up_arrow_canv.width/2,0);
+    up_arrow_canv.context.lineTo(up_arrow_canv.width,up_arrow_canv.height/4);
+    up_arrow_canv.context.fill();
+
+    down_arrow_canv = document.createElement('canvas');
+    down_arrow_canv.width = 100;
+    down_arrow_canv.height = 100;
+    down_arrow_canv.context = down_arrow_canv.getContext('2d');
+    down_arrow_canv.context.fillStyle = "#00FF00";
+    down_arrow_canv.context.fillRect(down_arrow_canv.width/4,0,down_arrow_canv.width/2,down_arrow_canv.height*3/4);
+    down_arrow_canv.context.beginPath();
+    down_arrow_canv.context.moveTo(0,down_arrow_canv.height*3/4);
+    down_arrow_canv.context.lineTo(down_arrow_canv.width/2,down_arrow_canv.height);
+    down_arrow_canv.context.lineTo(down_arrow_canv.width,down_arrow_canv.height*3/4);
+    down_arrow_canv.context.fill();
+
+    left_arrow_canv = document.createElement('canvas');
+    left_arrow_canv.width = 100;
+    left_arrow_canv.height = 100;
+    left_arrow_canv.context = left_arrow_canv.getContext('2d');
+    left_arrow_canv.context.fillStyle = "#00FF00";
+    left_arrow_canv.context.fillRect(left_arrow_canv.width/4,left_arrow_canv.height/4,left_arrow_canv.width*3/4,left_arrow_canv.height/2);
+    left_arrow_canv.context.beginPath();
+    left_arrow_canv.context.moveTo(left_arrow_canv.width/4,left_arrow_canv.height);
+    left_arrow_canv.context.lineTo(0,left_arrow_canv.height/2);
+    left_arrow_canv.context.lineTo(left_arrow_canv.width/4,0);
+    left_arrow_canv.context.fill();
+
+    right_arrow_canv = document.createElement('canvas');
+    right_arrow_canv.width = 100;
+    right_arrow_canv.height = 100;
+    right_arrow_canv.context = right_arrow_canv.getContext('2d');
+    right_arrow_canv.context.fillStyle = "#00FF00";
+    right_arrow_canv.context.fillRect(0,right_arrow_canv.height/4,right_arrow_canv.width*3/4,right_arrow_canv.height/2);
+    right_arrow_canv.context.beginPath();
+    right_arrow_canv.context.moveTo(right_arrow_canv.width*3/4,0);
+    right_arrow_canv.context.lineTo(right_arrow_canv.width,right_arrow_canv.height/2);
+    right_arrow_canv.context.lineTo(right_arrow_canv.width*3/4,right_arrow_canv.height);
+    right_arrow_canv.context.fill();
+
+    down_arrows_canv = document.createElement('canvas');
+    down_arrows_canv.width = 100;
+    down_arrows_canv.height = 100;
+    down_arrows_canv.context = down_arrows_canv.getContext('2d');
+    down_arrows_canv.context.drawImage(down_arrow_canv,0,down_arrow_canv.height/4,25,25);
+    down_arrows_canv.context.drawImage(down_arrow_canv,0,down_arrow_canv.height*3/4,25,25);
+    down_arrows_canv.context.drawImage(down_arrow_canv,down_arrow_canv.width/4,0,25,25);
+    down_arrows_canv.context.drawImage(down_arrow_canv,down_arrow_canv.width/4,down_arrow_canv.height/2,25,25);
+    down_arrows_canv.context.drawImage(down_arrow_canv,down_arrow_canv.width/2,down_arrow_canv.height/4,25,25);
+    down_arrows_canv.context.drawImage(down_arrow_canv,down_arrow_canv.width/2,down_arrow_canv.height*3/4,25,25);
+    down_arrows_canv.context.drawImage(down_arrow_canv,down_arrow_canv.width*3/4,0,25,25);
+    down_arrows_canv.context.drawImage(down_arrow_canv,down_arrow_canv.width*3/4,down_arrow_canv.height/2,25,25);
 
     //doqueues
     dragger = new Dragger({source:stage.dispCanv.canvas});
@@ -329,97 +383,295 @@ var GamePlayScene = function(game, stage)
 
     steps = [];
     steps.push(new Step(
-      function(){ pop(['Hey there!','This is a hot Air Balloon.','Let\'s see how this thing works!',]); },
+      function(){
+        pop([
+        'Hey there!',
+        'This is a hot Air Balloon.',
+        'Let\'s see how this thing works!',
+        ]);
+      },
       noop,
       noop,
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
-      function() { fuel = 10; },
       noop,
+      function() { fuel = 4; rope_cut = false; },
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Hold to heat balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { return balloon.t > 305; }
     ));
     steps.push(new Step(
-      function() { fuel = 10; },
       noop,
+      function() { fuel = 4; rope_cut = false; },
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Keep holding!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { return balloon.t > 315; }
     ));
     steps.push(new Step(
-      function() { fuel = 10; },
       noop,
+      function() { fuel = 4; rope_cut = false; },
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Almost there!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { return balloon.t > 325; }
     ));
     steps.push(new Step(
-      function() { fuel = 10; },
       noop,
+      function() { fuel = 4; rope_cut = false; },
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Just a little longer!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { return balloon.t > 335; }
     ));
     steps.push(new Step(
-      function() { fuel = 10; },
       noop,
+      function() { fuel = 4; rope_cut = false; },
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Aaaaannnndd...",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); return true; } return false; }
     ));
     steps.push(new Step(
-      function(){ pop(['We\'ve heated the ballon just enough to generate some <b>upward lift</b>!',"<b>Cut the anchor rope</b> and let us go!</b>"]); },
+      function() {
+        pop([
+          'We\'ve heated the ballon just enough to generate some <b>upward lift</b>!',
+          "<b>Cut the anchor rope</b> and let us go!</b>",
+        ]);
+      },
       function() { balloon.t = clone_balloon.t; },
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2); },
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
-      noop,
+      function() { fuel = 4; },
       function() { balloon.t = clone_balloon.t; },
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2); },
       function() { return rope_cut; }
     ));
     steps.push(new Step(
       noop,
-      function() { fuel = 10; },
+      function() { fuel = 4; },
       noop,
       function() { if(balloon.wy > 10) { cloneObj(balloon,clone_balloon); return true; }; return false; }
     ));
     steps.push(new Step(
-      function(){ pop(['And off we go!','Ok enough talking... I\'ll let you fly around for now.','<b>To fly:</b><br />Press <b>burn</b> to <b>increase the temperature inside the balloon</b>,<br />open the <b>flap</b> to <b>release hot air</b>,<br />and be sure to <b>watch your fuel consumption</b>!','I\'ll be waiting on the ground!','(See how long you can fly!)',]); },
+      function() {
+        pop([
+          'And off we go!',
+          'Ok enough talking... I\'ll let you fly around for now.',
+          '<b>To fly:</b><br />Press <b>burn</b> to <b>increase the temperature inside the balloon</b>,<br />open the <b>flap</b> to <b>release hot air</b>,<br />and be sure to <b>watch your fuel consumption</b>!',
+          'I\'ll be waiting on the ground!',
+          '(See how long you can fly!)',
+        ]);
+      },
       function() { balloon.t = clone_balloon.t; balloon.wx = clone_balloon.wx; balloon.wy = clone_balloon.wy; },
       noop,
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
-      function() { fuel = 4; altitude_gauge.vis = true;xvel_gauge.vis = true;yvel_gauge.vis = true;fuel_gauge.vis = true; },
+      function() { fuel = 4; altitude_gauge.vis = true; xvel_gauge.vis = true; yvel_gauge.vis = true; fuel_gauge.vis = true; },
       noop,
       noop,
       function() { return balloon.wy < 0.01; }
     ));
     steps.push(new Step(
-      function(){ pop(['Well that was fun.','But how did it work?','Why does <b>hot air rise</b>?','Let\'s reset everything, and try again']); },
+      function(){
+        pop([
+          'Well that was fun. You travelled '+fdisp(balloon.wx,1)+" meters!",
+          'But how did it work?',
+          'Why does <b>hot air rise</b>?',
+          'Let\'s reset everything, and try again',
+        ]);
+      },
       noop,
       noop,
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
-      function(){ resetBalloon(); fuel = 40; rope_cut = false; setTimeout(function(){target_part_disp = 1;},1000); },
-      noop,
+      function() { resetBalloon(); setTimeout(function(){target_part_disp = 1;},1000); },
+      function() { fuel = 40; rope_cut = false; },
       noop,
       function() { return part_disp > 0.8; }
     ));
     steps.push(new Step(
-      function(){ pop(['We\'ve <b>reset the temperature</b> inside the balloon.','We\'re also <b>visualizing</b> the air particles <b>bouncing around</b> both <b>inside</b> <i>and</i> <b>outside</b> of the balloon.','See how <b>the particles</b> are moving at just about <b>the same speed</b>?','Try to <b>get the balloon off the ground</b> again.','This time, <b>watch how the air particles are affected</b>.']); },
+      function(){
+        pop([
+          'We\'ve <b>reset the temperature</b> inside the balloon (so it\'s equal to the temperature <b>outside</b> the balloon).',
+          'We\'re also <b>visualizing</b> the air particles <b>bouncing around</b> both <b>inside</b> <i>and</i> <b>outside</b> of the balloon.',
+          'See how <b>all the particles</b> are moving at just about <b>the same speed</b>?',
+          'Try to <b>get the balloon off the ground</b> again.',
+          'This time, <b>watch how the air particles are affected</b>.',
+        ]);
+      },
       noop,
       noop,
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
+      function() { },
+      function() { rope_cut = false; },
+      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Hold to heat balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); clone_fuel = fuel; return true; } return false; }
+    ));
+    steps.push(new Step(
+      function() {
+        pop([
+          'See how the <b>air particles inside the balloon</b> are <b>moving faster</b>?',
+          'When air (or anything, really) gets <b>heated</b>, its molecules <b>jiggle very quickly</b>.',
+          'Molecules that are <b>bouncing all over the place</b> create <b>higher pressure within the balloon</b>.',
+          'This <b>higher pressure</b> pushes the air <b>out</b> of the balloon, making the balloon <b>much lighter than the surrounding air</b>.',
+          'And just like a <b>life vest</b> in <b>water</b>, the <b>balloon</b> begins to <b>float</b> in <b>air</b>!',
+        ]);
+      },
+      function() { rope_cut = false; fuel = clone_fuel; balloon.t = clone_balloon.t; },
+      noop,
+      function() { return input_state == RESUME_INPUT; }
+    ));
+    steps.push(new Step(
+      noop,
+      function() { fuel = clone_fuel; balloon.t = clone_balloon.t; },
+      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2); },
+      function() { return rope_cut; }
+    ));
+    steps.push(new Step(
       noop,
       noop,
       noop,
-      function() { return balloon.wy > 10; }
+      function() { if(balloon.wy > 10) { cloneObj(balloon,clone_balloon); return true; }; return false; }
+    ));
+    steps.push(new Step(
+      function() {
+        fuel = 4;
+        pop([
+          'But wait, <i>why do <b>lighter</b> things <b>float</b></i>?',
+          'Ok ok. I\'ll let you get to flying.',
+          'Again, I\'ll be waiting for you on the ground!',
+          'See if you can get further than last time!',
+          '(Pro Tip- don\'t burn through all your fuel at once!)',
+        ]);
+      },
+      function() { balloon.t = clone_balloon.t; balloon.wx = clone_balloon.wx; balloon.wy = clone_balloon.wy; },
+      noop,
+      function() { return input_state == RESUME_INPUT; }
+    ));
+    steps.push(new Step(
+      function() { fuel = 4; },
+      noop,
+      noop,
+      function() { return balloon.wy < 0.01; }
+    ));
+    steps.push(new Step(
+      function() {
+        pop([
+          'And you\'re back!',
+          'This time, you travelled '+fdisp(balloon.wx,1)+" meters.",
+          'But let\'s get back to that question:',
+          '<i>Why do <b>lighter</b> things <b>float</b></i>?',
+          'Maybe surprisingly, the answer is actually <b>gravity</b>.',
+          'Let\'s reset, and look at this again.',
+        ]);
+      },
+      noop,
+      noop,
+      function() { return input_state == RESUME_INPUT; }
+    ));
+    steps.push(new Step(
+      function() { resetBalloon(); },
+      function() { fuel = 40; rope_cut = false; },
+      noop,
+      function() { return camera.wx < 0.2; }
+    ));
+    steps.push(new Step(
+      function(){
+        pop([
+          'Ok. So <b>gravity</b> is the reason hot air balloons <b>float</b>?',
+          'How does that make sense?',
+          'Well, we know that <b>gravity</b> pulls <b>down</b> on <b>everything</b> (at least while on planet Earth, anyways...).',
+          '(That is, <b>gravity applies a downward force</b>.)',
+        ]);
+      },
+      noop,
+      noop,
+      function() { return input_state == RESUME_INPUT; }
+    ));
+    steps.push(new Step(
+      function() { steps[cur_step].t = 0; },
+      function() { steps[cur_step].t++; fuel = 40; rope_cut = false; },
+      function() {
+        dc.context.globalAlpha = steps[cur_step].t/100;
+        dc.context.drawImage(down_arrow_canv,dc.width/2-50,dc.height/2-50,100,100);
+        dc.context.globalAlpha = 1;
+      },
+      function() { return steps[cur_step].t >= 100; }
+    ));
+    steps.push(new Step(
+      function(){
+        pop([
+          'But gravity doesn\'t just apply to <b>big</b> objects-',
+          'It also applies to all of those little air particles!',
+        ]);
+      },
+      noop,
+      function() { dc.context.drawImage(down_arrow_canv,dc.width/2-50,dc.height/2-50,100,100); },
+      function() { return input_state == RESUME_INPUT; }
+    ));
+    steps.push(new Step(
+      function() { steps[cur_step].t = 0; },
+      function() { steps[cur_step].t++; fuel = 40; rope_cut = false; },
+      function() {
+        dc.context.drawImage(down_arrow_canv,dc.width/2-50,dc.height/2-50,100,100);
+        dc.context.globalAlpha = steps[cur_step].t/100;
+        dc.context.drawImage(down_arrows_canv,dc.width/4-50,dc.height/2-50,100,100);
+        dc.context.drawImage(down_arrows_canv,dc.width*3/4-50,dc.height/2-50,100,100);
+        dc.context.globalAlpha = 1;
+      },
+      function() { return steps[cur_step].t >= 100; }
+    ));
+    steps.push(new Step(
+      function(){
+        pop([
+          'Everything is being pulled down, but there is only so much space to be pulled down to!',
+          'All the little air particles are trying to wedge themselves <b>as low as they can</b>,',
+          'This creates a small <b>upward force</b> on the balloon.',
+        ]);
+      },
+      noop,
+      function() {
+        dc.context.drawImage(down_arrow_canv,dc.width/2-50,dc.height/2-50,100,100); 
+        dc.context.drawImage(down_arrows_canv,dc.width/4-50,dc.height/2-50,100,100);
+        dc.context.drawImage(down_arrows_canv,dc.width*3/4-50,dc.height/2-50,100,100);
+      },
+      function() { return input_state == RESUME_INPUT; }
+    ));
+    steps.push(new Step(
+      function(){
+        steps[cur_step].t = 0;
+        pop([
+          'But because the <b>balloon</b> is <b>heavier</b> than the <b>air particles trying to get under it</b>,',
+          'the baloon\'s gravity "wins" the struggle to <b>be pulled down</b>, and <b>stays on the ground</b>.',
+          'But what would happen if we were to <b>make the balloon lighter</b>?',
+        ]);
+      },
+      function() { steps[cur_step].t++; if(steps[cur_step].t > 100) steps[cur_step].t = 100;},
+      function() {
+        dc.context.drawImage(down_arrow_canv,dc.width/2-50,dc.height/2-50,100,100);
+        dc.context.drawImage(down_arrows_canv,dc.width/4-50,dc.height/2-50,100,100);
+        dc.context.drawImage(down_arrows_canv,dc.width*3/4-50,dc.height/2-50,100,100);
+        dc.context.globalAlpha = steps[cur_step].t/100;
+        dc.context.drawImage(up_arrow_canv,dc.width/2-25,dc.height/2-100,50,50);
+        dc.context.globalAlpha = 1;
+      },
+      function() { return input_state == RESUME_INPUT; }
+    ));
+    steps.push(new Step(
+      noop,
+      function() { fuel = 4; rope_cut = false; },
+      function() {
+        dc.context.textAlign = "left";
+        dc.context.fillText("<- Heat the balloon",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
+        dc.context.drawImage(down_arrow_canv,dc.width/2-50,dc.height/2-50,100,100);
+        dc.context.drawImage(down_arrows_canv,dc.width/4-50,dc.height/2-50,100,100);
+        dc.context.drawImage(down_arrows_canv,dc.width*3/4-50,dc.height/2-50,100,100);
+        dc.context.drawImage(up_arrow_canv,dc.width/2-25,dc.height/2-100,50,50);
+      },
+      function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); return true; } return false; }
     ));
 
     cur_step = -1;
+    //cur_step = steps.length-3;
 
     self.nextStep();
 
