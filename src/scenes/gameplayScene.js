@@ -381,9 +381,18 @@ var GamePlayScene = function(game, stage)
     inside_temp_gauge.vis = true;
     //self.popDismissableMessage = function(text,x,y,w,h,callback)
 
+    var step_intro = 0;
+    var step_particles = 0;
+    var step_forces = 0;
+    var step_density = 0;
+    var step_free = 0;
+
     steps = [];
+
+    step_intro = steps.length;
     steps.push(new Step(
       function(){
+        setDisp(0,true,true,false,false,false,false,false,false,false,false);
         pop([
         'Hey there!',
         'This is a hot Air Balloon.',
@@ -492,8 +501,11 @@ var GamePlayScene = function(game, stage)
       noop,
       function() { return part_disp > 0.8; }
     ));
+
+    step_particles = steps.length;
     steps.push(new Step(
       function(){
+        setDisp(1,true,true,false,false,false,false,true,true,true,true);
         pop([
           'We\'ve <b>reset the temperature</b> inside the balloon (so it\'s equal to the temperature <b>outside</b> the balloon).',
           'We\'re also <b>visualizing</b> the air particles <b>bouncing around</b> both <b>inside</b> <i>and</i> <b>outside</b> of the balloon.',
@@ -574,6 +586,8 @@ var GamePlayScene = function(game, stage)
       noop,
       function() { return input_state == RESUME_INPUT; }
     ));
+
+    step_forces = steps.length;
     steps.push(new Step(
       function() { resetBalloon(); },
       function() { fuel = 40; rope_cut = false; },
@@ -582,6 +596,7 @@ var GamePlayScene = function(game, stage)
     ));
     steps.push(new Step(
       function(){
+        setDisp(1,true,true,false,false,false,false,true,true,true,true);
         pop([
           'Ok. So <b>gravity</b> is the reason hot air balloons <b>float</b>?',
           'How does that make sense?',
@@ -731,6 +746,8 @@ var GamePlayScene = function(game, stage)
       },
       function() { return input_state == RESUME_INPUT; }
     ));
+
+    step_density = steps.length;
     steps.push(new Step(
       function() { resetBalloon(); },
       function() { fuel = 40; rope_cut = false; },
@@ -739,6 +756,7 @@ var GamePlayScene = function(game, stage)
     ));
     steps.push(new Step(
       function(){
+        setDisp(1,true,true,false,false,false,false,true,true,true,true);
         pop([
           'So if a <b>balloon</b> is <b>lighter</b> than the <b>surounding air</b>, it begins to <b>float</b>.',
           'But, a <b>marble</b> is lighter than even the <b>lightest</b> hot air balloon...',
@@ -856,7 +874,38 @@ var GamePlayScene = function(game, stage)
       function() { return input_state == RESUME_INPUT; }
     ));
 
+    step_free = steps.length;
+    steps.push(new Step(
+      function() {
+        resetBalloon();
+        fuel = 40;
+        rope_cut = false;
+        setDisp(1,true,true,true,true,true,true,true,true,true,true);
+        outside_temp_gauge.enabled = true;
+        inside_temp_gauge.enabled = true;
+        weight_gauge.enabled = true;
+        volume_gauge.enabled = true;
+        density_gauge.enabled = true;
+        bouyancy_gauge.enabled = true;
+        altitude_gauge.enabled = true;
+        xvel_gauge.enabled = true;
+        yvel_gauge.enabled = true;
+        fuel_gauge.enabled = true;
+      },
+      noop,
+      function() { drawForceArrows(); },
+      function() { return false; }
+    ));
+
     cur_step = -1;
+    switch(game.start)
+    {
+      case 0:cur_step = step_intro-1;break;
+      case 1:cur_step = step_particles-1;break;
+      case 2:cur_step = step_forces-1;break;
+      case 3:cur_step = step_density-1;break;
+      case 4:cur_step = step_free-1;break;
+    }
 
     self.nextStep();
 
