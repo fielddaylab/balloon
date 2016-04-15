@@ -716,14 +716,6 @@ var GamePlayScene = function(game, stage)
       function() {
         drawForceArrows();
       },
-      function() { return balloon.wy > 10; }
-    ));
-    steps.push(new Step(
-      noop,
-      noop,
-      function() {
-        drawForceArrows();
-      },
       function() { return balloon.wy < 0.1; }
     ));
     steps.push(new Step(
@@ -828,7 +820,7 @@ var GamePlayScene = function(game, stage)
     ));
     steps.push(new Step(
       noop,
-      noop,
+      function() { fuel = 4; },
       function() { drawForceArrows(); },
       function() { if(balloon.wy > 10) { cloneObj(balloon,clone_balloon); return true; }; return false; }
     ));
@@ -865,7 +857,6 @@ var GamePlayScene = function(game, stage)
     ));
 
     cur_step = -1;
-    cur_step = steps.length-10;
 
     self.nextStep();
 
@@ -1175,7 +1166,7 @@ var GamePlayScene = function(game, stage)
   {
     var p;
     var temp = (balloon.t-290)/5; //~1 to ~14 (at same scale used by drawAirParts)
-    var s = balloon.w/30;
+    var s = balloon.h/30;
     var minx = balloon.x-balloon.w/2-s/2;
     var maxx = balloon.x+balloon.w+balloon.w/2-s/2;
     var miny = balloon.y-balloon.h/2-s/2;
@@ -1197,7 +1188,7 @@ var GamePlayScene = function(game, stage)
   {
     var p;
     var temp = (tempForHeight(env_temp,balloon.wy)-290)/5; //~0 to ~1
-    var s = balloon.w/30;
+    var s = balloon.h/30;
     var minx = balloon.x-balloon.w/2-2/2;
     var maxx = balloon.x+balloon.w+balloon.w/2-2/2;
     var miny = balloon.y-balloon.h/2-s/2;
@@ -1324,7 +1315,7 @@ var GamePlayScene = function(game, stage)
     var temp = (tempForHeight(env_temp,balloon.wy)-290)/5; //~0 to ~1
     var n_parts = min(round((15-temp)*20),air_parts.length);
     n_parts *= 4;
-    var s = balloon.w/30;
+    var s = balloon.h/30;
     var minx = balloon.x-balloon.w/2-2/2;
     var maxx = balloon.x+balloon.w+balloon.w/2-2/2;
     var miny = balloon.y-balloon.h/2-s/2;
@@ -1379,7 +1370,7 @@ var GamePlayScene = function(game, stage)
     var p;
     var temp = (balloon.t-290)/5; //~1 to ~14 (at same scale used by drawAirParts)
     var n_parts = min(round((15-temp)*20),balloon_parts.length);
-    var s = balloon.w/30;
+    var s = balloon.h/30;
     var minx = balloon.x-balloon.w/2-s/2;
     var maxx = balloon.x+balloon.w+balloon.w/2-s/2;
     var miny = balloon.y-balloon.h/2-s/2;
