@@ -88,6 +88,7 @@ var GamePlayScene = function(game, stage)
   var burn_pad;
   var flap_pad;
   var cut_pad;
+  var reset_btn;
 
   //gauges
   var outside_temp_gauge;
@@ -111,6 +112,12 @@ var GamePlayScene = function(game, stage)
 
   var steps;
   var cur_step;
+
+  var step_intro;
+  var step_particles;
+  var step_forces;
+  var step_density;
+  var step_free;
 
   self.ready = function()
   {
@@ -342,9 +349,11 @@ var GamePlayScene = function(game, stage)
     burn_pad = new ButtonBox(10,10,60,40,function(){});
     flap_pad = new ButtonBox(10,60,60,40,function(){});
     cut_pad  = new ButtonBox(10,110,60,20,function(){});
+    reset_btn  = new ButtonBox(dc.width-110,110,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(3); });
     presser.register(burn_pad);
     presser.register(flap_pad);
     presser.register(cut_pad);
+    domclicker.register(reset_btn);
 
     var w = dc.width/10;
     var mint = pi*(3/4);
@@ -380,12 +389,6 @@ var GamePlayScene = function(game, stage)
     outside_temp_gauge.vis = true;
     inside_temp_gauge.vis = true;
     //self.popDismissableMessage = function(text,x,y,w,h,callback)
-
-    var step_intro = 0;
-    var step_particles = 0;
-    var step_forces = 0;
-    var step_density = 0;
-    var step_free = 0;
 
     steps = [];
 
@@ -1124,6 +1127,13 @@ var GamePlayScene = function(game, stage)
       cut_pad.draw(dc);
       dc.context.fillStyle = "#000000";
       dc.context.fillText("Cut Rope",cut_pad.x+cut_pad.w/2,cut_pad.y+cut_pad.h/2);
+    }
+
+    if(cur_step == step_free)
+    {
+      reset_btn.draw(dc);
+      dc.context.fillStyle = "#000000";
+      dc.context.fillText("Reset",reset_btn.x+reset_btn.w/2,reset_btn.y+reset_btn.h/2);
     }
 
     dc.context.textAlign = "right";
