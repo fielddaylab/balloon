@@ -798,7 +798,7 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function(){
         pop([
-          'See how <b>increasing the volume</b> ',
+          'See how <b>increasing the volume</b> brings <b>the force of gravity</b> <i>closer</i> to <b>the upward force of the surrounding particles</b>?',
           'We\'ll still need to <b>heat the air in the balloon</b> just a bit-',
           'But because we now have <b>more air to heat</b>, we <b>won\'t need to heat it as much!',
         ]);
