@@ -591,8 +591,10 @@ var GamePlayScene = function(game, stage)
       function() { steps[cur_step].t = 0; },
       function() { steps[cur_step].t++; fuel = 40; rope_cut = false; },
       function() {
+        var bcx = balloon.x+balloon.w/2;
+        var bcy = balloon.y+balloon.h/2;
         dc.context.globalAlpha = steps[cur_step].t/100;
-        dc.context.drawImage(down_arrow_canv,dc.width/2-50,dc.height/2-50,100,100);
+        dc.context.drawImage(down_arrow_canv,bcx-50,bcy-50,100,100);
         dc.context.globalAlpha = 1;
       },
       function() { return steps[cur_step].t >= 100; }
@@ -605,17 +607,23 @@ var GamePlayScene = function(game, stage)
         ]);
       },
       noop,
-      function() { dc.context.drawImage(down_arrow_canv,dc.width/2-50,dc.height/2-50,100,100); },
+      function() {
+        var bcx = balloon.x+balloon.w/2;
+        var bcy = balloon.y+balloon.h/2;
+        dc.context.drawImage(down_arrow_canv,bcx-50,bcy-50,100,100);
+      },
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
       function() { steps[cur_step].t = 0; },
       function() { steps[cur_step].t++; fuel = 40; rope_cut = false; },
       function() {
-        dc.context.drawImage(down_arrow_canv,dc.width/2-50,dc.height/2-50,100,100);
+        var bcx = balloon.x+balloon.w/2;
+        var bcy = balloon.y+balloon.h/2;
+        dc.context.drawImage(down_arrow_canv,bcx-50,bcy-50,100,100);
         dc.context.globalAlpha = steps[cur_step].t/100;
-        dc.context.drawImage(down_arrows_canv,dc.width/4-50,dc.height/2-50,100,100);
-        dc.context.drawImage(down_arrows_canv,dc.width*3/4-50,dc.height/2-50,100,100);
+        dc.context.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
+        dc.context.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
         dc.context.globalAlpha = 1;
       },
       function() { return steps[cur_step].t >= 100; }
@@ -630,9 +638,11 @@ var GamePlayScene = function(game, stage)
       },
       noop,
       function() {
-        dc.context.drawImage(down_arrow_canv,dc.width/2-50,dc.height/2-50,100,100); 
-        dc.context.drawImage(down_arrows_canv,dc.width/4-50,dc.height/2-50,100,100);
-        dc.context.drawImage(down_arrows_canv,dc.width*3/4-50,dc.height/2-50,100,100);
+        var bcx = balloon.x+balloon.w/2;
+        var bcy = balloon.y+balloon.h/2;
+        dc.context.drawImage(down_arrow_canv,bcx-50,bcy-50,100,100);
+        dc.context.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
+        dc.context.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
       },
       function() { return input_state == RESUME_INPUT; }
     ));
@@ -647,11 +657,13 @@ var GamePlayScene = function(game, stage)
       },
       function() { steps[cur_step].t++; if(steps[cur_step].t > 100) steps[cur_step].t = 100;},
       function() {
-        dc.context.drawImage(down_arrow_canv,dc.width/2-50,dc.height/2-50,100,100);
-        dc.context.drawImage(down_arrows_canv,dc.width/4-50,dc.height/2-50,100,100);
-        dc.context.drawImage(down_arrows_canv,dc.width*3/4-50,dc.height/2-50,100,100);
+        var bcx = balloon.x+balloon.w/2;
+        var bcy = balloon.y+balloon.h/2;
+        dc.context.drawImage(down_arrow_canv,bcx-50,bcy-50,100,100);
+        dc.context.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
+        dc.context.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
         dc.context.globalAlpha = steps[cur_step].t/100;
-        dc.context.drawImage(up_arrow_canv,dc.width/2-25,dc.height/2-100,50,50);
+        dc.context.drawImage(up_arrow_canv,bcx-25,bcy-100,50,50);
         dc.context.globalAlpha = 1;
       },
       function() { return input_state == RESUME_INPUT; }
@@ -663,10 +675,13 @@ var GamePlayScene = function(game, stage)
         dc.context.textAlign = "left";
         dc.context.fillText("<- Heat the balloon",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
         var t = (balloon.t-295)/((343.5-1)-295); //0-1
-        dc.context.drawImage(down_arrow_canv,dc.width/2-50+t*25,dc.height/2-50,100-t*50,100-t*50);
-        dc.context.drawImage(down_arrows_canv,dc.width/4-50,dc.height/2-50,100,100);
-        dc.context.drawImage(down_arrows_canv,dc.width*3/4-50,dc.height/2-50,100,100);
-        dc.context.drawImage(up_arrow_canv,dc.width/2-25,dc.height/2-100,50,50);
+
+        var bcx = balloon.x+balloon.w/2;
+        var bcy = balloon.y+balloon.h/2;
+        dc.context.drawImage(down_arrow_canv,bcx-50+t*25,bcy-50,100-t*50,100-t*50);
+        dc.context.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
+        dc.context.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
+        dc.context.drawImage(up_arrow_canv,bcx-25,bcy-100,50,50);
       },
       function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); return true; } return false; }
     ));
@@ -682,10 +697,13 @@ var GamePlayScene = function(game, stage)
       function() { rope_cut = false; fuel = clone_fuel; balloon.t = clone_balloon.t; },
       function() {
         var t = (balloon.t-295)/((343.5-1)-295); //0-1
-        dc.context.drawImage(down_arrow_canv,dc.width/2-50+t*25,dc.height/2-50,100-t*50,100-t*50);
-        dc.context.drawImage(down_arrows_canv,dc.width/4-50,dc.height/2-50,100,100);
-        dc.context.drawImage(down_arrows_canv,dc.width*3/4-50,dc.height/2-50,100,100);
-        dc.context.drawImage(up_arrow_canv,dc.width/2-25,dc.height/2-100,50,50);
+
+        var bcx = balloon.x+balloon.w/2;
+        var bcy = balloon.y+balloon.h/2;
+        dc.context.drawImage(down_arrow_canv,bcx-50+t*25,bcy-50,100-t*50,100-t*50);
+        dc.context.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
+        dc.context.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
+        dc.context.drawImage(up_arrow_canv,bcx-25,bcy-100,50,50);
       },
       function() { return input_state == RESUME_INPUT; }
     ));
@@ -694,16 +712,19 @@ var GamePlayScene = function(game, stage)
       noop,
       function() {
         var t = (balloon.t-295)/((343.5-1)-295); //0-1
-        dc.context.drawImage(down_arrow_canv,dc.width/2-50+t*25,dc.height/2-50,100-t*50,100-t*50);
-        dc.context.drawImage(down_arrows_canv,dc.width/4-50,dc.height/2-50,100,100);
-        dc.context.drawImage(down_arrows_canv,dc.width*3/4-50,dc.height/2-50,100,100);
-        dc.context.drawImage(up_arrow_canv,dc.width/2-25,dc.height/2-100,50,50);
+
+        var bcx = balloon.x+balloon.w/2;
+        var bcy = balloon.y+balloon.h/2;
+        dc.context.drawImage(down_arrow_canv,bcx-50+t*25,bcy-50,100-t*50,100-t*50);
+        dc.context.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
+        dc.context.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
+        dc.context.drawImage(up_arrow_canv,bcx-25,bcy-100,50,50);
       },
       function() { if(balloon.wy > 10) { cloneObj(balloon,clone_balloon); return true; }; return false; }
     ));
 
     cur_step = -1;
-    //cur_step = steps.length-3;
+    //cur_step = steps.length-5;
 
     self.nextStep();
 
