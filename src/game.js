@@ -15,6 +15,7 @@ var Game = function(init)
     new LoadingScene(self, stage),
     //new TestScene(self, stage),
     //new ExperimentScene(self, stage),
+    new ChooseScene(self, stage),
     new GamePlayScene(self, stage),
     null
     ];
@@ -45,9 +46,14 @@ var Game = function(init)
 
   self.nextScene = function()
   {
-    scenes[cur_scene].cleanup();
-    cur_scene++;
-    scenes[cur_scene].ready();
+    self.setScene(cur_scene+1);
   };
+
+  self.setScene = function(i)
+  {
+    scenes[cur_scene].cleanup();
+    cur_scene = i;
+    scenes[cur_scene].ready();
+  }
 };
 
