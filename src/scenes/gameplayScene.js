@@ -662,12 +662,44 @@ var GamePlayScene = function(game, stage)
       function() {
         dc.context.textAlign = "left";
         dc.context.fillText("<- Heat the balloon",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
-        dc.context.drawImage(down_arrow_canv,dc.width/2-50,dc.height/2-50,100,100);
+        var t = (balloon.t-295)/((343.5-1)-295); //0-1
+        dc.context.drawImage(down_arrow_canv,dc.width/2-50+t*25,dc.height/2-50,100-t*50,100-t*50);
         dc.context.drawImage(down_arrows_canv,dc.width/4-50,dc.height/2-50,100,100);
         dc.context.drawImage(down_arrows_canv,dc.width*3/4-50,dc.height/2-50,100,100);
         dc.context.drawImage(up_arrow_canv,dc.width/2-25,dc.height/2-100,50,50);
       },
       function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); return true; } return false; }
+    ));
+    steps.push(new Step(
+      function() {
+        pop([
+          'The <b>upward force on the balloon</b> created by the <b>downward force on the surrounding air particles</b> is now <b>greater</b> then the <b>downward force of gravity on the balloon</b>!',
+          'When it\'s even <b>just a little bigger</b>, it means the balloon will <b>start to rise</b>.',
+          'If we <b>keep this temperature in the balloon</b> (which will maintain its weight), the balloon will <b>continue to rise, forever</b>.',
+          'Thankfully, <b>heat naturally escapes</b> from the balloon, letting <b>more air back in</b>, and <b>increasing the weight</b>.',
+        ]);
+      },
+      function() { rope_cut = false; fuel = clone_fuel; balloon.t = clone_balloon.t; },
+      function() {
+        var t = (balloon.t-295)/((343.5-1)-295); //0-1
+        dc.context.drawImage(down_arrow_canv,dc.width/2-50+t*25,dc.height/2-50,100-t*50,100-t*50);
+        dc.context.drawImage(down_arrows_canv,dc.width/4-50,dc.height/2-50,100,100);
+        dc.context.drawImage(down_arrows_canv,dc.width*3/4-50,dc.height/2-50,100,100);
+        dc.context.drawImage(up_arrow_canv,dc.width/2-25,dc.height/2-100,50,50);
+      },
+      function() { return input_state == RESUME_INPUT; }
+    ));
+    steps.push(new Step(
+      noop,
+      noop,
+      function() {
+        var t = (balloon.t-295)/((343.5-1)-295); //0-1
+        dc.context.drawImage(down_arrow_canv,dc.width/2-50+t*25,dc.height/2-50,100-t*50,100-t*50);
+        dc.context.drawImage(down_arrows_canv,dc.width/4-50,dc.height/2-50,100,100);
+        dc.context.drawImage(down_arrows_canv,dc.width*3/4-50,dc.height/2-50,100,100);
+        dc.context.drawImage(up_arrow_canv,dc.width/2-25,dc.height/2-100,50,50);
+      },
+      function() { if(balloon.wy > 10) { cloneObj(balloon,clone_balloon); return true; }; return false; }
     ));
 
     cur_step = -1;
