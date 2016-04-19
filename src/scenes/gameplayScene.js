@@ -8,7 +8,8 @@ var GamePlayScene = function(game, stage)
 
   var n_pipes;
   var gravity = 9.8; //m/s^2
-  var env_temp  = 295; //k (72f = 295k)
+  var default_env_temp = 295; //k (72f = 295k)
+  var env_temp = default_env_temp;
   var fire_temp = 900; //k (900f = 755k)
   var air_molar_mass = 98.97; // g/mol
   var air_mass = 1.292; // kg/m^3
@@ -532,8 +533,8 @@ var GamePlayScene = function(game, stage)
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
-      function() { resetBalloon(); setTimeout(function(){target_part_disp = 1;},1000); },
-      function() { fuel = 40; rope_cut = false; },
+      function() { resetState(); resetBalloon(); setTimeout(function(){target_part_disp = 1;},1000); },
+      function() { resetState(); },
       noop,
       function() { return part_disp > 0.8; }
     ));
@@ -625,8 +626,8 @@ var GamePlayScene = function(game, stage)
 
     step_forces = steps.length;
     steps.push(new Step(
-      function() { resetBalloon(); },
-      function() { fuel = 40; rope_cut = false; },
+      function() { resetState(); resetBalloon(); },
+      function() { resetState(); },
       noop,
       function() { return camera.wx < 0.2; }
     ));
@@ -646,7 +647,7 @@ var GamePlayScene = function(game, stage)
     ));
     steps.push(new Step(
       function() { steps[cur_step].t = 0; },
-      function() { steps[cur_step].t++; fuel = 40; rope_cut = false; },
+      function() { steps[cur_step].t++; resetState(); },
       function() {
         var bcx = balloon.x+balloon.w/2;
         var bcy = balloon.y+balloon.h/2;
@@ -673,7 +674,7 @@ var GamePlayScene = function(game, stage)
     ));
     steps.push(new Step(
       function() { steps[cur_step].t = 0; },
-      function() { steps[cur_step].t++; fuel = 40; rope_cut = false; },
+      function() { steps[cur_step].t++; resetState(); },
       function() {
         var bcx = balloon.x+balloon.w/2;
         var bcy = balloon.y+balloon.h/2;
@@ -778,8 +779,8 @@ var GamePlayScene = function(game, stage)
 
     step_density = steps.length;
     steps.push(new Step(
-      function() { resetBalloon(); },
-      function() { fuel = 40; rope_cut = false; },
+      function() { resetState(); resetBalloon(); },
+      function() { resetState(); },
       noop,
       function() { return camera.wx < 0.2; }
     ));
@@ -901,9 +902,8 @@ var GamePlayScene = function(game, stage)
     step_free = steps.length;
     steps.push(new Step(
       function() {
+        resetState();
         resetBalloon();
-        fuel = 40;
-        rope_cut = false;
         setDisp(0,0,true,true,true,true,true,true,true,true,true,true);
         outside_temp_gauge.enabled = true;
         inside_temp_gauge.enabled = true;
@@ -924,9 +924,8 @@ var GamePlayScene = function(game, stage)
     step_standard = steps.length;
     steps.push(new Step(
       function() {
+        resetState();
         resetBalloon();
-        fuel = 40;
-        rope_cut = false;
         setDisp(0,0,true,true,true,true,true,true,true,true,true,true);
         outside_temp_gauge.enabled = false;
         inside_temp_gauge.enabled = false;
@@ -965,9 +964,8 @@ var GamePlayScene = function(game, stage)
     step_refuel = steps.length;
     steps.push(new Step(
       function() {
+        resetState();
         resetBalloon();
-        fuel = 40;
-        rope_cut = false;
         setDisp(0,0,true,true,true,true,true,true,true,true,true,true);
         outside_temp_gauge.enabled = false;
         inside_temp_gauge.enabled = false;
@@ -1002,7 +1000,6 @@ var GamePlayScene = function(game, stage)
       },
       function() { if(burn_pad.down) { cur_step = step_refuel-1; return true; } return false; }
     ));
-
 
     cur_step = -1;
     switch(game.start)
@@ -1754,6 +1751,12 @@ var GamePlayScene = function(game, stage)
     cut_pad.unpress();
   }
 
+  var resetState = function()
+  {
+    fuel = 40;
+    rope_cut = false;
+    env_temp = default_env_temp;
+  }
   var resetBalloon = function()
   {
     balloon.wx = 0;
