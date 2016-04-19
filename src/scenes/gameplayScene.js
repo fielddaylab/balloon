@@ -89,6 +89,8 @@ var GamePlayScene = function(game, stage)
   var flap_pad;
   var cut_pad;
   var reset_btn;
+  var parts_btn;
+  var arrows_btn;
 
   //gauges
   var outside_temp_gauge;
@@ -107,6 +109,8 @@ var GamePlayScene = function(game, stage)
   var wind;
   var part_disp;
   var target_part_disp;
+  var arrow_disp;
+  var target_arrow_disp;
   var fuel;
   var clone_fuel;
 
@@ -350,10 +354,14 @@ var GamePlayScene = function(game, stage)
     flap_pad = new ButtonBox(10,60,60,40,function(){});
     cut_pad  = new ButtonBox(10,110,60,20,function(){});
     reset_btn  = new ButtonBox(dc.width-110,110,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(3); });
+    arrows_btn = new ButtonBox(dc.width-110,140,100,20,function(){ if(cur_step != step_free) return; target_arrow_disp = (target_arrow_disp+1)%2; });
+    parts_btn  = new ButtonBox(dc.width-110,170,100,20,function(){ if(cur_step != step_free) return; target_part_disp = (target_part_disp+1)%2; });
     presser.register(burn_pad);
     presser.register(flap_pad);
     presser.register(cut_pad);
     domclicker.register(reset_btn);
+    domclicker.register(arrows_btn);
+    domclicker.register(parts_btn);
 
     var w = dc.width/10;
     var mint = pi*(3/4);
@@ -382,6 +390,8 @@ var GamePlayScene = function(game, stage)
 
     part_disp = 0;
     target_part_disp = 0;
+    arrow_disp = 0;
+    target_arrow_disp = 0;
     wind = [];
     for(var i = 0; i < 100; i++)
       wind[i] = 0.05+psin((99-i)/20);
@@ -395,7 +405,7 @@ var GamePlayScene = function(game, stage)
     step_intro = steps.length;
     steps.push(new Step(
       function(){
-        setDisp(0,true,true,false,false,false,false,false,false,false,false);
+        setDisp(0,0,true,true,false,false,false,false,false,false,false,false);
         pop([
         'Hey there!',
         'This is a hot Air Balloon.',
@@ -508,7 +518,7 @@ var GamePlayScene = function(game, stage)
     step_particles = steps.length;
     steps.push(new Step(
       function(){
-        setDisp(1,true,true,false,false,false,false,true,true,true,true);
+        setDisp(1,0,true,true,false,false,false,false,true,true,true,true);
         pop([
           'We\'ve <b>reset the temperature</b> inside the balloon (so it\'s equal to the temperature <b>outside</b> the balloon).',
           'We\'re also <b>visualizing</b> the air particles <b>bouncing around</b> both <b>inside</b> <i>and</i> <b>outside</b> of the balloon.',
@@ -599,7 +609,7 @@ var GamePlayScene = function(game, stage)
     ));
     steps.push(new Step(
       function(){
-        setDisp(1,true,true,false,false,false,false,true,true,true,true);
+        setDisp(1,0,true,true,false,false,false,false,true,true,true,true);
         pop([
           'Ok. So <b>gravity</b> is the reason hot air balloons <b>float</b>?',
           'How does that make sense?',
@@ -673,6 +683,7 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function(){
         steps[cur_step].t = 0;
+        target_arrow_disp = 1;
         pop([
           'But because the <b>balloon</b> is <b>heavier</b> than the <b>air particles trying to get under it</b>,',
           'the baloon\'s gravity "wins" the struggle to <b>be pulled down</b>, and <b>stays on the ground</b>.',
@@ -698,7 +709,6 @@ var GamePlayScene = function(game, stage)
       function() {
         dc.context.textAlign = "left";
         dc.context.fillText("<- Heat the balloon",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
-        drawForceArrows();
       },
       function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); return true; } return false; }
     ));
@@ -713,9 +723,7 @@ var GamePlayScene = function(game, stage)
         ]);
       },
       function() { rope_cut = false; fuel = clone_fuel; balloon.t = clone_balloon.t; },
-      function() {
-        drawForceArrows();
-      },
+      noop,
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
@@ -724,16 +732,13 @@ var GamePlayScene = function(game, stage)
       function() {
         dc.context.textAlign = "left";
         dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2);
-        drawForceArrows();
       },
       function() { return rope_cut; }
     ));
     steps.push(new Step(
       noop,
       noop,
-      function() {
-        drawForceArrows();
-      },
+      noop,
       function() { return balloon.wy < 0.1; }
     ));
     steps.push(new Step(
@@ -744,9 +749,7 @@ var GamePlayScene = function(game, stage)
         ]);
       },
       noop,
-      function() {
-        drawForceArrows();
-      },
+      noop,
       function() { return input_state == RESUME_INPUT; }
     ));
 
@@ -754,12 +757,12 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function() { resetBalloon(); },
       function() { fuel = 40; rope_cut = false; },
-      function() { drawForceArrows(); },
+      noop,
       function() { return camera.wx < 0.2; }
     ));
     steps.push(new Step(
       function(){
-        setDisp(1,true,true,false,false,false,false,true,true,true,true);
+        setDisp(1,1,true,true,false,false,false,false,true,true,true,true);
         pop([
           'So if a <b>balloon</b> is <b>lighter</b> than the <b>surounding air</b>, it begins to <b>float</b>.',
           'But, a <b>marble</b> is lighter than even the <b>lightest</b> hot air balloon...',
@@ -773,9 +776,7 @@ var GamePlayScene = function(game, stage)
         ]);
       },
       noop,
-      function() {
-        drawForceArrows();
-      },
+      noop,
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
@@ -793,7 +794,6 @@ var GamePlayScene = function(game, stage)
         dc.context.fillText("Drag the volume needle to change!",volume_gauge.x+volume_gauge.w/2,volume_gauge.y-50);
         volume_gauge.vis = true;
         volume_gauge.enabled = true;
-        drawForceArrows();
       },
       function() { return balloon.v > 5000 && !volume_gauge.dragging; }
     ));
@@ -806,9 +806,7 @@ var GamePlayScene = function(game, stage)
         ]);
       },
       noop,
-      function() {
-        drawForceArrows();
-      },
+      noop,
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
@@ -820,7 +818,6 @@ var GamePlayScene = function(game, stage)
       function() {
         dc.context.textAlign = "left";
         dc.context.fillText("<- Heat the balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
-        drawForceArrows();
       },
       function() {
         if(balloon.wya > 0.0005)
@@ -837,14 +834,13 @@ var GamePlayScene = function(game, stage)
       function() {
         dc.context.textAlign = "left";
         dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2);
-        drawForceArrows();
       },
       function() { return rope_cut; }
     ));
     steps.push(new Step(
       noop,
       function() { fuel = 4; },
-      function() { drawForceArrows(); },
+      noop,
       function() { if(balloon.wy > 10) { cloneObj(balloon,clone_balloon); return true; }; return false; }
     ));
     steps.push(new Step(
@@ -856,13 +852,13 @@ var GamePlayScene = function(game, stage)
         ]);
       },
       function() { balloon.t = clone_balloon.t; balloon.wx = clone_balloon.wx; balloon.wy = clone_balloon.wy; },
-      function() { drawForceArrows(); },
+      noop,
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
       function() { fuel = 4; },
       noop,
-      function() { drawForceArrows(); },
+      noop,
       function() { return balloon.wy < 0.01; }
     ));
     steps.push(new Step(
@@ -875,7 +871,7 @@ var GamePlayScene = function(game, stage)
         ]);
       },
       noop,
-      function() { drawForceArrows(); },
+      noop,
       function() { return input_state == RESUME_INPUT; }
     ));
 
@@ -885,7 +881,7 @@ var GamePlayScene = function(game, stage)
         resetBalloon();
         fuel = 40;
         rope_cut = false;
-        setDisp(1,true,true,true,true,true,true,true,true,true,true);
+        setDisp(1,1,true,true,true,true,true,true,true,true,true,true);
         outside_temp_gauge.enabled = true;
         inside_temp_gauge.enabled = true;
         weight_gauge.enabled = true;
@@ -898,7 +894,7 @@ var GamePlayScene = function(game, stage)
         fuel_gauge.enabled = true;
       },
       noop,
-      function() { drawForceArrows(); },
+      noop,
       function() { return false; }
     ));
 
@@ -926,7 +922,10 @@ var GamePlayScene = function(game, stage)
   self.tick = function()
   {
     n_ticks++;
-    part_disp = lerp(part_disp,target_part_disp,0.01);
+    if(part_disp < target_part_disp) { part_disp += 0.02; if(part_disp > 1) part_disp = 1; }
+    if(part_disp > target_part_disp) { part_disp -= 0.02; if(part_disp < 0) part_disp = 0; }
+    if(arrow_disp < target_arrow_disp) { arrow_disp += 0.02; if(arrow_disp > 1) arrow_disp = 1; }
+    if(arrow_disp > target_arrow_disp) { arrow_disp -= 0.02; if(arrow_disp < 0) arrow_disp = 0; }
 
     bmwrangler.tick();
     if(input_state == RESUME_INPUT)
@@ -1110,12 +1109,7 @@ var GamePlayScene = function(game, stage)
     }
     drawBasket(basket);
     drawBalloon(balloon);
-    //dc.context.strokeStyle = "#00FF00";
-    //drawArrow(vel_arrow);
-    //dc.context.strokeStyle = "#0000FF";
-    //drawArrow(acc_arrow);
-    //dc.context.strokeStyle = "#000000";
-    //drawArrow(arrow_separator);
+    drawForceArrows();
 
     dc.context.textAlign = "center";
     burn_pad.draw(dc);
@@ -1136,6 +1130,12 @@ var GamePlayScene = function(game, stage)
       reset_btn.draw(dc);
       dc.context.fillStyle = "#000000";
       dc.context.fillText("Reset",reset_btn.x+reset_btn.w/2,reset_btn.y+reset_btn.h/2);
+      arrows_btn.draw(dc);
+      dc.context.fillStyle = "#000000";
+      dc.context.fillText("Arrows",arrows_btn.x+arrows_btn.w/2,arrows_btn.y+arrows_btn.h/2);
+      parts_btn.draw(dc);
+      dc.context.fillStyle = "#000000";
+      dc.context.fillText("Particles",parts_btn.x+parts_btn.w/2,parts_btn.y+parts_btn.h/2);
     }
 
     dc.context.textAlign = "right";
@@ -1371,10 +1371,10 @@ var GamePlayScene = function(game, stage)
   }
   var tickAirParticles = function()
   {
-    if(part_disp == 0) return;
+    if(part_disp <= 0) return;
     var p;
     var temp = (tempForHeight(env_temp,balloon.wy)-290)/5; //~0 to ~1
-    var n_parts = min(round((15-temp)*20),air_parts.length);
+    var n_parts = min(round((15-temp)*20),air_parts.length-1);
     n_parts *= 4;
     var s = balloon.h/30;
     var minx = balloon.x-balloon.w/2-2/2;
@@ -1402,10 +1402,10 @@ var GamePlayScene = function(game, stage)
   }
   var drawAirParticles = function()
   {
-    if(part_disp == 0) return;
+    if(part_disp <= 0) return;
     var p;
     var temp = (tempForHeight(env_temp,balloon.wy)-290)/5; //~0 to ~1
-    var n_parts = min(round((15-temp)*20),air_parts.length);
+    var n_parts = min(round((15-temp)*20),air_parts.length-1);
     var br = balloon.w;
     var brsqr = br*br;
     n_parts *= 4;
@@ -1427,10 +1427,10 @@ var GamePlayScene = function(game, stage)
   }
   var tickBalloonParticles = function()
   {
-    if(part_disp == 0) return;
+    if(part_disp <= 0) return;
     var p;
     var temp = (balloon.t-290)/5; //~1 to ~14 (at same scale used by drawAirParts)
-    var n_parts = min(round((15-temp)*20),balloon_parts.length);
+    var n_parts = min(round((15-temp)*20),balloon_parts.length-1);
     var s = balloon.h/30;
     var minx = balloon.x-balloon.w/2-s/2;
     var maxx = balloon.x+balloon.w+balloon.w/2-s/2;
@@ -1458,10 +1458,10 @@ var GamePlayScene = function(game, stage)
   }
   var drawBalloonParticles = function()
   {
-    if(part_disp == 0) return;
+    if(part_disp <= 0) return;
     var p;
     var temp = (balloon.t-290)/5; //~1 to ~14 (at same scale used by drawAirParts)
-    var n_parts = min(round((15-temp)*20),balloon_parts.length);
+    var n_parts = min(round((15-temp)*20),balloon_parts.length-1);
     var br = balloon.w/2;
     var brsqr = br*br;
     var d;
@@ -1553,13 +1553,16 @@ var GamePlayScene = function(game, stage)
   }
   var drawForceArrows = function()
   {
+    if(arrow_disp <= 0) return;
     var t = (balloon.wya+0.04)/0.04;
     var bcx = balloon.x+balloon.w/2;
     var bcy = balloon.y+balloon.h/2;
+    dc.context.globalAlpha = arrow_disp;
     dc.context.drawImage(down_arrow_canv,bcx-50+t*25,bcy,100-t*50,100-t*50);
     dc.context.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
     dc.context.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
     dc.context.drawImage(up_arrow_canv,bcx-25,bcy-50,50,50);
+    dc.context.globalAlpha = 1;
   }
 
   var Gauge = function(t1,t2,x,y,w,h,mint,maxt,min,max,minvalid,maxvalid,altered)
@@ -1662,9 +1665,10 @@ var GamePlayScene = function(game, stage)
     to.colliding = from.colliding;
   }
 
-  var setDisp = function(parts,outsidet,insidet,weight,vol,dens,bouy,alt,xvel,yvel,fuel)
+  var setDisp = function(parts,arrows,outsidet,insidet,weight,vol,dens,bouy,alt,xvel,yvel,fuel)
   {
     target_part_disp = parts;
+    target_arrow_disp = arrows;
     outside_temp_gauge.vis = outsidet;
     inside_temp_gauge.vis = insidet;
     weight_gauge.vis = weight;
