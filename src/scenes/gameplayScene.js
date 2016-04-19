@@ -110,6 +110,7 @@ var GamePlayScene = function(game, stage)
   //data
   var rope_cut;
   var wind;
+  var refuel_stations;
   var part_disp;
   var target_part_disp;
   var arrow_disp;
@@ -419,6 +420,7 @@ var GamePlayScene = function(game, stage)
     wind = [];
     for(var i = 0; i < 100; i++)
       wind[i] = 0.05+psin((99-i)/20);
+    refuel_stations = [];
 
     outside_temp_gauge.vis = true;
     inside_temp_gauge.vis = true;
@@ -983,10 +985,31 @@ var GamePlayScene = function(game, stage)
       function() { return ((balloon.wy > 0 && rope_cut) || fuel <= 0); }
     ));
     steps.push(new Step(
-      noop,
-      noop,
-      noop,
-      function() { if(balloon.wy <= 0) { if(balloon.wx > game.refuel_best) game.refuel_best = balloon.wx; return true; } return false; }
+      function() { steps[cur_step].next_station = new Obj(); refuel_stations[0] = randR(500,1000); refuel_stations[1] = refuel_stations[0]+randR(500,1000); },
+      function() {
+        if(refuel_stations[0]-balloon.wx < -100) refuel_stations[0] = refuel_stations[1] + randR(500,1000);
+        if(refuel_stations[1]-balloon.wx < -100) refuel_stations[1] = refuel_stations[0] + randR(500,1000);
+        if(balloon.wy <= 0)
+        {
+          if(abs(refuel_stations[0]-balloon.wx) < 30) { fuel += 15; refuel_stations[0] = refuel_stations[1] + randR(500,1000); }
+          if(abs(refuel_stations[1]-balloon.wx) < 30) { fuel += 15; refuel_stations[1] = refuel_stations[0] + randR(500,1000); }
+        }
+      },
+      function() {
+        steps[cur_step].next_station.wx = min(refuel_stations[0],refuel_stations[1]);
+        steps[cur_step].next_station.wy = 0;
+        screenSpace(camera,dc,steps[cur_step].next_station);
+        if(steps[cur_step].next_station.x < 10) steps[cur_step].next_station.x = 10;
+        if(steps[cur_step].next_station.y < 10) steps[cur_step].next_station.y = 10;
+        if(steps[cur_step].next_station.x > dc.width -20) steps[cur_step].next_station.x = dc.width-20;
+        if(steps[cur_step].next_station.y > dc.height-20) steps[cur_step].next_station.y = dc.height-20;
+        dc.context.fillStyle = "#FF0000";
+        dc.context.fillRect(steps[cur_step].next_station.x,steps[cur_step].next_station.y,10,10);
+        dc.context.textAlign = "center";
+        dc.context.fillStyle = "#000000";
+        dc.context.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x,steps[cur_step].next_station.y-15)
+      },
+      function() { if(fuel <= 0 && balloon.wy <= 0) { if(balloon.wx > game.refuel_best) game.refuel_best = balloon.wx; return true; } return false; }
     ));
     steps.push(new Step(
       noop,
