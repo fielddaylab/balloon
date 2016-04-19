@@ -320,7 +320,7 @@ var GamePlayScene = function(game, stage)
     mgcam = new Camera();
     fgcam = new Camera();
     tickParallax();
-    grid = new Obj(0,0,100,100);
+    grid = new Obj(0,0,250,250);
     tmp = new Obj(0,0,0,0);
     shadow = new Obj(0,0,10,2);
     flame = new Obj(0,0,2,2);
@@ -1120,6 +1120,10 @@ var GamePlayScene = function(game, stage)
     for(var i = 0; i < mg.length; i++) screenSpace(mgcam,dc,mg[i]);
     for(var i = 0; i < fg.length; i++) screenSpace(fgcam,dc,fg[i]);
     screenSpace(camera,dc,ground);
+    while(grid.wx+(grid.ww/10) < camera.wx) grid.wx += grid.ww/10;
+    while(grid.wx-(grid.ww/10) > camera.wx) grid.wx -= grid.ww/10;
+    while(grid.wy+(grid.wh/10) < camera.wy) grid.wy += grid.wh/10;
+    while(grid.wy-(grid.wh/10) > camera.wy) grid.wy -= grid.wh/10;
     screenSpace(camera,dc,grid);
 
     steps[cur_step].tick();
@@ -1137,6 +1141,10 @@ var GamePlayScene = function(game, stage)
     dc.context.fillStyle = "#88FFAA";
     dc.context.fillRect(0,ground.y,dc.width,dc.height-ground.y);
     for(var i = 0; i < fg.length; i++) fg[i].draw(fg[i]);
+
+    drawGrid(grid);
+    dc.context.lineWidth = 2;
+
 
     dc.context.globalAlpha = clamp(0,1,1-(balloon.wy/20));
     drawShadow(shadow);
@@ -1568,6 +1576,7 @@ var GamePlayScene = function(game, stage)
   }
   var drawGrid = function(obj)
   {
+    dc.context.lineWidth = 0.1;
     for(var i = 0; i < 11; i++)
     {
       var x = lerp(obj.x,obj.x+obj.w,i/10);
