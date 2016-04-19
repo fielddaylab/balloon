@@ -881,7 +881,7 @@ var GamePlayScene = function(game, stage)
         resetBalloon();
         fuel = 40;
         rope_cut = false;
-        setDisp(1,1,true,true,true,true,true,true,true,true,true,true);
+        setDisp(0,0,true,true,true,true,true,true,true,true,true,true);
         outside_temp_gauge.enabled = true;
         inside_temp_gauge.enabled = true;
         weight_gauge.enabled = true;
