@@ -122,6 +122,7 @@ var GamePlayScene = function(game, stage)
   var step_forces;
   var step_density;
   var step_free;
+  var step_standard;
 
   self.ready = function()
   {
@@ -500,7 +501,7 @@ var GamePlayScene = function(game, stage)
         pop([
           'Well that was fun. You travelled '+fdisp(balloon.wx,1)+" meters!",
           'But how did it work?',
-          'Why does <b>hot air rise</b>?',
+          'Why does <b>heating the balloon</b> cause it to <b>rise</b>?',
           'Let\'s reset everything, and try again',
         ]);
       },
@@ -898,6 +899,47 @@ var GamePlayScene = function(game, stage)
       function() { return false; }
     ));
 
+    step_standard = steps.length;
+    steps.push(new Step(
+      function() {
+        resetBalloon();
+        fuel = 40;
+        rope_cut = false;
+        setDisp(0,0,true,true,true,true,true,true,true,true,true,true);
+        outside_temp_gauge.enabled = false;
+        inside_temp_gauge.enabled = false;
+        weight_gauge.enabled = false;
+        volume_gauge.enabled = false;
+        density_gauge.enabled = false;
+        bouyancy_gauge.enabled = false;
+        altitude_gauge.enabled = false;
+        xvel_gauge.enabled = false;
+        yvel_gauge.enabled = false;
+        fuel_gauge.enabled = false;
+      },
+      noop,
+      noop,
+      function() { return ((balloon.wy > 0 && rope_cut) || fuel <= 0); }
+    ));
+    steps.push(new Step(
+      noop,
+      noop,
+      noop,
+      function() { if(balloon.wy <= 0) { if(balloon.wx > game.standard_best) game.standard_best = balloon.wx; return true; } return false; }
+    ));
+    steps.push(new Step(
+      noop,
+      noop,
+      function() {
+        dc.context.textAlign = "right";
+        dc.context.fillText("Your Score:"+fdisp(balloon.wx,1)+"m",dc.width-10,30);
+        dc.context.fillText("Top Score:"+fdisp(game.standard_best,1)+"m",dc.width-10,50);
+        dc.context.fillText("(Click \"Burn\" to Try Again!)",dc.width-10,70);
+        dc.context.textAlign = "right";
+      },
+      function() { if(burn_pad.down) { cur_step = step_standard-1; return true; } return false; }
+    ));
+
     cur_step = -1;
     switch(game.start)
     {
@@ -906,6 +948,7 @@ var GamePlayScene = function(game, stage)
       case 2:cur_step = step_forces-1;break;
       case 3:cur_step = step_density-1;break;
       case 4:cur_step = step_free-1;break;
+      case 5:cur_step = step_standard-1;break;
     }
 
     self.nextStep();
