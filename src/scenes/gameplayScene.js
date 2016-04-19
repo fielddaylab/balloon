@@ -88,6 +88,7 @@ var GamePlayScene = function(game, stage)
   var burn_pad;
   var flap_pad;
   var cut_pad;
+  var menu_btn;
   var reset_btn;
   var parts_btn;
   var arrows_btn;
@@ -354,12 +355,14 @@ var GamePlayScene = function(game, stage)
     burn_pad = new ButtonBox(10,10,60,40,function(){});
     flap_pad = new ButtonBox(10,60,60,40,function(){});
     cut_pad  = new ButtonBox(10,110,60,20,function(){});
+    menu_btn   = new ButtonBox(dc.width-110,200,100,20,function(){ game.setScene(2); });
     reset_btn  = new ButtonBox(dc.width-110,110,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(3); });
     arrows_btn = new ButtonBox(dc.width-110,140,100,20,function(){ if(cur_step != step_free) return; target_arrow_disp = (target_arrow_disp+1)%2; });
     parts_btn  = new ButtonBox(dc.width-110,170,100,20,function(){ if(cur_step != step_free) return; target_part_disp = (target_part_disp+1)%2; });
     presser.register(burn_pad);
     presser.register(flap_pad);
     presser.register(cut_pad);
+    domclicker.register(menu_btn);
     domclicker.register(reset_btn);
     domclicker.register(arrows_btn);
     domclicker.register(parts_btn);
@@ -1168,6 +1171,9 @@ var GamePlayScene = function(game, stage)
       dc.context.fillText("Cut Rope",cut_pad.x+cut_pad.w/2,cut_pad.y+cut_pad.h/2);
     }
 
+    menu_btn.draw(dc);
+    dc.context.fillStyle = "#000000";
+    dc.context.fillText("Menu",menu_btn.x+menu_btn.w/2,menu_btn.y+menu_btn.h/2);
     if(cur_step == step_free)
     {
       reset_btn.draw(dc);
