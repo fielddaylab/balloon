@@ -12,6 +12,7 @@ var ChooseScene = function(game, stage)
   var btn_density;
   var btn_free;
   var btn_standard;
+  var btn_refuel;
 
   self.ready = function()
   {
@@ -23,6 +24,7 @@ var ChooseScene = function(game, stage)
     btn_density   = new ButtonBox(10,130,dc.width-20,30,function(evt){ game.start = 3; game.setScene(3); });
     btn_free      = new ButtonBox(10,170,dc.width-20,30,function(evt){ game.start = 4; game.setScene(3); });
     btn_standard  = new ButtonBox(10,210,dc.width-20,30,function(evt){ game.start = 5; game.setScene(3); });
+    btn_refuel    = new ButtonBox(10,250,dc.width-20,30,function(evt){ game.start = 6; game.setScene(3); });
 
     clicker.register(btn_intro);
     clicker.register(btn_particles);
@@ -30,6 +32,7 @@ var ChooseScene = function(game, stage)
     clicker.register(btn_density);
     clicker.register(btn_free);
     clicker.register(btn_standard);
+    clicker.register(btn_refuel);
   };
 
   self.tick = function()
@@ -46,6 +49,7 @@ var ChooseScene = function(game, stage)
     btn_density.draw(dc);   dc.context.fillStyle = "#000000"; dc.context.fillText("Density",btn_density.x+8,btn_density.y+btn_density.h-4);
     btn_free.draw(dc);      dc.context.fillStyle = "#000000"; dc.context.fillText("Free Play",btn_free.x+8,btn_free.y+btn_free.h-4);
     btn_standard.draw(dc);  dc.context.fillStyle = "#000000"; dc.context.fillText("Standard Play (Best: "+fdisp(game.standard_best,1)+"m)",btn_standard.x+8,btn_standard.y+btn_standard.h-4);
+    btn_refuel.draw(dc);    dc.context.fillStyle = "#000000"; dc.context.fillText("Refuel Play (Best: "+fdisp(game.refuel_best,1)+"m)",btn_refuel.x+8,btn_refuel.y+btn_refuel.h-4);
   };
 
   self.cleanup = function()

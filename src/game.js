@@ -12,6 +12,7 @@ var Game = function(init)
 
   self.start = 0;
   self.standard_best = 0;
+  self.refuel_best = 0;
 
   var stage = new Stage({width:init.width,height:init.height,container:init.container});
   var scenes = [new NullScene(self, stage),

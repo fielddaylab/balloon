@@ -45,6 +45,7 @@ var GamePlayScene = function(game, stage)
   var tree_canv;
   var part_canv;
   var gauge_canv;
+  var speed_canv;
   var up_arrow_canv;
   var down_arrow_canv;
   var left_arrow_canv;
@@ -124,6 +125,7 @@ var GamePlayScene = function(game, stage)
   var step_density;
   var step_free;
   var step_standard;
+  var step_refuel;
 
   self.ready = function()
   {
@@ -243,6 +245,23 @@ var GamePlayScene = function(game, stage)
     gauge_canv.context.beginPath();
     gauge_canv.context.arc(gauge_canv.width/2,gauge_canv.height/2,gauge_canv.width/2*0.9,0,2*pi);
     gauge_canv.context.stroke();
+
+    speed_canv = document.createElement('canvas');
+    speed_canv.width = 100;
+    speed_canv.height = 100;
+    speed_canv.context = speed_canv.getContext('2d');
+    speed_canv.context.strokeStyle = "#00FF00";
+    speed_canv.context.lineWidth = 20;
+    var speed_w = 30;
+    var speed_n = 3;
+    speed_canv.context.beginPath();
+    for(var i = 0; i < speed_n; i++)
+    {
+      speed_canv.context.moveTo(i*speed_w,0);
+      speed_canv.context.lineTo(speed_canv.width-((speed_n-1-i)*speed_w),speed_canv.height/2);
+      speed_canv.context.lineTo(i*speed_w,speed_canv.height);
+    }
+    speed_canv.context.stroke();
 
     up_arrow_canv = document.createElement('canvas');
     up_arrow_canv.width = 100;
@@ -943,6 +962,48 @@ var GamePlayScene = function(game, stage)
       function() { if(burn_pad.down) { cur_step = step_standard-1; return true; } return false; }
     ));
 
+    step_refuel = steps.length;
+    steps.push(new Step(
+      function() {
+        resetBalloon();
+        fuel = 40;
+        rope_cut = false;
+        setDisp(0,0,true,true,true,true,true,true,true,true,true,true);
+        outside_temp_gauge.enabled = false;
+        inside_temp_gauge.enabled = false;
+        weight_gauge.enabled = false;
+        volume_gauge.enabled = false;
+        density_gauge.enabled = false;
+        bouyancy_gauge.enabled = false;
+        altitude_gauge.enabled = false;
+        xvel_gauge.enabled = false;
+        yvel_gauge.enabled = false;
+        fuel_gauge.enabled = false;
+      },
+      noop,
+      noop,
+      function() { return ((balloon.wy > 0 && rope_cut) || fuel <= 0); }
+    ));
+    steps.push(new Step(
+      noop,
+      noop,
+      noop,
+      function() { if(balloon.wy <= 0) { if(balloon.wx > game.refuel_best) game.refuel_best = balloon.wx; return true; } return false; }
+    ));
+    steps.push(new Step(
+      noop,
+      noop,
+      function() {
+        dc.context.textAlign = "right";
+        dc.context.fillText("Your Score:"+fdisp(balloon.wx,1)+"m",dc.width-10,30);
+        dc.context.fillText("Top Score:"+fdisp(game.refuel_best,1)+"m",dc.width-10,50);
+        dc.context.fillText("(Click \"Burn\" to Try Again!)",dc.width-10,70);
+        dc.context.textAlign = "right";
+      },
+      function() { if(burn_pad.down) { cur_step = step_refuel-1; return true; } return false; }
+    ));
+
+
     cur_step = -1;
     switch(game.start)
     {
@@ -952,6 +1013,7 @@ var GamePlayScene = function(game, stage)
       case 3:cur_step = step_density-1;break;
       case 4:cur_step = step_free-1;break;
       case 5:cur_step = step_standard-1;break;
+      case 6:cur_step = step_refuel-1;break;
     }
 
     self.nextStep();
@@ -1407,24 +1469,28 @@ var GamePlayScene = function(game, stage)
     tmp.w = 1;
     tmp.h = 1;
     worldSpace(camera,dc,tmp);
-    var maxy = Math.ceil(tmp.wy);
+    var maxy = min(wind.length,Math.ceil(tmp.wy)+4);
     tmp.y = dc.height-1;
     worldSpace(camera,dc,tmp);
-    var miny = Math.floor(tmp.wy);
+    var miny = max(0,Math.floor(tmp.wy)-4);
 
     tmp.wx = camera.wx;
     tmp.wy = 0;
     tmp.ww = camera.ww;
     tmp.wh = 1;
 
-    var x;
-    for(var i = miny; i < maxy+1 && i < wind.length; i++)
+    var a;
+    for(var i = miny; i < maxy; i++)
     {
-      x = (wind[i]*20*n_ticks)%dc.width;
+      if(i%4 != 0) continue;
+      a = (wind[i]-0.55)*2;
+      if(a < 0) continue;
+      dc.context.globalAlpha = a;
       tmp.wy = i;
       screenSpace(camera,dc,tmp);
-      dc.context.fillRect(x,tmp.y,10,tmp.h);
+      dc.context.drawImage(speed_canv,dc.width/2-5+a*80-40,tmp.y,10*3,tmp.h*3);
     }
+    dc.context.globalAlpha = 1;
   }
   var tickAirParticles = function()
   {
