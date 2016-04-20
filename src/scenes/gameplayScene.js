@@ -110,6 +110,7 @@ var GamePlayScene = function(game, stage)
   //data
   var rope_cut;
   var wind;
+  var boost;
   var refuel_stations;
   var part_disp;
   var target_part_disp;
@@ -420,6 +421,10 @@ var GamePlayScene = function(game, stage)
     wind = [];
     for(var i = 0; i < 100; i++)
       wind[i] = 0.05+psin((99-i)/20);
+    boost = new Obj();
+    boost.wy = randR(30,100);
+    boost.wx = randR(100,400);
+    boost.wh = 1;
     refuel_stations = [];
 
     outside_temp_gauge.vis = true;
@@ -1166,6 +1171,8 @@ var GamePlayScene = function(game, stage)
 
     if(balloon.wy <= 0 || !rope_cut) balloon.wxv = 0;
     else                             balloon.wxv = lerp(balloon.wxv,wind[min(floor(balloon.wy),wind.length-1)],0.1);
+    if(balloon.wx-boost.wx > 100) { boost.wx = boost.wx+randR(200,500); boost.wy = randR(30,100); }
+    //if(abs(balloon.wx-boost.wx) < 10 && abs(balloon.wy-boost.wy) < 20) { balloon.wxv += 10; boost.wx = boost.wx+randR(200,500); boost.wy = randR(30,100); }
 
     vel_arrow.wx = balloon.wx-1;
     vel_arrow.wy = balloon.wy;
@@ -1294,6 +1301,7 @@ var GamePlayScene = function(game, stage)
     drawShadow(shadow);
     dc.context.globalAlpha = 1;
     drawWind();
+    //drawBoost();
     drawAirParticles();
     if(burn_pad.down && fuel > 0) drawFlame(flame);
     if(!rope_cut)
@@ -1577,6 +1585,11 @@ var GamePlayScene = function(game, stage)
     }
     dc.context.globalAlpha = 1;
   }
+  var drawBoost = function()
+  {
+    screenSpace(camera,dc,boost);
+    dc.context.drawImage(speed_canv,boost.x,boost.y,10*5,boost.h*5);
+  }
   var tickAirParticles = function()
   {
     if(part_disp <= 0) return;
@@ -1829,6 +1842,8 @@ var GamePlayScene = function(game, stage)
 
   var resetState = function()
   {
+    boost.wy = randR(30,100);
+    boost.wx = randR(100,400);
     fuel = 40;
     rope_cut = false;
     env_temp = default_env_temp;
