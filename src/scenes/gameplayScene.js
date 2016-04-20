@@ -1343,16 +1343,19 @@ var GamePlayScene = function(game, stage)
     dc.context.fillStyle = "#000000";
     dc.context.fillText(fdisp(balloon.wx,1)+"m",dc.width-10,12);
 
-    drawGauge(outside_temp_gauge);
-    drawGauge(inside_temp_gauge);
-    drawGauge(weight_gauge);
-    drawGauge(volume_gauge);
+    dc.context.fillStyle = "#000000";
+    dc.context.textAlign = "center";
+    drawGauge(outside_temp_gauge); if(outside_temp_gauge.vis) drawAroundDecimal(dc,outside_temp_gauge.x+outside_temp_gauge.w/2,outside_temp_gauge.y+outside_temp_gauge.h/2+15,round((env_temp*(9/5)-459)*100)/100,"","°F");
+    drawGauge(inside_temp_gauge);  if(inside_temp_gauge.vis)  drawAroundDecimal(dc,inside_temp_gauge.x+inside_temp_gauge.w/2,inside_temp_gauge.y+inside_temp_gauge.h/2+15,round((balloon.t*(9/5)-459)*100)/100,"","°F")
+    dc.context.textAlign = "center";
+    drawGauge(weight_gauge);       if(weight_gauge.vis) dc.context.fillText(round((balloon.m+balloon.bm)/1000)+"kg",weight_gauge.x+weight_gauge.w/2,weight_gauge.y+weight_gauge.h/2+15)
+    drawGauge(volume_gauge);       if(volume_gauge.vis) dc.context.fillText(round(balloon.v)+"m3",volume_gauge.x+volume_gauge.w/2,volume_gauge.y+volume_gauge.h/2+15)
     drawGauge(density_gauge);
     drawGauge(bouyancy_gauge);
-    drawGauge(altitude_gauge);
-    drawGauge(xvel_gauge);
-    drawGauge(yvel_gauge);
-    drawGauge(fuel_gauge);
+    drawGauge(altitude_gauge);     if(altitude_gauge.vis)  drawAroundDecimal(dc,altitude_gauge.x+altitude_gauge.w/2,altitude_gauge.y+altitude_gauge.h/2+15,fdisp(balloon.wy,2),"","m")
+    drawGauge(xvel_gauge);         if(xvel_gauge.vis)  drawAroundDecimal(dc,xvel_gauge.x+xvel_gauge.w/2,xvel_gauge.y+xvel_gauge.h/2+15,fdisp(balloon.wxv*fps,2),"","m/s")
+    drawGauge(yvel_gauge);         if(yvel_gauge.vis)  drawAroundDecimal(dc,yvel_gauge.x+yvel_gauge.w/2,yvel_gauge.y+yvel_gauge.h/2+15,fdisp(balloon.wyv*fps,2),"","m/s")
+    drawGauge(fuel_gauge);         if(fuel_gauge.vis)  drawAroundDecimal(dc,fuel_gauge.x+fuel_gauge.w/2,fuel_gauge.y+fuel_gauge.h/2+15,fdisp(fuel,2),"","G")
 
 /*
     var o = new Obj();
@@ -1701,13 +1704,6 @@ var GamePlayScene = function(game, stage)
   {
     dc.context.drawImage(balloon_canv,obj.x,obj.y,obj.w,obj.h);
     drawBalloonParticles();
-    dc.context.fillStyle = "#000000";
-    dc.context.textAlign = "right";
-    var dispTemp = round((obj.t*(9/5)-459)*100)/100; //nn.nn
-    dc.context.fillText(floor(dispTemp)+".",obj.x+obj.w/2,obj.y+obj.h/2-1);
-    dc.context.textAlign = "left";
-    var decString = (round((dispTemp-floor(dispTemp))*100)/100)+"°";
-    dc.context.fillText(decString.substring(decString.indexOf(".")+1),obj.x+obj.w/2,obj.y+obj.h/2-1);
   }
   var drawPipe = function(obj)
   {

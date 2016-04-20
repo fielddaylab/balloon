@@ -358,3 +358,14 @@ function drawArrow(canv,sx,sy,ex,ey,w)
   canv.context.stroke();
 }
 
+function drawAroundDecimal(canv,x,y,val,prepend,append)
+{
+  var macro = floor(val);
+  var vstring = val+"";
+  var micro = vstring.substring(vstring.indexOf(".")+1);
+  canv.context.textAlign = "right";
+  canv.context.fillText(prepend+macro+".",x,y);
+  canv.context.textAlign = "left";
+  canv.context.fillText(micro+append,x,y);
+}
+
