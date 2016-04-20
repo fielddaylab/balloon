@@ -339,3 +339,22 @@ function noop(){}
 function ffunc(){return false;}
 function tfunc(){return true;}
 
+function drawArrow(canv,sx,sy,ex,ey,w)
+{
+  var dx = ex-sx;
+  var dy = ey-sy;
+  var dd = Math.sqrt(dx*dx+dy*dy);
+  var ox = -dy;
+  var oy = dx;
+  var od = Math.sqrt(ox*ox+oy*oy);
+  var ox = (ox/od)*w;
+  var oy = (oy/od)*w;
+  canv.context.beginPath();
+  canv.context.moveTo(sx,sy);
+  canv.context.lineTo(ex,ey);
+  canv.context.lineTo(sx+(dx/dd*(dd-w))+ox,sy+(dy/dd*(dd-w))+oy);
+  canv.context.moveTo(ex,ey);
+  canv.context.lineTo(sx+(dx/dd*(dd-w))-ox,sy+(dy/dd*(dd-w))-oy);
+  canv.context.stroke();
+}
+

@@ -979,13 +979,52 @@ var GamePlayScene = function(game, stage)
         xvel_gauge.enabled = false;
         yvel_gauge.enabled = false;
         fuel_gauge.enabled = false;
+        steps[cur_step].next_station = new Obj();
+        refuel_stations[0] = randR(100,200);
+        refuel_stations[1] = refuel_stations[0]+randR(500,1000);
       },
       noop,
-      noop,
+      function() {
+        steps[cur_step].next_station.wx = min(refuel_stations[0],refuel_stations[1]);
+        steps[cur_step].next_station.wy = 0;
+        screenSpace(camera,dc,steps[cur_step].next_station);
+        var off = false;
+        if(steps[cur_step].next_station.x < 10) { off = true; steps[cur_step].next_station.x = 10; }
+        if(steps[cur_step].next_station.y < 10) { off = true; steps[cur_step].next_station.y = 10; }
+        if(steps[cur_step].next_station.x > dc.width -20) { off = true; steps[cur_step].next_station.x = dc.width-20; }
+        if(steps[cur_step].next_station.y > dc.height-90) { off = true; steps[cur_step].next_station.y = dc.height-90; }
+        if(off)
+        {
+          dc.context.strokeStyle = "#FF0000";
+
+          var sx = balloon.x+balloon.w/2;
+          var sy = balloon.y+balloon.h/2;
+          var ex = steps[cur_step].next_station.x+5;
+          var ey = steps[cur_step].next_station.y+5;
+          var dx = ex-sx;
+          var dy = ey-sy;
+          var dd = Math.sqrt(dx*dx+dy*dy);
+
+          sx = sx + (dx/dd)*(dd-40);
+          sy = sy + (dy/dd)*(dd-40);
+
+          drawArrow(dc,sx,sy,ex,ey,10);
+          dc.context.strokeStyle = "#000000";
+        }
+        else
+        {
+          dc.context.fillStyle = "#FF0000";
+          dc.context.fillRect(steps[cur_step].next_station.x,steps[cur_step].next_station.y,10,10);
+        }
+        dc.context.textAlign = "center";
+        dc.context.fillStyle = "#000000";
+        dc.context.fillText("Refuel Station",steps[cur_step].next_station.x,steps[cur_step].next_station.y-30)
+        dc.context.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x,steps[cur_step].next_station.y-15)
+      },
       function() { return ((balloon.wy > 0 && rope_cut) || fuel <= 0); }
     ));
     steps.push(new Step(
-      function() { steps[cur_step].next_station = new Obj(); refuel_stations[0] = randR(500,1000); refuel_stations[1] = refuel_stations[0]+randR(500,1000); },
+      function() { steps[cur_step].next_station = steps[cur_step-1].next_station; refuel_stations[0] = randR(100,200); refuel_stations[1] = refuel_stations[0]+randR(500,1000); },
       function() {
         if(refuel_stations[0]-balloon.wx < -100) refuel_stations[0] = refuel_stations[1] + randR(500,1000);
         if(refuel_stations[1]-balloon.wx < -100) refuel_stations[1] = refuel_stations[0] + randR(500,1000);
@@ -999,14 +1038,37 @@ var GamePlayScene = function(game, stage)
         steps[cur_step].next_station.wx = min(refuel_stations[0],refuel_stations[1]);
         steps[cur_step].next_station.wy = 0;
         screenSpace(camera,dc,steps[cur_step].next_station);
-        if(steps[cur_step].next_station.x < 10) steps[cur_step].next_station.x = 10;
-        if(steps[cur_step].next_station.y < 10) steps[cur_step].next_station.y = 10;
-        if(steps[cur_step].next_station.x > dc.width -20) steps[cur_step].next_station.x = dc.width-20;
-        if(steps[cur_step].next_station.y > dc.height-20) steps[cur_step].next_station.y = dc.height-20;
-        dc.context.fillStyle = "#FF0000";
-        dc.context.fillRect(steps[cur_step].next_station.x,steps[cur_step].next_station.y,10,10);
+        var off = false;
+        if(steps[cur_step].next_station.x < 10) { off = true; steps[cur_step].next_station.x = 10; }
+        if(steps[cur_step].next_station.y < 10) { off = true; steps[cur_step].next_station.y = 10; }
+        if(steps[cur_step].next_station.x > dc.width -20) { off = true; steps[cur_step].next_station.x = dc.width-20; }
+        if(steps[cur_step].next_station.y > dc.height-90) { off = true; steps[cur_step].next_station.y = dc.height-90; }
+        if(off)
+        {
+          dc.context.strokeStyle = "#FF0000";
+
+          var sx = balloon.x+balloon.w/2;
+          var sy = balloon.y+balloon.h/2;
+          var ex = steps[cur_step].next_station.x+5;
+          var ey = steps[cur_step].next_station.y+5;
+          var dx = ex-sx;
+          var dy = ey-sy;
+          var dd = Math.sqrt(dx*dx+dy*dy);
+
+          sx = sx + (dx/dd)*(dd-40);
+          sy = sy + (dy/dd)*(dd-40);
+
+          drawArrow(dc,sx,sy,ex,ey,10);
+          dc.context.strokeStyle = "#000000";
+        }
+        else
+        {
+          dc.context.fillStyle = "#FF0000";
+          dc.context.fillRect(steps[cur_step].next_station.x,steps[cur_step].next_station.y,10,10);
+        }
         dc.context.textAlign = "center";
         dc.context.fillStyle = "#000000";
+        dc.context.fillText("Refuel Station",steps[cur_step].next_station.x,steps[cur_step].next_station.y-30)
         dc.context.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x,steps[cur_step].next_station.y-15)
       },
       function() { if(fuel <= 0 && balloon.wy <= 0) { if(balloon.wx > game.refuel_best) game.refuel_best = balloon.wx; return true; } return false; }
@@ -1646,13 +1708,6 @@ var GamePlayScene = function(game, stage)
     dc.context.textAlign = "left";
     var decString = (round((dispTemp-floor(dispTemp))*100)/100)+"°";
     dc.context.fillText(decString.substring(decString.indexOf(".")+1),obj.x+obj.w/2,obj.y+obj.h/2-1);
-  }
-  var drawArrow = function(obj)
-  {
-    dc.context.beginPath();
-    dc.context.moveTo(obj.x      +obj.w/2,obj.y      -obj.h/2);
-    dc.context.lineTo(obj.x+obj.w+obj.w/2,obj.y+obj.h-obj.h/2);
-    dc.context.stroke();
   }
   var drawPipe = function(obj)
   {
