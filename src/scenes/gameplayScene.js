@@ -396,7 +396,7 @@ var GamePlayScene = function(game, stage)
     weight_gauge       = new Gauge("","Weight",             w*2,dc.height-w*7/9,w,w,mint,maxt,2200000,3000000,0,99999999999999,function(v){ balloon.bm = v-balloon.m; });
     volume_gauge       = new Gauge("","Volume",             w*3,dc.height-w*7/9,w,w,mint,maxt,500,8000,1,999999999999999999999,function(v){ balloon.v = v; balloon.ww = sqrt(balloon.v/(balloon.wh)); });
     density_gauge      = new Gauge("","Density",            w*4,dc.height-w*7/9,w,w,mint,maxt,950,1200,1,999999999999999999999,function(v){ });
-    bouyancy_gauge     = new Gauge("Net","Force",           w*5,dc.height-w*7/9,w,w,mint,maxt,-.03,.03,-999999999,99999999999,function(v){ balloon.wya = v; });
+    bouyancy_gauge     = new Gauge("Net","Force",           w*5,dc.height-w*7/9,w,w,mint,maxt,-.02,.02,-999999999,99999999999,function(v){ balloon.wya = v; });
     altitude_gauge     = new Gauge("","Altitude",           w*6,dc.height-w*7/9,w,w,mint,maxt,0,100,-999999999,99999999999,function(v){ balloon.wy = v; });
     xvel_gauge         = new Gauge("Horizontal","Velocity", w*7,dc.height-w*7/9,w,w,mint,maxt,-1,1,-999999999,99999999999,function(v){ balloon.wxv = v; });
     yvel_gauge         = new Gauge("Vertical","Velocity",   w*8,dc.height-w*7/9,w,w,mint,maxt,-.2,.2,-999999999,99999999999,function(v){ balloon.wyv = v; });
