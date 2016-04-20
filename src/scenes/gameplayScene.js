@@ -1688,6 +1688,8 @@ var GamePlayScene = function(game, stage)
     dc.context.beginPath();
     dc.context.moveTo(g.cx,g.cy);
     var t = mapVal(g.min,g.max,g.mint,g.maxt,g.val);
+    if(t > g.maxt) t = g.maxt;
+    if(t < g.mint) t = g.mint;
     dc.context.lineTo(g.cx+cos(t)*g.r,g.cy+sin(t)*g.r);
     dc.context.stroke();
     dc.context.fillStyle = "#000000";
