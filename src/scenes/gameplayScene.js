@@ -6,7 +6,6 @@ var GamePlayScene = function(game, stage)
   //config
   var part_damp = 0.2;
 
-  var n_pipes;
   var gravity = 9.8; //m/s^2
   var default_env_temp = 295; //k (72f = 295k)
   var env_temp = default_env_temp;
@@ -76,7 +75,6 @@ var GamePlayScene = function(game, stage)
   var vel_arrow;
   var acc_arrow;
   var arrow_separator;
-  var pipes;
   var balloon_parts;
   var air_parts;
 
@@ -112,6 +110,7 @@ var GamePlayScene = function(game, stage)
   var rope_cut;
   var wind;
   var boost;
+  var pipe;
   var refuel_stations;
   var part_disp;
   var target_part_disp;
@@ -130,13 +129,11 @@ var GamePlayScene = function(game, stage)
   var step_free;
   var step_standard;
   var step_refuel;
+  var step_flappy;
   var step_meditate;
 
   self.ready = function()
   {
-    //config
-    n_pipes = 10;
-
     //state
     rope_cut = false;
     fuel = 40;
@@ -368,8 +365,6 @@ var GamePlayScene = function(game, stage)
       air_parts.push(new Part());
     initAirParticles();
 
-    pipes = []; for(var i = 0; i < n_pipes; i++) pipes.push(new Obj(i*50,(rand()*2-1)*10,5,20));
-
     bgsep = 10; bg = []; for(var i = 0; i < 30; i++) { bg.push(new Obj(i*bgsep+rand0()*bgsep, rand0()*5+10,  3,  2)); bg[i].draw = drawCloud;    } bgi = 0;
     mgsep = 50; mg = []; for(var i = 0; i < 10; i++) { mg.push(new Obj(i*mgsep+rand0()*mgsep, rand0()*2+ 3, 10, 10)); mg[i].draw = drawMountain; } mgi = 0;
     fgsep = 20; fg = []; for(var i = 0; i < 30; i++) { fg.push(new Obj(i*fgsep+rand0()*fgsep, rand0()*1+-1,  8,  8)); fg[i].draw = drawTree;     } fgi = 0;
@@ -429,6 +424,11 @@ var GamePlayScene = function(game, stage)
     boost.wy = randR(30,100);
     boost.wx = randR(100,400);
     boost.wh = 1;
+    pipe = new Obj();
+    pipe.wy = randR(30,100);
+    pipe.wx = randR(100,400);
+    pipe.ww = 20;
+    pipe.wh = 40;
     refuel_stations = [];
 
     outside_temp_gauge.vis = true;
@@ -1102,6 +1102,63 @@ var GamePlayScene = function(game, stage)
       function() { if(retry_btn.down) { cur_step = step_refuel-1; return true; } return false; }
     ));
 
+    step_flappy = steps.length;
+    steps.push(new Step(
+      function() {
+        resetState();
+        resetBalloon();
+        setDisp(0,0,true,true,true,true,true,true,true,true,true,false)
+      },
+      function()
+      {
+        fuel = 40;
+
+        if(balloon.wx-pipe.wx > 100) { pipe.wx = pipe.wx+randR(200,500); pipe.wy = randR(30,100); }
+        if(abs(balloon.wx-pipe.wx) < 10 && (balloon.wy-pipe.wy > 20 || pipe.wy-balloon.wy > 10))
+        {
+          balloon.wxv = 0;
+          balloon.wx = pipe.wx-10;
+        }
+      },
+      function()
+      {
+        dc.context.strokeStyle = "#FF0000";
+
+        screenSpace(camera,dc,pipe);
+
+        dc.context.fillStyle = "#008800";
+        dc.context.fillRect(pipe.x,0,pipe.w,pipe.y);
+        dc.context.fillRect(pipe.x,pipe.y+pipe.h,pipe.w,dc.height-pipe.y-pipe.h);
+
+        var off = false;
+        if(pipe.x+pipe.w/2 < 10) { off = true; pipe.x = 10-pipe.w/2; }
+        if(pipe.y+pipe.h/2 < 10) { off = true; pipe.y = 10-pipe.h/2; }
+        if(pipe.x+pipe.w/2 > dc.width -20) { off = true; pipe.x = dc.width-20-pipe.w/2; }
+        if(pipe.y+pipe.h/2 > dc.height-90) { off = true; pipe.y = dc.height-90-pipe.h/2; }
+        if(off)
+        {
+          var sx = balloon.x+balloon.w/2;
+          var sy = balloon.y+balloon.h/2;
+          var ex = pipe.x+pipe.w/2;
+          var ey = pipe.y+pipe.h/2;
+          var dx = ex-sx;
+          var dy = ey-sy;
+          var dd = Math.sqrt(dx*dx+dy*dy);
+
+          sx = sx + (dx/dd)*(dd-40);
+          sy = sy + (dy/dd)*(dd-40);
+
+          drawArrow(dc,sx,sy,ex,ey,10);
+          dc.context.strokeStyle = "#000000";
+        }
+        dc.context.textAlign = "center";
+        dc.context.fillStyle = "#000000";
+        dc.context.fillText("Pipe Opening",pipe.x+pipe.w/2,pipe.y+pipe.h/2-30)
+        dc.context.fillText(fdisp((pipe.wx-balloon.wx),1)+"m",pipe.x+pipe.w/2,pipe.y+pipe.h/2-15)
+      },
+      function() { return false; }
+    ));
+
     step_meditate = steps.length;
     steps.push(new Step(
       function() {
@@ -1124,7 +1181,8 @@ var GamePlayScene = function(game, stage)
       case 4:cur_step = step_free-1;break;
       case 5:cur_step = step_standard-1;break;
       case 6:cur_step = step_refuel-1;break;
-      case 7:cur_step = step_meditate-1;break;
+      case 7:cur_step = step_flappy-1;break;
+      case 8:cur_step = step_meditate-1;break;
     }
 
     self.nextStep();
@@ -1225,10 +1283,6 @@ var GamePlayScene = function(game, stage)
     ground.ww = 1;
     ground.wh = 2;
 
-    //collision
-    for(var i = 0; i < n_pipes; i++)
-      pipes[i].colliding = queryRectCollide(balloon,pipes[i]);
-
     //cam track
     camera.wx = lerp(camera.wx,balloon.wx,0.1);
     if(balloon.wy > 20) //20+
@@ -1290,7 +1344,6 @@ var GamePlayScene = function(game, stage)
     screenSpace(camera,dc,vel_arrow);
     screenSpace(camera,dc,acc_arrow);
     screenSpace(camera,dc,arrow_separator);
-    for(var i = 0; i < n_pipes;   i++) screenSpace(camera,dc,pipes[i]);
     for(var i = 0; i < bg.length; i++) screenSpace(bgcam,dc,bg[i]);
     for(var i = 0; i < mg.length; i++) screenSpace(mgcam,dc,mg[i]);
     for(var i = 0; i < fg.length; i++) screenSpace(fgcam,dc,fg[i]);
@@ -1747,12 +1800,6 @@ var GamePlayScene = function(game, stage)
     dc.context.drawImage(balloon_canv,obj.x,obj.y,obj.w,obj.h);
     drawBalloonParticles();
   }
-  var drawPipe = function(obj)
-  {
-    if(obj.colliding) dc.context.fillStyle = "#FF5500";
-    else              dc.context.fillStyle = "#005500";
-    dc.context.fillRect(obj.x,obj.y,obj.w,obj.h);
-  }
   var drawGrid = function(obj)
   {
     dc.context.lineWidth = 0.1;
@@ -1871,6 +1918,8 @@ var GamePlayScene = function(game, stage)
 
   var resetState = function()
   {
+    pipe.wy = randR(30,100);
+    pipe.wx = randR(100,400);
     boost.wy = randR(30,100);
     boost.wx = randR(100,400);
     fuel = 40;
