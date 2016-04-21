@@ -442,9 +442,9 @@ var GamePlayScene = function(game, stage)
       function(){
         setDisp(0,0,true,true,false,false,false,false,false,false,false,false);
         pop([
-        'Hey there!',
-        'This is a hot Air Balloon.',
-        'Let\'s see how this thing works!',
+        "Hey there!",
+        "This is a hot Air Balloon.",
+        "Let's see how this thing works!",
         ]);
       },
       noop,
@@ -484,7 +484,7 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function() {
         pop([
-          'We\'ve heated the ballon just enough to generate some <b>upward lift</b>!',
+          "We've heated the ballon just enough to generate some <b>upward lift</b>!",
           "<b>Cut the anchor rope</b> and let us go!</b>",
         ]);
       },
@@ -507,11 +507,11 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function() {
         pop([
-          'And off we go!',
-          'Ok enough talking... I\'ll let you fly around for now.',
-          '<b>To fly:</b><br />Press <b>burn</b> to <b>increase the temperature inside the balloon</b>,<br />open the <b>flap</b> to <b>release hot air</b>,<br />and be sure to <b>watch your fuel consumption</b>!',
-          'I\'ll be waiting on the ground!',
-          '(See how long you can fly!)',
+          "And off we go!",
+          "Ok enough talking... I'll let you fly around for now.",
+          "<b>To fly:</b><br />Press <b>burn</b> to <b>increase the temperature inside the balloon</b>,<br />open the <b>flap</b> to <b>release hot air</b>,<br />and be sure to <b>watch your fuel consumption</b>!",
+          "I'll be waiting on the ground!",
+          "(See how long you can fly!)",
         ]);
       },
       function() { balloon.t = clone_balloon.t; balloon.wx = clone_balloon.wx; balloon.wy = clone_balloon.wy; },
@@ -533,10 +533,10 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function(){
         pop([
-          'Well that was fun. You travelled '+fdisp(balloon.wx,1)+" meters!",
-          'But how did it work?',
-          'Why does <b>heating the balloon</b> cause it to <b>rise</b>?',
-          'Let\'s reset everything, and try again',
+          "Well that was fun. You travelled "+fdisp(balloon.wx,1)+" meters!",
+          "But how did it work?",
+          "Why does <b>heating the balloon</b> cause it to <b>rise</b>?",
+          "Let's reset everything, and try again",
         ]);
       },
       noop,
@@ -555,11 +555,11 @@ var GamePlayScene = function(game, stage)
       function(){
         setDisp(1,0,true,true,false,false,false,false,true,true,true,true);
         pop([
-          'We\'ve <b>reset the temperature</b> inside the balloon (so it\'s equal to the temperature <b>outside</b> the balloon).',
-          'We\'re also <b>visualizing</b> the air particles <b>bouncing around</b> both <b>inside</b> <i>and</i> <b>outside</b> of the balloon.',
-          'See how <b>all the particles</b> are moving at just about <b>the same speed</b>?',
-          'Try to <b>get the balloon off the ground</b> again.',
-          'This time, <b>watch how the air particles are affected</b>.',
+          "We've <b>reset the temperature</b> inside the balloon (so it's equal to the temperature <b>outside</b> the balloon).",
+          "We're also <b>visualizing</b> the air particles <b>bouncing around</b> both <b>inside</b> <i>and</i> <b>outside</b> of the balloon.",
+          "See how <b>all the particles</b> are moving at just about <b>the same speed</b>?",
+          "Try to <b>get the balloon off the ground</b> again.",
+          "This time, <b>watch how the air particles are affected</b>.",
         ]);
       },
       noop,
@@ -568,18 +568,18 @@ var GamePlayScene = function(game, stage)
     ));
     steps.push(new Step(
       function() { },
-      function() { rope_cut = false; },
+      function() { rope_cut = false; if(fuel < 4) fuel = 4; },
       function() { dc.context.textAlign = "left"; dc.context.fillText("<- Hold to heat balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); clone_fuel = fuel; return true; } return false; }
     ));
     steps.push(new Step(
       function() {
         pop([
-          'See how the <b>air particles inside the balloon</b> are <b>moving faster</b>?',
-          'When air (or anything, really) gets <b>heated</b>, its molecules <b>jiggle very quickly</b>.',
-          'Molecules that are <b>bouncing all over the place</b> create <b>higher pressure within the balloon</b>.',
-          'This <b>higher pressure</b> pushes the air <b>out</b> of the balloon, making the balloon <b>much lighter than the surrounding air</b>.',
-          'And just like a <b>life vest</b> in <b>water</b>, the <b>balloon</b> begins to <b>float</b> in <b>air</b>!',
+          "See how the <b>air particles inside the balloon</b> are <b>moving faster</b>?",
+          "When air (or anything, really) gets <b>heated</b>, its molecules <b>jiggle very quickly</b>.",
+          "Molecules that are <b>bouncing all over the place</b> create <b>higher pressure within the balloon</b>.",
+          "This <b>higher pressure</b> pushes the air <b>out</b> of the balloon, making the balloon <b>much lighter than the surrounding air</b>.",
+          "And just like a <b>life vest</b> in <b>water</b>, the <b>balloon</b> begins to <b>float</b> in <b>air</b>!",
         ]);
       },
       function() { rope_cut = false; fuel = clone_fuel; balloon.t = clone_balloon.t; },
@@ -594,7 +594,7 @@ var GamePlayScene = function(game, stage)
     ));
     steps.push(new Step(
       noop,
-      noop,
+      function() { fuel = clone_fuel; },
       noop,
       function() { if(balloon.wy > 10) { cloneObj(balloon,clone_balloon); return true; }; return false; }
     ));
@@ -602,11 +602,11 @@ var GamePlayScene = function(game, stage)
       function() {
         fuel = 4;
         pop([
-          'But wait, <i>why do <b>lighter</b> things <b>float</b></i>?',
-          'Ok ok. I\'ll let you get to flying.',
-          'Again, I\'ll be waiting for you on the ground!',
-          'See if you can get further than last time!',
-          '(Pro Tip- don\'t burn through all your fuel at once!)',
+          "But wait, <i>why do <b>lighter</b> things <b>float</b></i>?",
+          "Ok ok. I'll let you get to flying.",
+          "Again, I'll be waiting for you on the ground!",
+          "See if you can get further than last time!",
+          "(Pro Tip- don't burn through all your fuel at once!)",
         ]);
       },
       function() { balloon.t = clone_balloon.t; balloon.wx = clone_balloon.wx; balloon.wy = clone_balloon.wy; },
@@ -622,12 +622,12 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function() {
         pop([
-          'And you\'re back!',
-          'This time, you travelled '+fdisp(balloon.wx,1)+" meters.",
-          'But let\'s get back to that question:',
-          '<i>Why do <b>lighter</b> things <b>float</b></i>?',
-          'Maybe surprisingly, the answer is actually <b>gravity</b>.',
-          'Let\'s reset, and look at this again.',
+          "And you're back!",
+          "This time, you travelled "+fdisp(balloon.wx,1)+" meters.",
+          "But let's get back to that question:",
+          "<i>Why do <b>lighter</b> things <b>float</b></i>?",
+          "Maybe surprisingly, the answer is actually <b>gravity</b>.",
+          "Let's reset, and look at this again.",
         ]);
       },
       noop,
@@ -646,10 +646,10 @@ var GamePlayScene = function(game, stage)
       function(){
         setDisp(1,0,true,true,false,false,false,false,true,true,true,true);
         pop([
-          'Ok. So <b>gravity</b> is the reason hot air balloons <b>float</b>?',
-          'How does that make sense?',
-          'Well, we know that <b>gravity</b> pulls <b>down</b> on <b>everything</b> (at least while on planet Earth, anyways...).',
-          '(That is, <b>gravity applies a downward force</b>.)',
+          "Ok. So <b>gravity</b> is the reason hot air balloons <b>float</b>?",
+          "How does that make sense?",
+          "Well, we know that <b>gravity</b> pulls <b>down</b> on <b>everything</b> (at least while on planet Earth, anyways...).",
+          "(That is, <b>gravity applies a downward force</b>.)",
         ]);
       },
       noop,
@@ -671,8 +671,8 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function(){
         pop([
-          'But gravity doesn\'t just apply to <b>big</b> objects-',
-          'It also applies to all of those little air particles!',
+          "But gravity doesn't just apply to <b>big</b> objects-",
+          "It also applies to all of those little air particles!",
         ]);
       },
       noop,
@@ -700,9 +700,9 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function(){
         pop([
-          'Everything is being pulled down, but there is only so much space to be pulled down to!',
-          'All the little air particles are trying to wedge themselves <b>as low as they can</b>,',
-          'This creates a small <b>upward force</b> on the balloon.',
+          "Everything is being pulled down, but there is only so much space to be pulled down to!",
+          "All the little air particles are trying to wedge themselves <b>as low as they can</b>,",
+          "This creates a small <b>upward force</b> on the balloon.",
         ]);
       },
       noop,
@@ -720,9 +720,9 @@ var GamePlayScene = function(game, stage)
         steps[cur_step].t = 0;
         target_arrow_disp = 1;
         pop([
-          'But because the <b>balloon</b> is <b>heavier</b> than the <b>air particles trying to get under it</b>,',
-          'the baloon\'s gravity "wins" the struggle to <b>be pulled down</b>, and <b>stays on the ground</b>.',
-          'But what would happen if we were to <b>make the balloon lighter</b>?',
+          "But because the <b>balloon</b> is <b>heavier</b> than the <b>air particles trying to get under it</b>,",
+          "the baloon's gravity \"wins\" the struggle to <b>be pulled down</b>, and <b>stays on the ground</b>.",
+          "But what would happen if we were to <b>make the balloon lighter</b>?",
         ]);
       },
       function() { steps[cur_step].t++; if(steps[cur_step].t > 100) steps[cur_step].t = 100;},
@@ -739,8 +739,8 @@ var GamePlayScene = function(game, stage)
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
-      noop,
-      function() { fuel = 4; rope_cut = false; },
+      function() { fuel = 40; },
+      function() { if(fuel < 4) fuel = 4; rope_cut = false; },
       function() {
         dc.context.textAlign = "left";
         dc.context.fillText("<- Heat the balloon",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
@@ -750,11 +750,12 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function() {
         pop([
-          'The <b>upward force on the balloon</b> created by the <b>downward force on the surrounding air particles</b> is now <b>greater</b> then the <b>downward force of gravity on the balloon</b>!',
-          'When the upward force is even <b>just a little bigger</b> than the downward force, it means the balloon will <b>start to rise</b>.',
-          'If we <b>keep this temperature in the balloon</b> (which will maintain its weight), the balloon will <b>continue to rise, forever</b>.',
-          '(Thankfully, <b>heat naturally escapes</b> from the balloon, letting <b>more air back in</b>, and <b>increasing the weight</b>.)',
-          'Again, try to get as far as you can! Maybe you can use the visualization of <b>the forces acting on the balloon</b> to help you!',
+          "The <b>upward force on the balloon</b> created by the <b>downward force on the surrounding air particles</b> is now <b>greater</b> then the <b>downward force of gravity on the balloon</b>!",
+          "When the upward force is even <b>just a little bigger</b> than the downward force, it means the balloon will <b>start to rise</b>.",
+          "If we <b>keep this temperature in the balloon</b> (thus, maintaining its lighter-than-air weight), the balloon will <b>continue to rise, forever</b>.",
+          "Thankfully, <b>heat naturally escapes</b> from the balloon, letting <b>more air back in</b>, and <b>increasing the weight</b>.",
+          "You can accelerate this process by <b>opening the flap</b> near the top of the balloon. The temperature inside the balloon will <b>quickly decrease</b>, making the balloon <b>heavier</b>, and causing it to <b>sink</b>.",
+          "Again, try to get as far as you can!",
         ]);
       },
       function() { rope_cut = false; fuel = clone_fuel; balloon.t = clone_balloon.t; },
@@ -763,7 +764,7 @@ var GamePlayScene = function(game, stage)
     ));
     steps.push(new Step(
       function() { fuel = 4; },
-      function() { balloon.t = clone_balloon.t; },
+      function() { fuel = 4; balloon.t = clone_balloon.t; },
       function() {
         dc.context.textAlign = "left";
         dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2);
@@ -779,8 +780,10 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function() {
         pop([
-          'This time, you were able to travel '+fdisp(balloon.wx,1)+" meters!",
-          'Let\'s reset again.',
+          "This time, you were able to travel "+fdisp(balloon.wx,1)+" meters!",
+          "Notice that, while <b>floating at a constant height</b>, the <b>downward force</b> and the <b>upward force</b> on the balloon stayed about equal?",
+          "When this is the case, the object in suspension is said to be <b>neutrally bouyant</b>- it won't change its velocity up or down.",
+          "Let's reset again.",
         ]);
       },
       noop,
@@ -799,15 +802,15 @@ var GamePlayScene = function(game, stage)
       function(){
         setDisp(1,1,true,true,false,false,false,false,true,true,true,true);
         pop([
-          'So if a <b>balloon</b> is <b>lighter</b> than the <b>surounding air</b>, it begins to <b>float</b>.',
-          'But, a <b>marble</b> is lighter than even the <b>lightest</b> hot air balloon...',
-          '<i>Why doesn\'t <b>it</b> float?</i>',
-          'The reason is that, when we say "<i>lighter than the surrounding air</i>",',
-          'we really mean "<i>lighter than the surrounding air <b>of the same size</b></i>".',
-          'A <b>marble-sized</b> ball of air is <i>much</i> lighter than a marble...',
-          'so the marble "<b>sinks</b>" in the air!',
-          'Knowing this, we can -rather than alter the balloon\'s weight- <b>increase it\'s volume</b> to generate lift!',
-          'Let\'s try that out!',
+          "So if a <b>balloon</b> is <b>lighter</b> than the <b>surounding air</b>, it begins to <b>float</b>.",
+          "But, a <b>marble</b> is lighter than even the <b>lightest</b> hot air balloon...",
+          "<i>Why doesn't <b>it</b> float?</i>",
+          "The reason is that, when we say \"<i>lighter than the surrounding air</i>\",",
+          "we really mean \"<i>lighter than the surrounding air <b>of the same size</b></i>\".",
+          "A <b>marble-sized</b> ball of air is <i>much</i> lighter than a marble...",
+          "so the marble \"<b>sinks</b>\" in the air!",
+          "Knowing this, we can -rather than alter the balloon's weight- <b>increase its volume</b> to generate lift!",
+          "Let's try that out!",
         ]);
       },
       noop,
@@ -815,9 +818,9 @@ var GamePlayScene = function(game, stage)
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
-      noop,
+      function() { fuel = 40; },
       function() {
-        fuel = 4;
+        fuel = 40;
         balloon.t = env_temp;
         burn_pad.unpress();
         rope_cut = false;
@@ -835,9 +838,9 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function(){
         pop([
-          'See how <b>increasing the volume</b> brings <b>the force of gravity</b> <i>closer</i> to <b>the upward force of the surrounding particles</b>?',
-          'We\'ll still need to <b>heat the air in the balloon</b> just a bit-',
-          'But because we now have <b>more air to heat</b>, we <b>won\'t need to heat it as much!',
+          "See how <b>increasing the volume</b> brings <b>the force of gravity</b> <i>closer</i> to <b>the upward force of the surrounding particles</b>?",
+          "We'll still need to <b>heat the air in the balloon</b> just a bit-",
+          "But because we now have <b>more air to heat</b>, we <b>won't need to heat it as much!",
         ]);
       },
       noop,
@@ -845,9 +848,9 @@ var GamePlayScene = function(game, stage)
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
-      noop,
+      function() { fuel = 40; },
       function() {
-        fuel = 4;
+        if(fuel < 4) fuel = 4;
         rope_cut = false;
       },
       function() {
@@ -865,7 +868,7 @@ var GamePlayScene = function(game, stage)
     ));
     steps.push(new Step(
       function() { fuel = 4; },
-      function() { balloon.t = clone_balloon.t; },
+      function() { fuel = 4; balloon.t = clone_balloon.t; },
       function() {
         dc.context.textAlign = "left";
         dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2);
@@ -882,8 +885,8 @@ var GamePlayScene = function(game, stage)
       function() {
         fuel = 4;
         pop([
-          'Ok- One Last Time. See how far you can get!',
-          '(This time, you can alter the volume mid-flight!)',
+          "Ok- One Last Time. See how far you can get!",
+          "(This time, you can alter the volume mid-flight!)",
         ]);
       },
       function() { balloon.t = clone_balloon.t; balloon.wx = clone_balloon.wx; balloon.wy = clone_balloon.wy; },
@@ -899,10 +902,10 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function() {
         pop([
-          'Your distance: '+fdisp(balloon.wx,1)+" meters.",
-          'Good Work!',
-          'From now on, you can freely play around with whatever gauges you want!',
-          'Good Luck!',
+          "Your distance: "+fdisp(balloon.wx,1)+" meters.",
+          "Good Work!",
+          "From now on, you can freely play around with whatever gauges you want!",
+          "Good Luck!",
         ]);
       },
       noop,
