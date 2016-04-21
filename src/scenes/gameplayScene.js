@@ -1114,11 +1114,6 @@ var GamePlayScene = function(game, stage)
         fuel = 40;
 
         if(balloon.wx-pipe.wx > 100) { pipe.wx = pipe.wx+randR(200,500); pipe.wy = randR(30,100); }
-        if(abs(balloon.wx-pipe.wx) < 10 && (balloon.wy-pipe.wy > 20 || pipe.wy-balloon.wy > 10))
-        {
-          balloon.wxv = 0;
-          balloon.wx = pipe.wx-10;
-        }
       },
       function()
       {
@@ -1156,7 +1151,39 @@ var GamePlayScene = function(game, stage)
         dc.context.fillText("Pipe Opening",pipe.x+pipe.w/2,pipe.y+pipe.h/2-30)
         dc.context.fillText(fdisp((pipe.wx-balloon.wx),1)+"m",pipe.x+pipe.w/2,pipe.y+pipe.h/2-15)
       },
-      function() { return false; }
+      function() {
+        if(abs(balloon.wx-pipe.wx) < 10 && (balloon.wy-pipe.wy > 20 || pipe.wy-balloon.wy > 10))
+        {
+          if(pipe.wx-10 > game.flappy_best)
+            game.flappy_best = pipe.wx-10;
+          return true;
+        }
+        return false;
+      }
+    ));
+    steps.push(new Step(
+      noop,
+      function() {
+        balloon.wxv = 0;
+        balloon.wx = pipe.wx-10;
+        burn_pad.unpress();
+      },
+      function() {
+        screenSpace(camera,dc,pipe);
+
+        dc.context.fillStyle = "#008800";
+        dc.context.fillRect(pipe.x,0,pipe.w,pipe.y);
+        dc.context.fillRect(pipe.x,pipe.y+pipe.h,pipe.w,dc.height-pipe.y-pipe.h);
+
+        retry_btn.draw(dc);
+        dc.context.fillStyle = "#000000";
+        dc.context.textAlign = "right";
+        dc.context.fillText("Your Score:"+fdisp(balloon.wx,1)+"m",dc.width-10,30);
+        dc.context.fillText("Top Score:"+fdisp(game.flappy_best,1)+"m",dc.width-10,50);
+        dc.context.textAlign = "center";
+        dc.context.fillText("Retry",retry_btn.x+retry_btn.w/2,retry_btn.y+retry_btn.h/2);
+      },
+      function() { if(retry_btn.down) { cur_step = step_flappy-1; return true; } return false; }
     ));
 
     step_meditate = steps.length;
