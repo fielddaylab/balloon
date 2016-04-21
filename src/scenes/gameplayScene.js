@@ -91,6 +91,7 @@ var GamePlayScene = function(game, stage)
   var flap_pad;
   var cut_pad;
   var menu_btn;
+  var retry_btn;
   var reset_btn;
   var parts_btn;
   var arrows_btn;
@@ -379,12 +380,14 @@ var GamePlayScene = function(game, stage)
     flap_pad = new ButtonBox(10,60,60,40,function(){});
     cut_pad  = new ButtonBox(10,110,60,20,function(){});
     menu_btn   = new ButtonBox(dc.width-110,200,100,20,function(){ game.setScene(2); });
+    retry_btn  = new ButtonBox(dc.width-110, 80,100,20,function(){ });
     reset_btn  = new ButtonBox(dc.width-110,110,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(3); });
     arrows_btn = new ButtonBox(dc.width-110,140,100,20,function(){ if(cur_step != step_free) return; target_arrow_disp = (target_arrow_disp+1)%2; });
     parts_btn  = new ButtonBox(dc.width-110,170,100,20,function(){ if(cur_step != step_free) return; target_part_disp = (target_part_disp+1)%2; });
     presser.register(burn_pad);
     presser.register(flap_pad);
     presser.register(cut_pad);
+    presser.register(retry_btn);
     domclicker.register(menu_btn);
     domclicker.register(reset_btn);
     domclicker.register(arrows_btn);
@@ -960,13 +963,15 @@ var GamePlayScene = function(game, stage)
       noop,
       noop,
       function() {
+        retry_btn.draw(dc);
+        dc.context.fillStyle = "#000000";
         dc.context.textAlign = "right";
         dc.context.fillText("Your Score:"+fdisp(balloon.wx,1)+"m",dc.width-10,30);
         dc.context.fillText("Top Score:"+fdisp(game.standard_best,1)+"m",dc.width-10,50);
-        dc.context.fillText("(Click \"Burn\" to Try Again!)",dc.width-10,70);
-        dc.context.textAlign = "right";
+        dc.context.textAlign = "center";
+        dc.context.fillText("Retry",retry_btn.x+retry_btn.w/2,retry_btn.y+retry_btn.h/2);
       },
-      function() { if(burn_pad.down) { cur_step = step_standard-1; return true; } return false; }
+      function() { if(retry_btn.down) { cur_step = step_standard-1; return true; } return false; }
     ));
 
     step_refuel = steps.length;
@@ -1083,13 +1088,15 @@ var GamePlayScene = function(game, stage)
       noop,
       noop,
       function() {
+        retry_btn.draw(dc);
+        dc.context.fillStyle = "#000000";
         dc.context.textAlign = "right";
         dc.context.fillText("Your Score:"+fdisp(balloon.wx,1)+"m",dc.width-10,30);
         dc.context.fillText("Top Score:"+fdisp(game.refuel_best,1)+"m",dc.width-10,50);
-        dc.context.fillText("(Click \"Burn\" to Try Again!)",dc.width-10,70);
-        dc.context.textAlign = "right";
+        dc.context.textAlign = "center";
+        dc.context.fillText("Retry",retry_btn.x+retry_btn.w/2,retry_btn.y+retry_btn.h/2);
       },
-      function() { if(burn_pad.down) { cur_step = step_refuel-1; return true; } return false; }
+      function() { if(retry_btn.down) { cur_step = step_refuel-1; return true; } return false; }
     ));
 
     step_meditate = steps.length;
