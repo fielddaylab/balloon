@@ -129,6 +129,7 @@ var GamePlayScene = function(game, stage)
   var step_free;
   var step_standard;
   var step_refuel;
+  var step_meditate;
 
   self.ready = function()
   {
@@ -1091,6 +1092,18 @@ var GamePlayScene = function(game, stage)
       function() { if(burn_pad.down) { cur_step = step_refuel-1; return true; } return false; }
     ));
 
+    step_meditate = steps.length;
+    steps.push(new Step(
+      function() {
+        resetState();
+        resetBalloon();
+        setDisp(0,0,false,false,false,false,false,false,false,false,false,false);
+      },
+      function() { fuel = 40; },
+      noop,
+      function() { return false; }
+    ));
+
     cur_step = -1;
     switch(game.start)
     {
@@ -1101,6 +1114,7 @@ var GamePlayScene = function(game, stage)
       case 4:cur_step = step_free-1;break;
       case 5:cur_step = step_standard-1;break;
       case 6:cur_step = step_refuel-1;break;
+      case 7:cur_step = step_meditate-1;break;
     }
 
     self.nextStep();
@@ -1349,7 +1363,8 @@ var GamePlayScene = function(game, stage)
 
     dc.context.textAlign = "right";
     dc.context.fillStyle = "#000000";
-    dc.context.fillText(fdisp(balloon.wx,1)+"m",dc.width-10,12);
+    if(cur_step != step_meditate)
+      dc.context.fillText(fdisp(balloon.wx,1)+"m",dc.width-10,12);
 
     dc.context.fillStyle = "#000000";
     dc.context.textAlign = "center";
@@ -1595,8 +1610,9 @@ var GamePlayScene = function(game, stage)
     if(part_disp <= 0) return;
     var p;
     var temp = (tempForHeight(env_temp,balloon.wy)-290)/5; //~0 to ~1
-    var n_parts = min(round((15-temp)*20),air_parts.length-1);
+    var n_parts = round((15-temp)*20);
     n_parts *= 4;
+    n_parts = min(n_parts,air_parts.length-1);
     var s = balloon.h/30;
     var minx = balloon.x-balloon.w/2-2/2;
     var maxx = balloon.x+balloon.w+balloon.w/2-2/2;
@@ -1626,10 +1642,11 @@ var GamePlayScene = function(game, stage)
     if(part_disp <= 0) return;
     var p;
     var temp = (tempForHeight(env_temp,balloon.wy)-290)/5; //~0 to ~1
-    var n_parts = min(round((15-temp)*20),air_parts.length-1);
+    var n_parts = round((15-temp)*20);
     var br = balloon.w;
     var brsqr = br*br;
     n_parts *= 4;
+    n_parts = min(n_parts,air_parts.length-1);
     var d;
 
     for(var i = 0; i < n_parts; i++)
@@ -1651,7 +1668,8 @@ var GamePlayScene = function(game, stage)
     if(part_disp <= 0) return;
     var p;
     var temp = (balloon.t-290)/5; //~1 to ~14 (at same scale used by drawAirParts)
-    var n_parts = min(round((15-temp)*20),balloon_parts.length-1);
+    var n_parts = round((15-temp)*20);
+    n_parts = min(n_parts,balloon_parts.length-1);
     var s = balloon.h/30;
     var minx = balloon.x-balloon.w/2-s/2;
     var maxx = balloon.x+balloon.w+balloon.w/2-s/2;
@@ -1682,7 +1700,8 @@ var GamePlayScene = function(game, stage)
     if(part_disp <= 0) return;
     var p;
     var temp = (balloon.t-290)/5; //~1 to ~14 (at same scale used by drawAirParts)
-    var n_parts = min(round((15-temp)*20),balloon_parts.length-1);
+    var n_parts = round((15-temp)*20);
+    n_parts = min(n_parts,balloon_parts.length-1);
     var br = balloon.w/2;
     var brsqr = br*br;
     var d;
