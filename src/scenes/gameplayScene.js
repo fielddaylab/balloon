@@ -175,8 +175,8 @@ var GamePlayScene = function(game, stage)
     basket_canv.context.stroke();
 
     balloon_canv = document.createElement('canvas');
-    balloon_canv.width = 100;
-    balloon_canv.height = 100;
+    balloon_canv.width = 250;
+    balloon_canv.height = 250;
     balloon_canv.context = balloon_canv.getContext('2d');
     balloon_canv.context.fillStyle = "#FF0000";
     balloon_canv.context.beginPath();
@@ -224,8 +224,8 @@ var GamePlayScene = function(game, stage)
     part_canv.context.fill();
 
     gauge_canv = document.createElement('canvas');
-    gauge_canv.width = 100;
-    gauge_canv.height = 100;
+    gauge_canv.width = 150;
+    gauge_canv.height = 150;
     gauge_canv.context = gauge_canv.getContext('2d');
     gauge_canv.context.fillStyle = "#000000";
     gauge_canv.context.beginPath();
@@ -233,19 +233,19 @@ var GamePlayScene = function(game, stage)
     gauge_canv.context.fill();
     var mint = pi*(3/4);
     var maxt = pi*(9/4);
-    gauge_canv.context.fillStyle = "#FFFFFF";
+    gauge_canv.context.fillStyle = "#FF0000";
     gauge_canv.context.beginPath();
     gauge_canv.context.arc(gauge_canv.width/2,gauge_canv.height/2,gauge_canv.width/2*0.9,0,2*pi);
     gauge_canv.context.fill();
-    gauge_canv.context.fillStyle = "#88FF88";
+    gauge_canv.context.fillStyle = "#FFFFFF";
     gauge_canv.context.beginPath();
     gauge_canv.context.moveTo(gauge_canv.width/2,gauge_canv.height/2)
     gauge_canv.context.arc(gauge_canv.width/2,gauge_canv.height/2,gauge_canv.width/2,mint,maxt);
     gauge_canv.context.fill();
     gauge_canv.context.strokeStyle = "#000000";
-    gauge_canv.context.lineWidth = 8;
+    gauge_canv.context.lineWidth = 10;
     gauge_canv.context.beginPath();
-    gauge_canv.context.arc(gauge_canv.width/2,gauge_canv.height/2,gauge_canv.width/2*0.9,0,2*pi);
+    gauge_canv.context.arc(gauge_canv.width/2,gauge_canv.height/2,gauge_canv.width/2-gauge_canv.context.lineWidth/2,0,2*pi);
     gauge_canv.context.stroke();
 
     speed_canv = document.createElement('canvas');
@@ -336,7 +336,7 @@ var GamePlayScene = function(game, stage)
 
     camera = new Camera();
     camera.wh = 30;
-    camera.ww = camera.wh*2;
+    camera.ww = camera.wh/9*16;
     bgcam = new Camera();
     mgcam = new Camera();
     fgcam = new Camera();
@@ -371,9 +371,9 @@ var GamePlayScene = function(game, stage)
     centerGrounds();
     ground = new Obj();
 
-    burn_pad = new ButtonBox(10,10,60,40,function(){});
-    flap_pad = new ButtonBox(10,60,60,40,function(){});
-    cut_pad  = new ButtonBox(10,110,60,20,function(){});
+    burn_pad = new ButtonBox(10,dc.height-100,60,40,function(){});
+    flap_pad = new ButtonBox(10,dc.height-50,60,40,function(){});
+    cut_pad  = new ButtonBox(dc.width-70,dc.height-50,60,40,function(){});
     menu_btn   = new ButtonBox(dc.width-110,200,100,20,function(){ game.setScene(2); });
     retry_btn  = new ButtonBox(dc.width-110, 80,100,20,function(){ });
     reset_btn  = new ButtonBox(dc.width-110,110,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(3); });
@@ -388,19 +388,21 @@ var GamePlayScene = function(game, stage)
     domclicker.register(arrows_btn);
     domclicker.register(parts_btn);
 
-    var w = dc.width/10;
+    var b = 20;
+    var w = (dc.width-(b*2))/10;
+    var p = 20;
     var mint = pi*(3/4);
     var maxt = pi*(9/4);
-    outside_temp_gauge = new Gauge("Outside","Temp",        w*0,dc.height-w*7/9,w,w,mint,maxt,280,380,0,999,function(v){ env_temp = v; });
-    inside_temp_gauge  = new Gauge("Balloon","Temp",        w*1,dc.height-w*7/9,w,w,mint,maxt,280,380,0,999,function(v){ balloon.t = v; });
-    weight_gauge       = new Gauge("","Weight",             w*2,dc.height-w*7/9,w,w,mint,maxt,2200000,3000000,0,99999999999999,function(v){ balloon.bm = v-balloon.m; });
-    volume_gauge       = new Gauge("","Volume",             w*3,dc.height-w*7/9,w,w,mint,maxt,500,8000,1,999999999999999999999,function(v){ balloon.v = v; balloon.ww = sqrt(balloon.v/(balloon.wh)); });
-    density_gauge      = new Gauge("","Density",            w*4,dc.height-w*7/9,w,w,mint,maxt,950,1200,1,999999999999999999999,function(v){ });
-    bouyancy_gauge     = new Gauge("Net","Force",           w*5,dc.height-w*7/9,w,w,mint,maxt,-.02,.02,-999999999,99999999999,function(v){ balloon.wya = v; });
-    altitude_gauge     = new Gauge("","Altitude",           w*6,dc.height-w*7/9,w,w,mint,maxt,0,100,-999999999,99999999999,function(v){ balloon.wy = v; });
-    xvel_gauge         = new Gauge("Horizontal","Velocity", w*7,dc.height-w*7/9,w,w,mint,maxt,-1,1,-999999999,99999999999,function(v){ balloon.wxv = v; });
-    yvel_gauge         = new Gauge("Vertical","Velocity",   w*8,dc.height-w*7/9,w,w,mint,maxt,-.2,.2,-999999999,99999999999,function(v){ balloon.wyv = v; });
-    fuel_gauge         = new Gauge("","Fuel",               w*9,dc.height-w*7/9,w,w,mint,maxt,0,40,0,99999999999,function(v){ fuel = v; });
+    outside_temp_gauge = new Gauge("Outside","Temp",        w*0+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,280,380,0,999,function(v){ env_temp = v; });
+    inside_temp_gauge  = new Gauge("Balloon","Temp",        w*1+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,280,380,0,999,function(v){ balloon.t = v; });
+    weight_gauge       = new Gauge("","Weight",             w*2+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,2200000,3000000,0,99999999999999,function(v){ balloon.bm = v-balloon.m; });
+    volume_gauge       = new Gauge("","Volume",             w*3+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,500,8000,1,999999999999999999999,function(v){ balloon.v = v; balloon.ww = sqrt(balloon.v/(balloon.wh)); });
+    density_gauge      = new Gauge("","Density",            w*4+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,950,1200,1,999999999999999999999,function(v){ });
+    bouyancy_gauge     = new Gauge("Net","Force",           w*5+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,-.02,.02,-999999999,99999999999,function(v){ balloon.wya = v; });
+    altitude_gauge     = new Gauge("","Altitude",           w*6+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,0,100,-999999999,99999999999,function(v){ balloon.wy = v; });
+    xvel_gauge         = new Gauge("Horizontal","Velocity", w*7+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,-1,1,-999999999,99999999999,function(v){ balloon.wxv = v; });
+    yvel_gauge         = new Gauge("Vertical","Velocity",   w*8+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,-.2,.2,-999999999,99999999999,function(v){ balloon.wyv = v; });
+    fuel_gauge         = new Gauge("","Fuel",               w*9+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,0,40,0,99999999999,function(v){ fuel = v; });
 
     dragger.register(outside_temp_gauge);
     dragger.register(inside_temp_gauge);
@@ -1333,7 +1335,7 @@ var GamePlayScene = function(game, stage)
       camera.wh = lerp(camera.wh,30,0.01);
       camera.wy = lerp(camera.wy,0,0.1);
     }
-    camera.ww = camera.wh*2;
+    camera.ww = camera.wh/9*16;
 
     outside_temp_gauge.val = env_temp;
     inside_temp_gauge.val = balloon.t;
@@ -1458,17 +1460,17 @@ var GamePlayScene = function(game, stage)
 
     dc.context.fillStyle = "#000000";
     dc.context.textAlign = "center";
-    drawGauge(outside_temp_gauge); if(outside_temp_gauge.vis) drawAroundDecimal(dc,outside_temp_gauge.x+outside_temp_gauge.w/2,outside_temp_gauge.y+outside_temp_gauge.h/2+15,round((env_temp*(9/5)-459)*100)/100,"","°F");
-    drawGauge(inside_temp_gauge);  if(inside_temp_gauge.vis)  drawAroundDecimal(dc,inside_temp_gauge.x+inside_temp_gauge.w/2,inside_temp_gauge.y+inside_temp_gauge.h/2+15,round((balloon.t*(9/5)-459)*100)/100,"","°F")
+    drawGauge(outside_temp_gauge); if(outside_temp_gauge.vis) drawAroundDecimal(dc,outside_temp_gauge.x+outside_temp_gauge.w/2,outside_temp_gauge.y-10,round((env_temp*(9/5)-459)*100)/100,"","°F");
+    drawGauge(inside_temp_gauge);  if(inside_temp_gauge.vis)  drawAroundDecimal(dc,  inside_temp_gauge.x+inside_temp_gauge.w/2, inside_temp_gauge.y-10,round((balloon.t*(9/5)-459)*100)/100,"","°F")
     dc.context.textAlign = "center";
-    drawGauge(weight_gauge);       if(weight_gauge.vis) dc.context.fillText(round((balloon.m+balloon.bm)/1000)+"kg",weight_gauge.x+weight_gauge.w/2,weight_gauge.y+weight_gauge.h/2+15)
-    drawGauge(volume_gauge);       if(volume_gauge.vis) dc.context.fillText(round(balloon.v)+"m3",volume_gauge.x+volume_gauge.w/2,volume_gauge.y+volume_gauge.h/2+15)
+    drawGauge(weight_gauge);       if(weight_gauge.vis) dc.context.fillText(round((balloon.m+balloon.bm)/1000)+"kg",weight_gauge.x+weight_gauge.w/2,weight_gauge.y-10)
+    drawGauge(volume_gauge);       if(volume_gauge.vis) dc.context.fillText(                  round(balloon.v)+"m3",volume_gauge.x+volume_gauge.w/2,volume_gauge.y-10)
     drawGauge(density_gauge);
     drawGauge(bouyancy_gauge);
-    drawGauge(altitude_gauge);     if(altitude_gauge.vis)  drawAroundDecimal(dc,altitude_gauge.x+altitude_gauge.w/2,altitude_gauge.y+altitude_gauge.h/2+15,fdisp(balloon.wy,2),"","m")
-    drawGauge(xvel_gauge);         if(xvel_gauge.vis)  drawAroundDecimal(dc,xvel_gauge.x+xvel_gauge.w/2,xvel_gauge.y+xvel_gauge.h/2+15,fdisp(balloon.wxv*fps,2),"","m/s")
-    drawGauge(yvel_gauge);         if(yvel_gauge.vis)  drawAroundDecimal(dc,yvel_gauge.x+yvel_gauge.w/2,yvel_gauge.y+yvel_gauge.h/2+15,fdisp(balloon.wyv*fps,2),"","m/s")
-    drawGauge(fuel_gauge);         if(fuel_gauge.vis)  drawAroundDecimal(dc,fuel_gauge.x+fuel_gauge.w/2,fuel_gauge.y+fuel_gauge.h/2+15,fdisp(fuel,2),"","G")
+    drawGauge(altitude_gauge);     if(altitude_gauge.vis) drawAroundDecimal(dc,altitude_gauge.x+altitude_gauge.w/2,altitude_gauge.y-10,fdisp(balloon.wy,2),"","m")
+    drawGauge(xvel_gauge);         if(xvel_gauge.vis)     drawAroundDecimal(dc,        xvel_gauge.x+xvel_gauge.w/2,    xvel_gauge.y-10,fdisp(balloon.wxv*fps,2),"","m/s")
+    drawGauge(yvel_gauge);         if(yvel_gauge.vis)     drawAroundDecimal(dc,        yvel_gauge.x+yvel_gauge.w/2,    yvel_gauge.y-10,fdisp(balloon.wyv*fps,2),"","m/s")
+    drawGauge(fuel_gauge);         if(fuel_gauge.vis)     drawAroundDecimal(dc,        fuel_gauge.x+fuel_gauge.w/2,    fuel_gauge.y-10,fdisp(fuel,2),"","G")
 
 /*
     var o = new Obj();
@@ -1861,8 +1863,8 @@ var GamePlayScene = function(game, stage)
     dc.context.stroke();
     dc.context.fillStyle = "#000000";
     dc.context.textAlign = "center";
-    dc.context.fillText(g.t1,g.x+g.w/2,g.y-5-12);
-    dc.context.fillText(g.t2,g.x+g.w/2,g.y-5);
+    dc.context.fillText(g.t1,g.x+g.w/2,g.y+g.h+12);
+    dc.context.fillText(g.t2,g.x+g.w/2,g.y+g.h+12+12);
   }
   var drawForceArrows = function()
   {

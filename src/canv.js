@@ -33,7 +33,7 @@ var Canv = function(init)
   self.context.lineWidth   = init.lineWidth;
   self.context.font        = init.font;
 
-  self.context.imageSmoothingEnabled = self.smoothing;
+  self.context.imageSmoothingEnabled = true;
 };
 Canv.prototype.clear = function()
 {
