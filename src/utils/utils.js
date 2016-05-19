@@ -362,7 +362,10 @@ function drawAroundDecimal(canv,x,y,val,prepend,append)
 {
   var macro = floor(val);
   var vstring = val+"";
-  var micro = vstring.substring(vstring.indexOf(".")+1);
+  var i = vstring.indexOf(".");
+  var micro;
+  if(i == -1) micro = "0";
+  else micro = vstring.substring(i+1);
   canv.context.textAlign = "right";
   canv.context.fillText(prepend+macro+".",x,y);
   canv.context.textAlign = "left";
