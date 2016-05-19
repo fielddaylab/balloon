@@ -161,8 +161,8 @@ var GamePlayScene = function(game, stage)
     flame_canv.context.fill();
 
     basket_canv = document.createElement('canvas');
-    basket_canv.width = 100;
-    basket_canv.height = 100;
+    basket_canv.width = 200;
+    basket_canv.height = 200;
     basket_canv.context = basket_canv.getContext('2d');
     basket_canv.context.fillStyle = "#AA8833";
     basket_canv.context.fillRect(basket_canv.width/3,basket_canv.height*3/4,basket_canv.width/3,basket_canv.height/4);
@@ -193,30 +193,30 @@ var GamePlayScene = function(game, stage)
     cloud_canv.context.fill();
 
     mountain_canv = document.createElement('canvas');
-    mountain_canv.width = 100;
-    mountain_canv.height = 100;
+    mountain_canv.width = 200;
+    mountain_canv.height = 200;
     mountain_canv.context = mountain_canv.getContext('2d');
     mountain_canv.context.fillStyle = "#888888";
     mountain_canv.context.beginPath();
-    mountain_canv.context.moveTo(0,100);
-    mountain_canv.context.lineTo(50,0);
-    mountain_canv.context.lineTo(100,100);
+    mountain_canv.context.moveTo(0,mountain_canv.height);
+    mountain_canv.context.lineTo(mountain_canv.width/2,0);
+    mountain_canv.context.lineTo(mountain_canv.width,mountain_canv.height);
     mountain_canv.context.fill();
 
     tree_canv = document.createElement('canvas');
-    tree_canv.width = 100;
-    tree_canv.height = 100;
+    tree_canv.width = 200;
+    tree_canv.height = 200;
     tree_canv.context = tree_canv.getContext('2d');
     tree_canv.context.fillStyle = "#996655";
-    tree_canv.context.fillRect(40,20,20,80);
+    tree_canv.context.fillRect(tree_canv.width/2-tree_canv.width/10,tree_canv.height/5,tree_canv.width/5,tree_canv.width*0.8);
     tree_canv.context.fillStyle = "#00FF00";
     tree_canv.context.beginPath();
     tree_canv.context.arc(tree_canv.width/2,tree_canv.height/3,tree_canv.width/3,0,2*pi);
     tree_canv.context.fill();
 
     part_canv = document.createElement('canvas');
-    part_canv.width = 4;
-    part_canv.height = 4;
+    part_canv.width = 40;
+    part_canv.height = 40;
     part_canv.context = part_canv.getContext('2d');
     part_canv.context.fillStyle = "#FFFFFF";
     part_canv.context.beginPath();
@@ -388,9 +388,9 @@ var GamePlayScene = function(game, stage)
     domclicker.register(arrows_btn);
     domclicker.register(parts_btn);
 
-    var b = 20;
+    var b = 40;
     var w = (dc.width-(b*2))/10;
-    var p = 20;
+    var p = 15;
     var mint = pi*(3/4);
     var maxt = pi*(9/4);
     outside_temp_gauge = new Gauge("Outside","Temp",        w*0+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,280,380,0,999,function(v){ env_temp = v; });
