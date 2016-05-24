@@ -143,7 +143,7 @@ var GamePlayScene = function(game, stage)
     grid = new Obj(0,0,250,250,0);
     tmp = new Obj(0,0,0,0,0);
     shadow = new Obj(0,0,10,2,0);
-    flame = new Obj(0,0,2,2,0);
+    flame = new Obj(0,0,2,4,0);
     basket = new Obj(0,0,10,10,0);
     balloon = new Obj(0,0,13,13,0);
     //balloon.t = 340;
@@ -1211,7 +1211,6 @@ var GamePlayScene = function(game, stage)
     drawWind();
     //drawBoost();
     drawAirParticles();
-    if(burn_pad.down && fuel > 0) drawFlame(flame);
     if(!rope_cut)
     {
       ctx.beginPath();
@@ -1636,7 +1635,7 @@ var GamePlayScene = function(game, stage)
   }
   var drawFlame = function(obj)
   {
-    ctx.drawImage(flame_canv,obj.x,obj.y,obj.w,obj.h);
+    ctx.drawImage(fire_img,obj.x,obj.y,obj.w,obj.h);
   }
   var drawShadow = function(obj)
   {
@@ -1648,7 +1647,9 @@ var GamePlayScene = function(game, stage)
   }
   var drawBalloon = function(obj)
   {
-    ctx.drawImage(balloon_canv,obj.x,obj.y,obj.w,obj.h);
+    ctx.drawImage(balloon_back_img,obj.x,obj.y,obj.w,obj.h);
+    if(burn_pad.down && fuel > 0) drawFlame(flame);
+    ctx.drawImage(balloon_img,obj.x,obj.y,obj.w,obj.h);
     drawBalloonParticles();
   }
   var drawGrid = function(obj)

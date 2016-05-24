@@ -220,3 +220,16 @@ gauge_img.src = "assets/gauge.png";
 var needle_img = new Image();
 needle_img.src = "assets/needle.png";
 
+var balloon_img = new Image();
+balloon_img.src = "assets/balloon.png";
+var balloon_back_img = new Image();
+balloon_back_img.src = "assets/balloon_back.png";
+
+var fire_img = new Image();
+fire_img.src = "assets/fire.png";
+
+var rope_img = new Image();
+rope_img.src = "assets/rope.png";
+var rope_cut_img = new Image();
+rope_cut_img.src = "assets/rope_cut.png";
+

@@ -38,6 +38,11 @@ var LoadingScene = function(game, stage)
     img_srcs.push("assets/grass.png");
     img_srcs.push("assets/gauge.png");
     img_srcs.push("assets/needle.png");
+    img_srcs.push("assets/balloon.png");
+    img_srcs.push("assets/balloon_back.png");
+    img_srcs.push("assets/fire.png");
+    img_srcs.push("assets/rope.png");
+    img_srcs.push("assets/rope_cut.png");
     for(var i = 0; i < img_srcs.length; i++)
     {
       images[i] = new Image();
