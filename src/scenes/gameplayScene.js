@@ -67,6 +67,7 @@ var GamePlayScene = function(game, stage)
   var bg; var bgi; var bgsep; var bgcam;
   var mg; var mgi; var mgsep; var mgcam;
   var fg; var fgi; var fgsep; var fgcam;
+  var faux_ground; var faux_ground_i; var faux_ground_sep;
   var ground;
 
   //ui
@@ -163,9 +164,10 @@ var GamePlayScene = function(game, stage)
       air_parts.push(new Part());
     initAirParticles();
 
-    bgsep = 10; bg = []; for(var i = 0; i < 30; i++) { bg.push(new Obj(i*bgsep+rand0()*bgsep, rand0()*5+10,  3,  2, randIntBelow(3))); bg[i].draw = drawCloud;    } bgi = 0;
-    mgsep = 50; mg = []; for(var i = 0; i < 10; i++) { mg.push(new Obj(i*mgsep+rand0()*mgsep, rand0()*2+ 3, 10, 10, randIntBelow(1))); mg[i].draw = drawMountain; } mgi = 0;
-    fgsep = 20; fg = []; for(var i = 0; i < 30; i++) { fg.push(new Obj(i*fgsep+rand0()*fgsep, rand0()*1+-1,  8,  8, randIntBelow(2))); fg[i].draw = drawTree;     } fgi = 0;
+    bgsep = 10; bg = []; for(var i = 0; i < 30; i++) { bg.push(new Obj(i*bgsep+rand0()*bgsep, rand0()*5+10, 3, 2, randIntBelow(3))); bg[i].draw = drawCloud;    } bgi = 0;
+    mgsep = 50; mg = []; for(var i = 0; i < 10; i++) { mg.push(new Obj(i*mgsep+rand0()*mgsep, rand0()*5+10, 4, 3, randIntBelow(3))); mg[i].draw = drawMountain; } mgi = 0;
+    fgsep = 20; fg = []; for(var i = 0; i < 30; i++) { fg.push(new Obj(i*fgsep+rand0()*fgsep, rand0()*1+-1, 8, 8, randIntBelow(2))); fg[i].draw = drawTree;     } fgi = 0;
+    faux_ground_sep = 100; faux_ground = []; for(var i = 0; i < 3; i++) { faux_ground.push(new Obj(i*faux_ground_sep, -20, faux_ground_sep, faux_ground_sep/2, i)); faux_ground[i].draw = drawGround; } faux_ground_i = 0;
     centerGrounds();
     ground = new Obj();
 
@@ -1174,6 +1176,7 @@ var GamePlayScene = function(game, stage)
     for(var i = 0; i < bg.length; i++) screenSpace(bgcam,dc,bg[i]);
     for(var i = 0; i < mg.length; i++) screenSpace(mgcam,dc,mg[i]);
     for(var i = 0; i < fg.length; i++) screenSpace(fgcam,dc,fg[i]);
+    for(var i = 0; i < faux_ground.length; i++) screenSpace(fgcam,dc,faux_ground[i]);
     screenSpace(camera,dc,ground);
     while(grid.wx+(grid.ww/10) < camera.wx) grid.wx += grid.ww/10;
     while(grid.wx-(grid.ww/10) > camera.wx) grid.wx -= grid.ww/10;
@@ -1193,13 +1196,14 @@ var GamePlayScene = function(game, stage)
     for(var i = 0; i < bg.length; i++) bg[i].draw(bg[i]);
     for(var i = 0; i < mg.length; i++) mg[i].draw(mg[i]);
     //ground
-    ctx.fillStyle = "#88FFAA";
-    ctx.fillRect(0,ground.y,dc.width,dc.height-ground.y);
+    //ctx.fillStyle = "#88FFAA";
+    //var g_w = dc.width;
+    //ctx.drawImage(grass_img,0,ground.y,g_w,dc.height-ground.y);
+    for(var i = 0; i < faux_ground.length; i++) faux_ground[i].draw(faux_ground[i]);
     for(var i = 0; i < fg.length; i++) fg[i].draw(fg[i]);
 
     drawGrid(grid);
     ctx.lineWidth = 2;
-
 
     ctx.globalAlpha = clamp(0,1,1-(balloon.wy/20));
     drawShadow(shadow);
@@ -1278,14 +1282,6 @@ var GamePlayScene = function(game, stage)
     drawGauge(yvel_gauge);         if(yvel_gauge.vis)     drawAroundDecimal(dc,        yvel_gauge.x+yvel_gauge.w/2,    yvel_gauge.y-10,fdisp(balloon.wyv*fps,2),"","m/s")
     drawGauge(fuel_gauge);         if(fuel_gauge.vis)     drawAroundDecimal(dc,        fuel_gauge.x+fuel_gauge.w/2,    fuel_gauge.y-10,fdisp(fuel,2),"","G")
 
-/*
-    var o = new Obj();
-    o.x = 10;
-    o.y = 10;
-    o.w = 10;
-    o.h = 10;
-    drawMountain(o);
-*/
     dom.draw(dc);
     steps[cur_step].draw();
   };
@@ -1437,13 +1433,13 @@ var GamePlayScene = function(game, stage)
       if(ldist > rdist) //l further than r- move to r
       {
         mg[li].wx = mg[ri].wx+mgsep+rand0()*mgsep/2;
-        mg[li].wy = rand0()*2+ 3;
+        mg[li].wy = rand0()*5+10;
         mgi = (mgi+1)%mg.length;
       }
       else
       {
         mg[ri].wx = mg[li].wx-mgsep-rand0()*mgsep/2;
-        mg[ri].wy = rand0()*2+ 3;
+        mg[ri].wy = rand0()*5+10;
         mgi = (mgi+mg.length-1)%mg.length;
       }
     }
@@ -1465,6 +1461,24 @@ var GamePlayScene = function(game, stage)
         fg[ri].wx = fg[li].wx-fgsep-rand0()*fgsep/2;
         fg[ri].wy = rand0()*1+-1;
         fgi = (fgi+fg.length-1)%fg.length;
+      }
+    }
+
+    li = faux_ground_i;
+    ri = (faux_ground_i+faux_ground.length-1)%faux_ground.length;
+    ldist = abs(faux_ground[li].wx-fgcam.wx);
+    rdist = abs(faux_ground[ri].wx-fgcam.wx);
+    if(abs(ldist-rdist) > bgsep)
+    {
+      if(ldist > rdist) //l further than r- move to r
+      {
+        faux_ground[li].wx = faux_ground[ri].wx+faux_ground_sep;
+        faux_ground_i = (faux_ground_i+1)%faux_ground.length;
+      }
+      else
+      {
+        faux_ground[ri].wx = faux_ground[li].wx-faux_ground_sep;
+        faux_ground_i = (faux_ground_i+faux_ground.length-1)%faux_ground.length;
       }
     }
   }
@@ -1655,8 +1669,9 @@ var GamePlayScene = function(game, stage)
     }
   }
   var drawCloud    = function(obj) { ctx.drawImage(obj.id == 0 ? cloud_0_img : (obj.id == 1 ? cloud_1_img : cloud_2_img),obj.x,obj.y,obj.w,obj.h); }
-  var drawMountain = function(obj) { ctx.drawImage(mountain_canv,obj.x,obj.y,obj.w,obj.h); }
+  var drawMountain = function(obj) { ctx.drawImage(obj.id == 0 ? cloud_0_img : (obj.id == 1 ? cloud_1_img : cloud_2_img),obj.x,obj.y,obj.w,obj.h); }
   var drawTree     = function(obj) { ctx.drawImage(obj.id == 0 ? tree_0_img : tree_1_img,obj.x,obj.y,obj.w,obj.h); }
+  var drawGround   = function(obj) { ctx.drawImage(grass_img,obj.x,obj.y,obj.w,obj.h); }
   var drawGauge    = function(g)
   {
     if(!g.vis) return;
