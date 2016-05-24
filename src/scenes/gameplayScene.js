@@ -1145,6 +1145,8 @@ var GamePlayScene = function(game, stage)
     ground.wh = 2;
 
     //cam track
+    /*
+    //old
     cam_target.wx = balloon.wx;
     if(balloon.wy > 20) //20+
     {
@@ -1170,10 +1172,35 @@ var GamePlayScene = function(game, stage)
       cam_target.wy = 0;
       cam_target.ww = cam_target.wh/9*16;
     }
-    camera.wx = lerp(camera.wx,cam_target.wx,0.1);
+    */
+    //new
+    cam_target.wx = balloon.wx;
+    if(balloon.wy > 20) //20+
+    {
+      cam_target.wh = 60;
+      cam_target.wy = balloon.wy;
+    }
+    else if(balloon.wy > 10) //10-20
+    {
+      cam_target.wh = mapVal(10,20,30,60,balloon.wy);
+      cam_target.wy = balloon.wy;
+    }
+    else if(balloon.wy > 5) //5-10
+    {
+      cam_target.wh = mapVal(5,10,20,30,balloon.wy);
+      cam_target.wy = mapVal(5,10,0,10,balloon.wy);
+    }
+    else
+    {
+      cam_target.wh = 20;
+      cam_target.wy = mapVal(0,5,-8,0,balloon.wy);
+    }
+    cam_target.ww = cam_target.wh/9*16;
+
+    camera.wx = lerp(camera.wx,cam_target.wx,0.05);
+    camera.wy = lerp(camera.wy,cam_target.wy,0.05);
+    camera.ww = lerp(camera.ww,cam_target.ww,0.01);
     camera.wh = lerp(camera.wh,cam_target.wh,0.01);
-    camera.wy = lerp(camera.wy,cam_target.wy,0.1);
-    camera.ww = camera.wh/9*16;
 
     outside_temp_gauge.val = env_temp;
     inside_temp_gauge.val = balloon.t;
@@ -1255,7 +1282,7 @@ var GamePlayScene = function(game, stage)
     drawBasket(basket);
     drawChars(char);
     drawBalloon(balloon);
-    drawCamTarget(cam_target);
+    //drawCamTarget(cam_target);
     drawForceArrows();
 
     ctx.textAlign = "center";
