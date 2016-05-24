@@ -1211,15 +1211,7 @@ var GamePlayScene = function(game, stage)
     drawWind();
     //drawBoost();
     drawAirParticles();
-    if(!rope_cut)
-    {
-      ctx.beginPath();
-      ctx.moveTo(shadow.x,shadow.y+shadow.h);
-      ctx.lineTo(basket.x+basket.w/2,basket.y+basket.h*3/4);
-      ctx.moveTo(shadow.x+shadow.w,shadow.y+shadow.h);
-      ctx.lineTo(basket.x+basket.w/2,basket.y+basket.h*3/4);
-      ctx.stroke();
-    }
+    if(!rope_cut) ctx.drawImage(rope_img,shadow.x+shadow.w/15+4,shadow.y-shadow.h/4,shadow.w-2*shadow.w/15,shadow.h*2);
     drawBasket(basket);
     drawBalloon(balloon);
     drawForceArrows();
