@@ -149,8 +149,8 @@ var GamePlayScene = function(game, stage)
     tmp = new Obj(0,0,0,0,0);
     shadow = new Obj(0,0,10,2,0);
     flame = new Obj(0,0,2,4,0);
-    basket = new Obj(0,0,10,10,0);
-    char = new Obj(0,0,5,5,0);
+    basket = new Obj(0,0,4,4,0);
+    char = new Obj(0,0,4,4,0);
     char_r_f = 100;
     char_r_t = 200;
     char_pose = [];
@@ -1113,15 +1113,15 @@ var GamePlayScene = function(game, stage)
     arrow_separator.wh = 0;
 
     basket.wx = balloon.wx;
-    basket.wy = balloon.wy-balloon.wh/2;
+    basket.wy = balloon.wy-balloon.wh*0.7;
     char.wx = basket.wx;
-    char.wy = basket.wy-basket.wh/8;
+    char.wy = basket.wy+basket.wh/4;
 
     shadow.wx = balloon.wx;
-    shadow.wy = 0-balloon.wh/2-basket.wh/2;
+    shadow.wy = 0-balloon.wh/2-basket.wh;
 
     flame.wx = balloon.wx;
-    flame.wy = balloon.wy-balloon.wh/2;
+    flame.wy = balloon.wy-balloon.wh*.35;
 
     ground.wx = 0;
     ground.wy = -1;
@@ -1229,8 +1229,8 @@ var GamePlayScene = function(game, stage)
     //drawBoost();
     drawAirParticles();
     if(!rope_cut) ctx.drawImage(rope_img,shadow.x+shadow.w/15+4,shadow.y-shadow.h/4,shadow.w-2*shadow.w/15,shadow.h*2);
-    drawChars(char);
     drawBasket(basket);
+    drawChars(char);
     drawBalloon(balloon);
     drawForceArrows();
 
@@ -1653,7 +1653,7 @@ var GamePlayScene = function(game, stage)
   }
   var drawBasket = function(obj)
   {
-    ctx.drawImage(basket_canv,obj.x,obj.y,obj.w,obj.h);
+    ctx.drawImage(basket_img,obj.x,obj.y,obj.w,obj.h);
   }
   var drawChars = function(obj)
   {
