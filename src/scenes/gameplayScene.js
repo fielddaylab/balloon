@@ -55,6 +55,11 @@ var GamePlayScene = function(game, stage)
   var shadow;
   var flame;
   var basket;
+  var char;
+  var char_pose;
+  var char_time;
+  var char_r_f;
+  var char_r_t;
   var balloon;
   var clone_balloon;
   var vel_arrow;
@@ -145,6 +150,15 @@ var GamePlayScene = function(game, stage)
     shadow = new Obj(0,0,10,2,0);
     flame = new Obj(0,0,2,4,0);
     basket = new Obj(0,0,10,10,0);
+    char = new Obj(0,0,5,5,0);
+    char_r_f = 100;
+    char_r_t = 200;
+    char_pose = [];
+    for(var i = 0; i < char_imgs.length; i++)
+      char_pose[i] = randIntBelow(3);
+    char_time = [];
+    for(var i = 0; i < char_imgs.length; i++)
+      char_time[i] = Math.round(randR(char_r_f,char_r_t));
     balloon = new Obj(0,0,13,13,0);
     //balloon.t = 340;
     balloon.bm = hot_air_balloon_baggage;
@@ -1100,6 +1114,8 @@ var GamePlayScene = function(game, stage)
 
     basket.wx = balloon.wx;
     basket.wy = balloon.wy-balloon.wh/2;
+    char.wx = basket.wx;
+    char.wy = basket.wy-basket.wh/8;
 
     shadow.wx = balloon.wx;
     shadow.wy = 0-balloon.wh/2-basket.wh/2;
@@ -1169,6 +1185,7 @@ var GamePlayScene = function(game, stage)
     screenSpace(camera,dc,shadow);
     screenSpace(camera,dc,flame);
     screenSpace(camera,dc,basket);
+    screenSpace(camera,dc,char);
     screenSpace(camera,dc,balloon);
     screenSpace(camera,dc,vel_arrow);
     screenSpace(camera,dc,acc_arrow);
@@ -1212,6 +1229,7 @@ var GamePlayScene = function(game, stage)
     //drawBoost();
     drawAirParticles();
     if(!rope_cut) ctx.drawImage(rope_img,shadow.x+shadow.w/15+4,shadow.y-shadow.h/4,shadow.w-2*shadow.w/15,shadow.h*2);
+    drawChars(char);
     drawBasket(basket);
     drawBalloon(balloon);
     drawForceArrows();
@@ -1636,6 +1654,25 @@ var GamePlayScene = function(game, stage)
   var drawBasket = function(obj)
   {
     ctx.drawImage(basket_canv,obj.x,obj.y,obj.w,obj.h);
+  }
+  var drawChars = function(obj)
+  {
+    for(var i = 0; i < char_imgs.length; i++)
+    {
+      char_time[i]--;
+      if(char_time[i] <= 0)
+      {
+        char_pose[i] = randIntBelow(3);
+        char_time[i] = Math.round(randR(char_r_f,char_r_t));
+      }
+    }
+    var i;
+    i = 2; ctx.drawImage(char_imgs[i][char_pose[i]],obj.x,obj.y,obj.w,obj.h);
+    i = 3; ctx.drawImage(char_imgs[i][char_pose[i]],obj.x,obj.y,obj.w,obj.h);
+    i = 4; ctx.drawImage(char_imgs[i][char_pose[i]],obj.x,obj.y,obj.w,obj.h);
+    i = 0; ctx.drawImage(char_imgs[i][char_pose[i]],obj.x,obj.y,obj.w,obj.h);
+    i = 5; ctx.drawImage(char_imgs[i][char_pose[i]],obj.x,obj.y,obj.w,obj.h);
+    i = 1; ctx.drawImage(char_imgs[i][char_pose[i]],obj.x,obj.y,obj.w,obj.h);
   }
   var drawBalloon = function(obj)
   {
