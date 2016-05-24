@@ -1661,14 +1661,17 @@ var GamePlayScene = function(game, stage)
   {
     if(!g.vis) return;
     ctx.drawImage(gauge_img,g.x,g.y,g.w,g.h);
-    ctx.strokeStyle = "#000000";
-    ctx.beginPath();
-    ctx.moveTo(g.cx,g.cy);
+
     var t = mapVal(g.min,g.max,g.mint,g.maxt,g.val);
     if(t > g.maxt) t = g.maxt;
     if(t < g.mint) t = g.mint;
-    ctx.lineTo(g.cx+cos(t)*g.r,g.cy+sin(t)*g.r);
-    ctx.stroke();
+
+    ctx.save();
+    ctx.translate(g.x+g.w/2,g.y+g.h/2);
+    ctx.rotate(t);
+    ctx.drawImage(needle_img,-2.5,-3,27,6);
+    ctx.restore();
+
     ctx.fillStyle = "#000000";
     ctx.textAlign = "center";
     ctx.fillText(g.t1,g.x+g.w/2,g.y+g.h+12);
