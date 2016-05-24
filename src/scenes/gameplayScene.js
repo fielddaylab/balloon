@@ -50,6 +50,7 @@ var GamePlayScene = function(game, stage)
 
   //objects
   var camera;
+  var cam_target;
   var tmp; //used for any non-persistent calcs
   var grid;
   var shadow;
@@ -62,7 +63,6 @@ var GamePlayScene = function(game, stage)
   var char_r_t;
   var balloon;
   var clone_balloon;
-  var balloon_cam_target;
   var vel_arrow;
   var acc_arrow;
   var arrow_separator;
@@ -142,6 +142,9 @@ var GamePlayScene = function(game, stage)
     camera = new Camera();
     camera.wh = 30;
     camera.ww = camera.wh/9*16;
+    cam_target = new Camera();
+    cam_target.wh = camera.wh;
+    cam_target.ww = camera.ww/9*16;
     bgcam = new Camera();
     mgcam = new Camera();
     fgcam = new Camera();
@@ -165,7 +168,6 @@ var GamePlayScene = function(game, stage)
     balloon.bm = hot_air_balloon_baggage;
     clone_balloon = new Obj();
     cloneObj(balloon,clone_balloon);
-    balloon_cam_target = new Obj(0,0,13,13,0);
     vel_arrow = new Obj();
     acc_arrow = new Obj();
     arrow_separator = new Obj();
@@ -1143,35 +1145,34 @@ var GamePlayScene = function(game, stage)
     ground.wh = 2;
 
     //cam track
-    balloon_cam_target.wx = balloon.wx;
+    cam_target.wx = balloon.wx;
     if(balloon.wy > 20) //20+
     {
-      balloon_cam_target.wh = 30+((20-5)*2);
-      balloon_cam_target.wy = balloon.wy-15;
-      balloon_cam_target.ww = balloon_cam_target.wh/9*16;
+      cam_target.wh = 60;
+      cam_target.wy = balloon.wy-15;
+      cam_target.ww = cam_target.wh/9*16;
     }
     else if(balloon.wy > 10) //10-20
     {
-      balloon_cam_target.wh = 30+((balloon.wy-5)*2);
-      var b = ((balloon.wy-10)/10); //blend- ensure 0 to 1
-      balloon_cam_target.wy = b*5;
-      balloon_cam_target.ww = balloon_cam_target.wh/9*16;
+      cam_target.wh = mapVal(10,20,40,60,balloon.wy);
+      cam_target.wy = mapVal(10,20,0,5,balloon.wy);
+      cam_target.ww = cam_target.wh/9*16;
     }
     else if(balloon.wy > 5) //5-10
     {
-      balloon_cam_target.wh = 30+((balloon.wy-5)*2);
-      balloon_cam_target.wy = 0;
-      balloon_cam_target.ww = balloon_cam_target.wh/9*16;
+      cam_target.wh = mapVal(5,10,30,40,balloon.wy);
+      cam_target.wy = 0;
+      cam_target.ww = cam_target.wh/9*16;
     }
     else
     {
-      balloon_cam_target.wh = 30;
-      balloon_cam_target.wy = 0;
-      balloon_cam_target.ww = balloon_cam_target.wh/9*16;
+      cam_target.wh = 30;
+      cam_target.wy = 0;
+      cam_target.ww = cam_target.wh/9*16;
     }
-    camera.wx = lerp(camera.wx,balloon_cam_target.wx,0.1);
-    camera.wh = lerp(camera.wh,balloon_cam_target.wh,0.01);
-    camera.wy = lerp(camera.wy,balloon_cam_target.wy,0.1);
+    camera.wx = lerp(camera.wx,cam_target.wx,0.1);
+    camera.wh = lerp(camera.wh,cam_target.wh,0.01);
+    camera.wy = lerp(camera.wy,cam_target.wy,0.1);
     camera.ww = camera.wh/9*16;
 
     outside_temp_gauge.val = env_temp;
@@ -1208,7 +1209,7 @@ var GamePlayScene = function(game, stage)
     screenSpace(camera,dc,basket);
     screenSpace(camera,dc,char);
     screenSpace(camera,dc,balloon);
-    screenSpace(camera,dc,balloon_cam_target);
+    screenSpace(camera,dc,cam_target);
     screenSpace(camera,dc,vel_arrow);
     screenSpace(camera,dc,acc_arrow);
     screenSpace(camera,dc,arrow_separator);
@@ -1254,7 +1255,7 @@ var GamePlayScene = function(game, stage)
     drawBasket(basket);
     drawChars(char);
     drawBalloon(balloon);
-    drawBalloonCamTarget(balloon_cam_target);
+    drawCamTarget(cam_target);
     drawForceArrows();
 
     ctx.textAlign = "center";
@@ -1704,7 +1705,7 @@ var GamePlayScene = function(game, stage)
     ctx.drawImage(balloon_img,obj.x,obj.y,obj.w,obj.h);
     drawBalloonParticles();
   }
-  var drawBalloonCamTarget = function(obj)
+  var drawCamTarget = function(obj)
   {
     ctx.strokeStyle = "#000000"
     ctx.strokeRect(obj.x,obj.y,obj.w,obj.h);
