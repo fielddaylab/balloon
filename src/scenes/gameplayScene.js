@@ -1064,7 +1064,19 @@ var GamePlayScene = function(game, stage)
     else if(flap_pad.down)             { balloon.t = lerp(balloon.t, env_temp,0.001);  }
     else                               { balloon.t = lerp(balloon.t, env_temp,0.0001); }
 
-    if(cut_pad.down) rope_cut = true;
+    if(cut_pad.down)
+    {
+      if(!rope_cut)
+      {
+        for(var i = 0; i < char_imgs.length; i++)
+        {
+          char_pose[i] = 2;
+          char_time[i] = Math.round(randR(char_r_f,char_r_t));
+        }
+      }
+      char_pose[3] = 1;
+      rope_cut = true;
+    }
 
     var air_density_at_height = densityForHeight(balloon.wy);
 
