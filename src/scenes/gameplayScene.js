@@ -2,6 +2,7 @@ var GamePlayScene = function(game, stage)
 {
   var self = this;
   var dc = stage.drawCanv;
+  var ctx = dc.context;
 
   //config
   var part_damp = 0.2;
@@ -138,12 +139,12 @@ var GamePlayScene = function(game, stage)
     mgcam = new Camera();
     fgcam = new Camera();
     tickParallax();
-    grid = new Obj(0,0,250,250);
-    tmp = new Obj(0,0,0,0);
-    shadow = new Obj(0,0,10,2);
-    flame = new Obj(0,0,2,2);
-    basket = new Obj(0,0,10,10);
-    balloon = new Obj(0,0,13,13);
+    grid = new Obj(0,0,250,250,0);
+    tmp = new Obj(0,0,0,0,0);
+    shadow = new Obj(0,0,10,2,0);
+    flame = new Obj(0,0,2,2,0);
+    basket = new Obj(0,0,10,10,0);
+    balloon = new Obj(0,0,13,13,0);
     //balloon.t = 340;
     balloon.bm = hot_air_balloon_baggage;
     clone_balloon = new Obj();
@@ -162,9 +163,9 @@ var GamePlayScene = function(game, stage)
       air_parts.push(new Part());
     initAirParticles();
 
-    bgsep = 10; bg = []; for(var i = 0; i < 30; i++) { bg.push(new Obj(i*bgsep+rand0()*bgsep, rand0()*5+10,  3,  2)); bg[i].draw = drawCloud;    } bgi = 0;
-    mgsep = 50; mg = []; for(var i = 0; i < 10; i++) { mg.push(new Obj(i*mgsep+rand0()*mgsep, rand0()*2+ 3, 10, 10)); mg[i].draw = drawMountain; } mgi = 0;
-    fgsep = 20; fg = []; for(var i = 0; i < 30; i++) { fg.push(new Obj(i*fgsep+rand0()*fgsep, rand0()*1+-1,  8,  8)); fg[i].draw = drawTree;     } fgi = 0;
+    bgsep = 10; bg = []; for(var i = 0; i < 30; i++) { bg.push(new Obj(i*bgsep+rand0()*bgsep, rand0()*5+10,  3,  2, randIntBelow(3))); bg[i].draw = drawCloud;    } bgi = 0;
+    mgsep = 50; mg = []; for(var i = 0; i < 10; i++) { mg.push(new Obj(i*mgsep+rand0()*mgsep, rand0()*2+ 3, 10, 10, randIntBelow(1))); mg[i].draw = drawMountain; } mgi = 0;
+    fgsep = 20; fg = []; for(var i = 0; i < 30; i++) { fg.push(new Obj(i*fgsep+rand0()*fgsep, rand0()*1+-1,  8,  8, randIntBelow(2))); fg[i].draw = drawTree;     } fgi = 0;
     centerGrounds();
     ground = new Obj();
 
@@ -253,31 +254,31 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       noop,
       function() { fuel = 4; rope_cut = false; },
-      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Hold to heat balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { ctx.textAlign = "left"; ctx.fillText("<- Hold to heat balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { return balloon.t > 305; }
     ));
     steps.push(new Step(
       noop,
       function() { fuel = 4; rope_cut = false; },
-      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Keep holding!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { ctx.textAlign = "left"; ctx.fillText("<- Keep holding!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { return balloon.t > 315; }
     ));
     steps.push(new Step(
       noop,
       function() { fuel = 4; rope_cut = false; },
-      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Almost there!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { ctx.textAlign = "left"; ctx.fillText("<- Almost there!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { return balloon.t > 325; }
     ));
     steps.push(new Step(
       noop,
       function() { fuel = 4; rope_cut = false; },
-      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Just a little longer!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { ctx.textAlign = "left"; ctx.fillText("<- Just a little longer!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { return balloon.t > 335; }
     ));
     steps.push(new Step(
       noop,
       function() { fuel = 4; rope_cut = false; },
-      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Aaaaannnndd...",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { ctx.textAlign = "left"; ctx.fillText("<- Aaaaannnndd...",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); return true; } return false; }
     ));
     steps.push(new Step(
@@ -288,13 +289,13 @@ var GamePlayScene = function(game, stage)
         ]);
       },
       function() { balloon.t = clone_balloon.t; },
-      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2); },
+      function() { ctx.textAlign = "left"; ctx.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2); },
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
       function() { fuel = 4; },
       function() { balloon.t = clone_balloon.t; },
-      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2); },
+      function() { ctx.textAlign = "left"; ctx.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2); },
       function() { return rope_cut; }
     ));
     steps.push(new Step(
@@ -368,7 +369,7 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function() { },
       function() { rope_cut = false; if(fuel < 4) fuel = 4; },
-      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Hold to heat balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { ctx.textAlign = "left"; ctx.fillText("<- Hold to heat balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
       function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); clone_fuel = fuel; return true; } return false; }
     ));
     steps.push(new Step(
@@ -388,7 +389,7 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       noop,
       function() { fuel = clone_fuel; balloon.t = clone_balloon.t; },
-      function() { dc.context.textAlign = "left"; dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2); },
+      function() { ctx.textAlign = "left"; ctx.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2); },
       function() { return rope_cut; }
     ));
     steps.push(new Step(
@@ -461,9 +462,9 @@ var GamePlayScene = function(game, stage)
       function() {
         var bcx = balloon.x+balloon.w/2;
         var bcy = balloon.y+balloon.h/2;
-        dc.context.globalAlpha = steps[cur_step].t/100;
-        dc.context.drawImage(down_arrow_canv,bcx-50,bcy,100,100);
-        dc.context.globalAlpha = 1;
+        ctx.globalAlpha = steps[cur_step].t/100;
+        ctx.drawImage(down_arrow_canv,bcx-50,bcy,100,100);
+        ctx.globalAlpha = 1;
       },
       function() { return steps[cur_step].t >= 100; }
     ));
@@ -478,7 +479,7 @@ var GamePlayScene = function(game, stage)
       function() {
         var bcx = balloon.x+balloon.w/2;
         var bcy = balloon.y+balloon.h/2;
-        dc.context.drawImage(down_arrow_canv,bcx-50,bcy,100,100);
+        ctx.drawImage(down_arrow_canv,bcx-50,bcy,100,100);
       },
       function() { return input_state == RESUME_INPUT; }
     ));
@@ -488,11 +489,11 @@ var GamePlayScene = function(game, stage)
       function() {
         var bcx = balloon.x+balloon.w/2;
         var bcy = balloon.y+balloon.h/2;
-        dc.context.drawImage(down_arrow_canv,bcx-50,bcy,100,100);
-        dc.context.globalAlpha = steps[cur_step].t/100;
-        dc.context.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
-        dc.context.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
-        dc.context.globalAlpha = 1;
+        ctx.drawImage(down_arrow_canv,bcx-50,bcy,100,100);
+        ctx.globalAlpha = steps[cur_step].t/100;
+        ctx.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
+        ctx.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
+        ctx.globalAlpha = 1;
       },
       function() { return steps[cur_step].t >= 100; }
     ));
@@ -508,9 +509,9 @@ var GamePlayScene = function(game, stage)
       function() {
         var bcx = balloon.x+balloon.w/2;
         var bcy = balloon.y+balloon.h/2;
-        dc.context.drawImage(down_arrow_canv,bcx-50,bcy,100,100);
-        dc.context.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
-        dc.context.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
+        ctx.drawImage(down_arrow_canv,bcx-50,bcy,100,100);
+        ctx.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
+        ctx.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
       },
       function() { return input_state == RESUME_INPUT; }
     ));
@@ -528,12 +529,12 @@ var GamePlayScene = function(game, stage)
       function() {
         var bcx = balloon.x+balloon.w/2;
         var bcy = balloon.y+balloon.h/2;
-        dc.context.drawImage(down_arrow_canv,bcx-50,bcy,100,100);
-        dc.context.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
-        dc.context.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
-        dc.context.globalAlpha = steps[cur_step].t/100;
-        dc.context.drawImage(up_arrow_canv,bcx-25,bcy-50,50,50);
-        dc.context.globalAlpha = 1;
+        ctx.drawImage(down_arrow_canv,bcx-50,bcy,100,100);
+        ctx.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
+        ctx.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
+        ctx.globalAlpha = steps[cur_step].t/100;
+        ctx.drawImage(up_arrow_canv,bcx-25,bcy-50,50,50);
+        ctx.globalAlpha = 1;
       },
       function() { return input_state == RESUME_INPUT; }
     ));
@@ -541,8 +542,8 @@ var GamePlayScene = function(game, stage)
       function() { fuel = 40; },
       function() { if(fuel < 4) fuel = 4; rope_cut = false; },
       function() {
-        dc.context.textAlign = "left";
-        dc.context.fillText("<- Heat the balloon",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
+        ctx.textAlign = "left";
+        ctx.fillText("<- Heat the balloon",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
       },
       function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); return true; } return false; }
     ));
@@ -565,8 +566,8 @@ var GamePlayScene = function(game, stage)
       function() { fuel = 4; },
       function() { fuel = 4; balloon.t = clone_balloon.t; },
       function() {
-        dc.context.textAlign = "left";
-        dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2);
+        ctx.textAlign = "left";
+        ctx.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2);
       },
       function() { return rope_cut; }
     ));
@@ -625,10 +626,10 @@ var GamePlayScene = function(game, stage)
         rope_cut = false;
       },
       function() {
-        dc.context.textAlign = "left";
-        dc.context.fillText("X Heating disabled! Try increasing volume instead!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
-        dc.context.textAlign = "right";
-        dc.context.fillText("Drag the volume needle to change!",volume_gauge.x+volume_gauge.w/2,volume_gauge.y-50);
+        ctx.textAlign = "left";
+        ctx.fillText("X Heating disabled! Try increasing volume instead!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
+        ctx.textAlign = "right";
+        ctx.fillText("Drag the volume needle to change!",volume_gauge.x+volume_gauge.w/2,volume_gauge.y-50);
         volume_gauge.vis = true;
         volume_gauge.enabled = true;
       },
@@ -653,8 +654,8 @@ var GamePlayScene = function(game, stage)
         rope_cut = false;
       },
       function() {
-        dc.context.textAlign = "left";
-        dc.context.fillText("<- Heat the balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
+        ctx.textAlign = "left";
+        ctx.fillText("<- Heat the balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
       },
       function() {
         if(balloon.wya > 0.0005)
@@ -669,8 +670,8 @@ var GamePlayScene = function(game, stage)
       function() { fuel = 4; },
       function() { fuel = 4; balloon.t = clone_balloon.t; },
       function() {
-        dc.context.textAlign = "left";
-        dc.context.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2);
+        ctx.textAlign = "left";
+        ctx.fillText("<- Cut the rope!",cut_pad.x+cut_pad.w+10,cut_pad.y+cut_pad.h/2);
       },
       function() { return rope_cut; }
     ));
@@ -766,12 +767,12 @@ var GamePlayScene = function(game, stage)
       noop,
       function() {
         retry_btn.draw(dc);
-        dc.context.fillStyle = "#000000";
-        dc.context.textAlign = "right";
-        dc.context.fillText("Your Score:"+fdisp(balloon.wx,1)+"m",dc.width-10,30);
-        dc.context.fillText("Top Score:"+fdisp(game.standard_best,1)+"m",dc.width-10,50);
-        dc.context.textAlign = "center";
-        dc.context.fillText("Retry",retry_btn.x+retry_btn.w/2,retry_btn.y+retry_btn.h/2);
+        ctx.fillStyle = "#000000";
+        ctx.textAlign = "right";
+        ctx.fillText("Your Score:"+fdisp(balloon.wx,1)+"m",dc.width-10,30);
+        ctx.fillText("Top Score:"+fdisp(game.standard_best,1)+"m",dc.width-10,50);
+        ctx.textAlign = "center";
+        ctx.fillText("Retry",retry_btn.x+retry_btn.w/2,retry_btn.y+retry_btn.h/2);
       },
       function() { if(retry_btn.down) { cur_step = step_standard-1; return true; } return false; }
     ));
@@ -808,7 +809,7 @@ var GamePlayScene = function(game, stage)
         if(steps[cur_step].next_station.y > dc.height-90) { off = true; steps[cur_step].next_station.y = dc.height-90; }
         if(off)
         {
-          dc.context.strokeStyle = "#FF0000";
+          ctx.strokeStyle = "#FF0000";
 
           var sx = balloon.x+balloon.w/2;
           var sy = balloon.y+balloon.h/2;
@@ -822,17 +823,17 @@ var GamePlayScene = function(game, stage)
           sy = sy + (dy/dd)*(dd-40);
 
           drawArrow(dc,sx,sy,ex,ey,10);
-          dc.context.strokeStyle = "#000000";
+          ctx.strokeStyle = "#000000";
         }
         else
         {
-          dc.context.fillStyle = "#FF0000";
-          dc.context.fillRect(steps[cur_step].next_station.x,steps[cur_step].next_station.y,10,10);
+          ctx.fillStyle = "#FF0000";
+          ctx.fillRect(steps[cur_step].next_station.x,steps[cur_step].next_station.y,10,10);
         }
-        dc.context.textAlign = "center";
-        dc.context.fillStyle = "#000000";
-        dc.context.fillText("Refuel Station",steps[cur_step].next_station.x,steps[cur_step].next_station.y-30)
-        dc.context.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x,steps[cur_step].next_station.y-15)
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#000000";
+        ctx.fillText("Refuel Station",steps[cur_step].next_station.x,steps[cur_step].next_station.y-30)
+        ctx.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x,steps[cur_step].next_station.y-15)
       },
       function() { return ((balloon.wy > 0 && rope_cut) || fuel <= 0); }
     ));
@@ -858,7 +859,7 @@ var GamePlayScene = function(game, stage)
         if(steps[cur_step].next_station.y > dc.height-90) { off = true; steps[cur_step].next_station.y = dc.height-90; }
         if(off)
         {
-          dc.context.strokeStyle = "#FF0000";
+          ctx.strokeStyle = "#FF0000";
 
           var sx = balloon.x+balloon.w/2;
           var sy = balloon.y+balloon.h/2;
@@ -872,17 +873,17 @@ var GamePlayScene = function(game, stage)
           sy = sy + (dy/dd)*(dd-40);
 
           drawArrow(dc,sx,sy,ex,ey,10);
-          dc.context.strokeStyle = "#000000";
+          ctx.strokeStyle = "#000000";
         }
         else
         {
-          dc.context.fillStyle = "#FF0000";
-          dc.context.fillRect(steps[cur_step].next_station.x,steps[cur_step].next_station.y,10,10);
+          ctx.fillStyle = "#FF0000";
+          ctx.fillRect(steps[cur_step].next_station.x,steps[cur_step].next_station.y,10,10);
         }
-        dc.context.textAlign = "center";
-        dc.context.fillStyle = "#000000";
-        dc.context.fillText("Refuel Station",steps[cur_step].next_station.x,steps[cur_step].next_station.y-30)
-        dc.context.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x,steps[cur_step].next_station.y-15)
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#000000";
+        ctx.fillText("Refuel Station",steps[cur_step].next_station.x,steps[cur_step].next_station.y-30)
+        ctx.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x,steps[cur_step].next_station.y-15)
       },
       function() { if(fuel <= 0 && balloon.wy <= 0) { if(balloon.wx > game.refuel_best) game.refuel_best = balloon.wx; return true; } return false; }
     ));
@@ -891,12 +892,12 @@ var GamePlayScene = function(game, stage)
       noop,
       function() {
         retry_btn.draw(dc);
-        dc.context.fillStyle = "#000000";
-        dc.context.textAlign = "right";
-        dc.context.fillText("Your Score:"+fdisp(balloon.wx,1)+"m",dc.width-10,30);
-        dc.context.fillText("Top Score:"+fdisp(game.refuel_best,1)+"m",dc.width-10,50);
-        dc.context.textAlign = "center";
-        dc.context.fillText("Retry",retry_btn.x+retry_btn.w/2,retry_btn.y+retry_btn.h/2);
+        ctx.fillStyle = "#000000";
+        ctx.textAlign = "right";
+        ctx.fillText("Your Score:"+fdisp(balloon.wx,1)+"m",dc.width-10,30);
+        ctx.fillText("Top Score:"+fdisp(game.refuel_best,1)+"m",dc.width-10,50);
+        ctx.textAlign = "center";
+        ctx.fillText("Retry",retry_btn.x+retry_btn.w/2,retry_btn.y+retry_btn.h/2);
       },
       function() { if(retry_btn.down) { cur_step = step_refuel-1; return true; } return false; }
     ));
@@ -916,13 +917,13 @@ var GamePlayScene = function(game, stage)
       },
       function()
       {
-        dc.context.strokeStyle = "#FF0000";
+        ctx.strokeStyle = "#FF0000";
 
         screenSpace(camera,dc,pipe);
 
-        dc.context.fillStyle = "#008800";
-        dc.context.fillRect(pipe.x,0,pipe.w,pipe.y);
-        dc.context.fillRect(pipe.x,pipe.y+pipe.h,pipe.w,dc.height-pipe.y-pipe.h);
+        ctx.fillStyle = "#008800";
+        ctx.fillRect(pipe.x,0,pipe.w,pipe.y);
+        ctx.fillRect(pipe.x,pipe.y+pipe.h,pipe.w,dc.height-pipe.y-pipe.h);
 
         var off = false;
         if(pipe.x+pipe.w/2 < 10) { off = true; pipe.x = 10-pipe.w/2; }
@@ -943,12 +944,12 @@ var GamePlayScene = function(game, stage)
           sy = sy + (dy/dd)*(dd-40);
 
           drawArrow(dc,sx,sy,ex,ey,10);
-          dc.context.strokeStyle = "#000000";
+          ctx.strokeStyle = "#000000";
         }
-        dc.context.textAlign = "center";
-        dc.context.fillStyle = "#000000";
-        dc.context.fillText("Pipe Opening",pipe.x+pipe.w/2,pipe.y+pipe.h/2-30)
-        dc.context.fillText(fdisp((pipe.wx-balloon.wx),1)+"m",pipe.x+pipe.w/2,pipe.y+pipe.h/2-15)
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#000000";
+        ctx.fillText("Pipe Opening",pipe.x+pipe.w/2,pipe.y+pipe.h/2-30)
+        ctx.fillText(fdisp((pipe.wx-balloon.wx),1)+"m",pipe.x+pipe.w/2,pipe.y+pipe.h/2-15)
       },
       function() {
         if(abs(balloon.wx-pipe.wx) < 10 && (balloon.wy-pipe.wy > 20 || pipe.wy-balloon.wy > 10))
@@ -970,17 +971,17 @@ var GamePlayScene = function(game, stage)
       function() {
         screenSpace(camera,dc,pipe);
 
-        dc.context.fillStyle = "#008800";
-        dc.context.fillRect(pipe.x,0,pipe.w,pipe.y);
-        dc.context.fillRect(pipe.x,pipe.y+pipe.h,pipe.w,dc.height-pipe.y-pipe.h);
+        ctx.fillStyle = "#008800";
+        ctx.fillRect(pipe.x,0,pipe.w,pipe.y);
+        ctx.fillRect(pipe.x,pipe.y+pipe.h,pipe.w,dc.height-pipe.y-pipe.h);
 
         retry_btn.draw(dc);
-        dc.context.fillStyle = "#000000";
-        dc.context.textAlign = "right";
-        dc.context.fillText("Your Score:"+fdisp(balloon.wx,1)+"m",dc.width-10,30);
-        dc.context.fillText("Top Score:"+fdisp(game.flappy_best,1)+"m",dc.width-10,50);
-        dc.context.textAlign = "center";
-        dc.context.fillText("Retry",retry_btn.x+retry_btn.w/2,retry_btn.y+retry_btn.h/2);
+        ctx.fillStyle = "#000000";
+        ctx.textAlign = "right";
+        ctx.fillText("Your Score:"+fdisp(balloon.wx,1)+"m",dc.width-10,30);
+        ctx.fillText("Top Score:"+fdisp(game.flappy_best,1)+"m",dc.width-10,50);
+        ctx.textAlign = "center";
+        ctx.fillText("Retry",retry_btn.x+retry_btn.w/2,retry_btn.y+retry_btn.h/2);
       },
       function() { if(retry_btn.down) { cur_step = step_flappy-1; return true; } return false; }
     ));
@@ -1187,81 +1188,89 @@ var GamePlayScene = function(game, stage)
   self.draw = function()
   {
     //sky
-    dc.context.fillStyle = "#8899BB";
-    dc.context.fillRect(0,0,dc.width,dc.height);
+    ctx.fillStyle = "#8899BB";
+    ctx.fillRect(0,0,dc.width,dc.height);
     for(var i = 0; i < bg.length; i++) bg[i].draw(bg[i]);
     for(var i = 0; i < mg.length; i++) mg[i].draw(mg[i]);
     //ground
-    dc.context.fillStyle = "#88FFAA";
-    dc.context.fillRect(0,ground.y,dc.width,dc.height-ground.y);
+    ctx.fillStyle = "#88FFAA";
+    ctx.fillRect(0,ground.y,dc.width,dc.height-ground.y);
     for(var i = 0; i < fg.length; i++) fg[i].draw(fg[i]);
 
     drawGrid(grid);
-    dc.context.lineWidth = 2;
+    ctx.lineWidth = 2;
 
 
-    dc.context.globalAlpha = clamp(0,1,1-(balloon.wy/20));
+    ctx.globalAlpha = clamp(0,1,1-(balloon.wy/20));
     drawShadow(shadow);
-    dc.context.globalAlpha = 1;
+    ctx.globalAlpha = 1;
     drawWind();
     //drawBoost();
     drawAirParticles();
     if(burn_pad.down && fuel > 0) drawFlame(flame);
     if(!rope_cut)
     {
-      dc.context.beginPath();
-      dc.context.moveTo(shadow.x,shadow.y+shadow.h);
-      dc.context.lineTo(basket.x+basket.w/2,basket.y+basket.h*3/4);
-      dc.context.moveTo(shadow.x+shadow.w,shadow.y+shadow.h);
-      dc.context.lineTo(basket.x+basket.w/2,basket.y+basket.h*3/4);
-      dc.context.stroke();
+      ctx.beginPath();
+      ctx.moveTo(shadow.x,shadow.y+shadow.h);
+      ctx.lineTo(basket.x+basket.w/2,basket.y+basket.h*3/4);
+      ctx.moveTo(shadow.x+shadow.w,shadow.y+shadow.h);
+      ctx.lineTo(basket.x+basket.w/2,basket.y+basket.h*3/4);
+      ctx.stroke();
     }
     drawBasket(basket);
     drawBalloon(balloon);
     drawForceArrows();
 
-    dc.context.textAlign = "center";
-    burn_pad.draw(dc);
-    dc.context.fillStyle = "#000000";
-    dc.context.fillText("Burn",burn_pad.x+burn_pad.w/2,burn_pad.y+burn_pad.h/2);
-    flap_pad.draw(dc);
-    dc.context.fillStyle = "#000000";
-    dc.context.fillText("Open Flap",flap_pad.x+flap_pad.w/2,flap_pad.y+flap_pad.h/2);
+    ctx.textAlign = "center";
+    //burn_pad.draw(dc);
+    if(burn_pad.down) ctx.drawImage(burn_btn_red_img,burn_pad.x,burn_pad.y,burn_pad.w,burn_pad.h);
+    else              ctx.drawImage(    burn_btn_img,burn_pad.x,burn_pad.y,burn_pad.w,burn_pad.h);
+    ctx.fillStyle = "#000000";
+    ctx.fillText("Burn",burn_pad.x+burn_pad.w/2,burn_pad.y+burn_pad.h/2);
+
+    //flap_pad.draw(dc);
+    if(flap_pad.down) ctx.drawImage(flap_btn_red_img,flap_pad.x,flap_pad.y,flap_pad.w,flap_pad.h);
+    else              ctx.drawImage(    flap_btn_img,flap_pad.x,flap_pad.y,flap_pad.w,flap_pad.h);
+    ctx.fillStyle = "#000000";
+    ctx.fillText("Open Flap",flap_pad.x+flap_pad.w/2,flap_pad.y+flap_pad.h/2);
+
     if(!rope_cut)
     {
-      cut_pad.draw(dc);
-      dc.context.fillStyle = "#000000";
-      dc.context.fillText("Cut Rope",cut_pad.x+cut_pad.w/2,cut_pad.y+cut_pad.h/2);
+      //cut_pad.draw(dc);
+      if(cut_pad.down) ctx.drawImage(rope_btn_red_img,cut_pad.x,cut_pad.y,cut_pad.w,cut_pad.h);
+      else             ctx.drawImage(    rope_btn_img,cut_pad.x,cut_pad.y,cut_pad.w,cut_pad.h);
+      ctx.fillStyle = "#000000";
+      ctx.fillText("Cut Rope",cut_pad.x+cut_pad.w/2,cut_pad.y+cut_pad.h/2);
     }
 
     menu_btn.draw(dc);
-    dc.context.fillStyle = "#000000";
-    dc.context.fillText("Menu",menu_btn.x+menu_btn.w/2,menu_btn.y+menu_btn.h/2);
+    ctx.fillStyle = "#000000";
+    ctx.fillText("Menu",menu_btn.x+menu_btn.w/2,menu_btn.y+menu_btn.h/2);
     if(cur_step == step_free)
     {
       reset_btn.draw(dc);
-      dc.context.fillStyle = "#000000";
-      dc.context.fillText("Reset",reset_btn.x+reset_btn.w/2,reset_btn.y+reset_btn.h/2);
+      ctx.fillStyle = "#000000";
+      ctx.fillText("Reset",reset_btn.x+reset_btn.w/2,reset_btn.y+reset_btn.h/2);
       arrows_btn.draw(dc);
-      dc.context.fillStyle = "#000000";
-      dc.context.fillText("Arrows",arrows_btn.x+arrows_btn.w/2,arrows_btn.y+arrows_btn.h/2);
+      ctx.fillStyle = "#000000";
+      ctx.fillText("Arrows",arrows_btn.x+arrows_btn.w/2,arrows_btn.y+arrows_btn.h/2);
       parts_btn.draw(dc);
-      dc.context.fillStyle = "#000000";
-      dc.context.fillText("Particles",parts_btn.x+parts_btn.w/2,parts_btn.y+parts_btn.h/2);
+      ctx.fillStyle = "#000000";
+      ctx.fillText("Particles",parts_btn.x+parts_btn.w/2,parts_btn.y+parts_btn.h/2);
     }
 
-    dc.context.textAlign = "right";
-    dc.context.fillStyle = "#000000";
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#000000";
     if(cur_step != step_meditate)
-      dc.context.fillText(fdisp(balloon.wx,1)+"m",dc.width-10,12);
+      ctx.fillText(fdisp(balloon.wx,1)+"m",dc.width-10,12);
 
-    dc.context.fillStyle = "#000000";
-    dc.context.textAlign = "center";
+    ctx.fillStyle = "#000000";
+    ctx.textAlign = "center";
     drawGauge(outside_temp_gauge); if(outside_temp_gauge.vis) drawAroundDecimal(dc,outside_temp_gauge.x+outside_temp_gauge.w/2,outside_temp_gauge.y-10,round((env_temp*(9/5)-459)*100)/100,"","°F");
     drawGauge(inside_temp_gauge);  if(inside_temp_gauge.vis)  drawAroundDecimal(dc,  inside_temp_gauge.x+inside_temp_gauge.w/2, inside_temp_gauge.y-10,round((balloon.t*(9/5)-459)*100)/100,"","°F")
-    dc.context.textAlign = "center";
-    drawGauge(weight_gauge);       if(weight_gauge.vis) dc.context.fillText(round((balloon.m+balloon.bm)/1000)+"kg",weight_gauge.x+weight_gauge.w/2,weight_gauge.y-10)
-    drawGauge(volume_gauge);       if(volume_gauge.vis) dc.context.fillText(                  round(balloon.v)+"m3",volume_gauge.x+volume_gauge.w/2,volume_gauge.y-10)
+    ctx.textAlign = "center";
+    drawGauge(weight_gauge);       if(weight_gauge.vis) ctx.fillText(round((balloon.m+balloon.bm)/1000)+"kg",weight_gauge.x+weight_gauge.w/2,weight_gauge.y-10)
+    drawGauge(volume_gauge);       if(volume_gauge.vis) ctx.fillText(                  round(balloon.v)+"m3",volume_gauge.x+volume_gauge.w/2,volume_gauge.y-10)
     drawGauge(density_gauge);
     drawGauge(bouyancy_gauge);
     drawGauge(altitude_gauge);     if(altitude_gauge.vis) drawAroundDecimal(dc,altitude_gauge.x+altitude_gauge.w/2,altitude_gauge.y-10,fdisp(balloon.wy,2),"","m")
@@ -1296,9 +1305,11 @@ var GamePlayScene = function(game, stage)
   }
 
   var drawObj = function(obj){};
-  var Obj = function(wx,wy,ww,wh)
+  var Obj = function(wx,wy,ww,wh,id)
   {
     var self = this;
+
+    self.id = id;
 
     if(wx == undefined) wx = 0;
     if(wy == undefined) wy = 0;
@@ -1459,7 +1470,7 @@ var GamePlayScene = function(game, stage)
   }
   var drawWind = function()
   {
-    dc.context.fillStyle = "#FFFFFF";
+    ctx.fillStyle = "#FFFFFF";
 
     tmp.x = 0;
     tmp.y = 0;
@@ -1482,17 +1493,17 @@ var GamePlayScene = function(game, stage)
       if(i%4 != 0) continue;
       a = (wind[i]-0.55)*2;
       if(a < 0) continue;
-      dc.context.globalAlpha = a;
+      ctx.globalAlpha = a;
       tmp.wy = i;
       screenSpace(camera,dc,tmp);
-      dc.context.drawImage(speed_canv,dc.width/2-5+a*80-40,tmp.y,10*3,tmp.h*3);
+      ctx.drawImage(speed_canv,dc.width/2-5+a*80-40,tmp.y,10*3,tmp.h*3);
     }
-    dc.context.globalAlpha = 1;
+    ctx.globalAlpha = 1;
   }
   var drawBoost = function()
   {
     screenSpace(camera,dc,boost);
-    dc.context.drawImage(speed_canv,boost.x,boost.y,10*5,boost.h*5);
+    ctx.drawImage(speed_canv,boost.x,boost.y,10*5,boost.h*5);
   }
   var tickAirParticles = function()
   {
@@ -1546,11 +1557,11 @@ var GamePlayScene = function(game, stage)
       if(d > 1) p.t = 101;
       else
       {
-        dc.context.globalAlpha = min(1,(1-d)*2)*part_disp;
-        dc.context.drawImage(part_canv,p.x,p.y,p.w,p.h);
+        ctx.globalAlpha = min(1,(1-d)*2)*part_disp;
+        ctx.drawImage(part_canv,p.x,p.y,p.w,p.h);
       }
     }
-    dc.context.globalAlpha = 1;
+    ctx.globalAlpha = 1;
   }
   var tickBalloonParticles = function()
   {
@@ -1602,66 +1613,66 @@ var GamePlayScene = function(game, stage)
       if(d > 1) p.t = 101; //kinda tick-ish
       else
       {
-        //dc.context.globalAlpha = min(1,(1-d)*2)*part_disp;
-        dc.context.globalAlpha = part_disp;
-        dc.context.drawImage(part_canv,p.x,p.y,p.w,p.h);
+        //ctx.globalAlpha = min(1,(1-d)*2)*part_disp;
+        ctx.globalAlpha = part_disp;
+        ctx.drawImage(part_canv,p.x,p.y,p.w,p.h);
       }
     }
-    dc.context.globalAlpha = 1;
+    ctx.globalAlpha = 1;
   }
   var drawFlame = function(obj)
   {
-    dc.context.drawImage(flame_canv,obj.x,obj.y,obj.w,obj.h);
+    ctx.drawImage(flame_canv,obj.x,obj.y,obj.w,obj.h);
   }
   var drawShadow = function(obj)
   {
-    dc.context.drawImage(shadow_canv,obj.x,obj.y,obj.w,obj.h);
+    ctx.drawImage(shadow_canv,obj.x,obj.y,obj.w,obj.h);
   }
   var drawBasket = function(obj)
   {
-    dc.context.drawImage(basket_canv,obj.x,obj.y,obj.w,obj.h);
+    ctx.drawImage(basket_canv,obj.x,obj.y,obj.w,obj.h);
   }
   var drawBalloon = function(obj)
   {
-    dc.context.drawImage(balloon_canv,obj.x,obj.y,obj.w,obj.h);
+    ctx.drawImage(balloon_canv,obj.x,obj.y,obj.w,obj.h);
     drawBalloonParticles();
   }
   var drawGrid = function(obj)
   {
-    dc.context.lineWidth = 0.1;
+    ctx.lineWidth = 0.1;
     for(var i = 0; i < 11; i++)
     {
       var x = lerp(obj.x,obj.x+obj.w,i/10);
-      dc.context.beginPath();
-      dc.context.moveTo(x,obj.y);
-      dc.context.lineTo(x,obj.y+obj.h);
-      dc.context.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x,obj.y);
+      ctx.lineTo(x,obj.y+obj.h);
+      ctx.stroke();
       var y = lerp(obj.y,obj.y+obj.h,i/10);
-      dc.context.beginPath();
-      dc.context.moveTo(obj.x,y);
-      dc.context.lineTo(obj.x+obj.w,y);
-      dc.context.stroke();
+      ctx.beginPath();
+      ctx.moveTo(obj.x,y);
+      ctx.lineTo(obj.x+obj.w,y);
+      ctx.stroke();
     }
   }
-  var drawCloud    = function(obj) { dc.context.drawImage(cloud_canv,obj.x,obj.y,obj.w,obj.h); }
-  var drawMountain = function(obj) { dc.context.drawImage(mountain_canv,obj.x,obj.y,obj.w,obj.h); }
-  var drawTree     = function(obj) { dc.context.drawImage(tree_canv,obj.x,obj.y,obj.w,obj.h); }
+  var drawCloud    = function(obj) { ctx.drawImage(obj.id == 0 ? cloud_0_img : (obj.id == 1 ? cloud_1_img : cloud_2_img),obj.x,obj.y,obj.w,obj.h); }
+  var drawMountain = function(obj) { ctx.drawImage(mountain_canv,obj.x,obj.y,obj.w,obj.h); }
+  var drawTree     = function(obj) { ctx.drawImage(obj.id == 0 ? tree_0_img : tree_1_img,obj.x,obj.y,obj.w,obj.h); }
   var drawGauge    = function(g)
   {
     if(!g.vis) return;
-    dc.context.drawImage(gauge_canv,g.x,g.y,g.w,g.h);
-    dc.context.strokeStyle = "#000000";
-    dc.context.beginPath();
-    dc.context.moveTo(g.cx,g.cy);
+    ctx.drawImage(gauge_img,g.x,g.y,g.w,g.h);
+    ctx.strokeStyle = "#000000";
+    ctx.beginPath();
+    ctx.moveTo(g.cx,g.cy);
     var t = mapVal(g.min,g.max,g.mint,g.maxt,g.val);
     if(t > g.maxt) t = g.maxt;
     if(t < g.mint) t = g.mint;
-    dc.context.lineTo(g.cx+cos(t)*g.r,g.cy+sin(t)*g.r);
-    dc.context.stroke();
-    dc.context.fillStyle = "#000000";
-    dc.context.textAlign = "center";
-    dc.context.fillText(g.t1,g.x+g.w/2,g.y+g.h+12);
-    dc.context.fillText(g.t2,g.x+g.w/2,g.y+g.h+12+12);
+    ctx.lineTo(g.cx+cos(t)*g.r,g.cy+sin(t)*g.r);
+    ctx.stroke();
+    ctx.fillStyle = "#000000";
+    ctx.textAlign = "center";
+    ctx.fillText(g.t1,g.x+g.w/2,g.y+g.h+12);
+    ctx.fillText(g.t2,g.x+g.w/2,g.y+g.h+12+12);
   }
   var drawForceArrows = function()
   {
@@ -1669,12 +1680,12 @@ var GamePlayScene = function(game, stage)
     var t = (balloon.wya+0.04)/0.04;
     var bcx = balloon.x+balloon.w/2;
     var bcy = balloon.y+balloon.h/2;
-    dc.context.globalAlpha = arrow_disp;
-    dc.context.drawImage(down_arrow_canv,bcx-50+t*25,bcy,100-t*50,100-t*50);
-    dc.context.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
-    dc.context.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
-    dc.context.drawImage(up_arrow_canv,bcx-25,bcy-50,50,50);
-    dc.context.globalAlpha = 1;
+    ctx.globalAlpha = arrow_disp;
+    ctx.drawImage(down_arrow_canv,bcx-50+t*25,bcy,100-t*50,100-t*50);
+    ctx.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
+    ctx.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
+    ctx.drawImage(up_arrow_canv,bcx-25,bcy-50,50,50);
+    ctx.globalAlpha = 1;
   }
 
   var Gauge = function(t1,t2,x,y,w,h,mint,maxt,min,max,minvalid,maxvalid,altered)
@@ -1764,6 +1775,8 @@ var GamePlayScene = function(game, stage)
   }
   var cloneObj = function(from,to)
   {
+    to.id = from.id;
+
     to.x = from.x;
     to.y = from.y;
     to.w = from.w;
