@@ -248,6 +248,11 @@ alert_gas_img.src = "assets/alert_gas.png";
 var alert_target_img = new Image();
 alert_target_img.src = "assets/alert_target.png";
 
+var can_img = new Image();
+can_img.src = "assets/can.png";
+var tank_img = new Image();
+tank_img.src = "assets/tank.png";
+
 var char_imgs = [];
 for(var i = 0; i < 6; i++)
 {

@@ -49,6 +49,8 @@ var LoadingScene = function(game, stage)
     img_srcs.push("assets/alert_danger.png");
     img_srcs.push("assets/alert_gas.png");
     img_srcs.push("assets/alert_target.png");
+    img_srcs.push("assets/can.png");
+    img_srcs.push("assets/tank.png");
     for(var i = 0; i < 6; i++) for(var j = 0; j < 3; j++) img_srcs.push("assets/char_"+i+"_"+j+".png");
     for(var i = 0; i < img_srcs.length; i++)
     {

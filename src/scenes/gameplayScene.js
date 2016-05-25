@@ -918,8 +918,7 @@ var GamePlayScene = function(game, stage)
         }
         else
         {
-          ctx.fillStyle = "#FF0000";
-          ctx.fillRect(steps[cur_step].next_station.x,steps[cur_step].next_station.y,10,10);
+          ctx.drawImage(can_img,steps[cur_step].next_station.x,steps[cur_step].next_station.y,30,100);
         }
         ctx.textAlign = "center";
         ctx.fillStyle = "#000000";
