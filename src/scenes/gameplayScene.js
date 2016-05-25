@@ -181,11 +181,11 @@ var GamePlayScene = function(game, stage)
     screenSpace(camera,dc,balloon); //needs balloon space to init parts
     balloon_parts = [];
     for(var i = 0; i < 500; i++)
-      balloon_parts.push(new Part());
+      balloon_parts.push(new Part(0));
     initBalloonParticles();
     air_parts = [];
     for(var i = 0; i < 5000; i++)
-      air_parts.push(new Part());
+      air_parts.push(new Part(0));
     initAirParticles();
 
     //initial calibration
@@ -1446,12 +1446,13 @@ var GamePlayScene = function(game, stage)
     self.draw = drawObj; //to be replaced- hoping interpreter smart enough to pack w/ function ptr
   }
 
-  var Part = function()
+  var Part = function(i)
   {
+    this.i = i;
     this.x = 0;
     this.y = 0;
-    this.w = 3;
-    this.h = 3;
+    this.w = 1;
+    this.h = 1;
     this.xv = 0;
     this.yv = 0;
     this.t = 0;
@@ -1460,7 +1461,7 @@ var GamePlayScene = function(game, stage)
   {
     var p;
     var temp = (balloon.t-290)/5; //~1 to ~14 (at same scale used by drawAirParts)
-    var s = balloon.h/30;
+    var s = balloon.h/60;
     var minx = balloon.x-balloon.w/2-s/2;
     var maxx = balloon.x+balloon.w+balloon.w/2-s/2;
     var miny = balloon.y-balloon.h/2-s/2;
@@ -1482,7 +1483,7 @@ var GamePlayScene = function(game, stage)
   {
     var p;
     var temp = (tempForHeight(env_temp,balloon.wy)-290)/5; //~0 to ~1
-    var s = balloon.h/30;
+    var s = balloon.h/60;
     var minx = balloon.x-balloon.w/2-2/2;
     var maxx = balloon.x+balloon.w+balloon.w/2-2/2;
     var miny = balloon.y-balloon.h/2-s/2;
@@ -1637,7 +1638,7 @@ var GamePlayScene = function(game, stage)
     var n_parts = round((15-temp)*20);
     n_parts *= 4;
     n_parts = min(n_parts,air_parts.length-1);
-    var s = balloon.h/30;
+    var s = balloon.h/60;
     var minx = balloon.x-balloon.w/2-2/2;
     var maxx = balloon.x+balloon.w+balloon.w/2-2/2;
     var miny = balloon.y-balloon.h/2-s/2;
@@ -1682,7 +1683,9 @@ var GamePlayScene = function(game, stage)
       else
       {
         ctx.globalAlpha = min(1,(1-d)*2)*part_disp;
-        ctx.drawImage(part_canv,p.x,p.y,p.w,p.h);
+        var pin = Math.round(Math.abs(p.xv+p.yv))*5;
+        if(pin > 9) pin = 9;
+        ctx.drawImage(part_canvs[pin],p.x,p.y,p.w,p.h);
       }
     }
     ctx.globalAlpha = 1;
@@ -1694,7 +1697,7 @@ var GamePlayScene = function(game, stage)
     var temp = (balloon.t-290)/5; //~1 to ~14 (at same scale used by drawAirParts)
     var n_parts = round((15-temp)*20);
     n_parts = min(n_parts,balloon_parts.length-1);
-    var s = balloon.h/30;
+    var s = balloon.h/60;
     var minx = balloon.x-balloon.w/2-s/2;
     var maxx = balloon.x+balloon.w+balloon.w/2-s/2;
     var miny = balloon.y-balloon.h/2-s/2;
@@ -1734,12 +1737,14 @@ var GamePlayScene = function(game, stage)
     {
       p = balloon_parts[i];
       d = distsqr(p,balloon)/brsqr;
+
       if(d > 1) p.t = 101; //kinda tick-ish
       else
       {
-        //ctx.globalAlpha = min(1,(1-d)*2)*part_disp;
         ctx.globalAlpha = part_disp;
-        ctx.drawImage(part_canv,p.x,p.y,p.w,p.h);
+        var pin = Math.round(Math.abs(p.xv+p.yv))*5;
+        if(pin > 9) pin = 9;
+        ctx.drawImage(part_canvs[pin],p.x,p.y,p.w,p.h);
       }
     }
     ctx.globalAlpha = 1;
