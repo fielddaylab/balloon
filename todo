@@ -1,12 +1,14 @@
-- basket asset
-- rope needs ~3+ states:
-- - not cut, balloon on ground
-- - not cut, balloon above ground, but not yet at tension (a dynamic transition between prev and next state)
-- - not cut, balloon at tension (balloon above ground, being held down by ropes)
-- - cut
-- button ought not be "up" and "down", but instead "burn" and "open" (the purpose of this game is to demonstrate correlation btwn heating/cooling and vertical force- v important to not sidestep the "cause" because reasoning about "effect" is more intuitive.
+- what does main menu look like?
+- what "minigames" are we leaving in? which are we taking out?
 - menu buttons for free play mode? (display/hide arrows, particles, etc...)
-- people are really small, don't really hang out of basket
-- little person has missing pole or something he's hugging?
-- fire doesn't mesh with where the people are
+- how do you advance the text bubble? (click the bubble? click anywhere? timed?)
+- who's speaking? (current text very apparantly not in "voice" of any characters on balloon- might need to wait for final-ish text?)
+- prompts to "hold the fire button" or "cut the rope" don't have assets
+- what did we decide we're doing for the sky? just a continuous gradient? are we getting rid of the faint grid to show apparent motion? if so, will need both vertical and horizontal landmarks always visible so you can see where you're moving
+- are we using the green arrow assets from the current game as final? (to show force vectors)
+- when increasing volume, there is no room for text bubble. how should this be handled?
+
+- particles overlayed on top of balloon look like they're "outside" of it. would be great to have a cutaway of the balloon to make explicit that we're looking inside?
+- a different balloon asset with the "top flap open" would be great to better express what is going on when the flap button is held
+- particles not performant on chromebook. open to other ideas of how to express diferences in particle speed
 
