@@ -851,7 +851,13 @@ var GamePlayScene = function(game, stage)
           sx = sx + (dx/dd)*(dd-40);
           sy = sy + (dy/dd)*(dd-40);
 
-          drawArrow(dc,sx,sy,ex,ey,10);
+          ctx.save();
+          ctx.translate(sx,sy);
+          ctx.rotate(Math.atan2(ey-sy,ex-sx));
+          ctx.drawImage(alert_bg_img,-20,-20,50,40);
+          ctx.restore();
+          ctx.drawImage(alert_danger_img,sx-5,sy-10,10,20);
+          //drawArrow(dc,sx,sy,ex,ey,10);
           ctx.strokeStyle = "#000000";
         }
         else
@@ -901,7 +907,13 @@ var GamePlayScene = function(game, stage)
           sx = sx + (dx/dd)*(dd-40);
           sy = sy + (dy/dd)*(dd-40);
 
-          drawArrow(dc,sx,sy,ex,ey,10);
+          ctx.save();
+          ctx.translate(sx,sy);
+          ctx.rotate(Math.atan2(ey-sy,ex-sx));
+          ctx.drawImage(alert_bg_img,-20,-20,50,40);
+          ctx.restore();
+          ctx.drawImage(alert_danger_img,sx-5,sy-10,10,20);
+          //drawArrow(dc,sx,sy,ex,ey,10);
           ctx.strokeStyle = "#000000";
         }
         else
@@ -972,7 +984,13 @@ var GamePlayScene = function(game, stage)
           sx = sx + (dx/dd)*(dd-40);
           sy = sy + (dy/dd)*(dd-40);
 
-          drawArrow(dc,sx,sy,ex,ey,10);
+          ctx.save();
+          ctx.translate(sx,sy);
+          ctx.rotate(Math.atan2(ey-sy,ex-sx));
+          ctx.drawImage(alert_bg_img,-20,-20,50,40);
+          ctx.restore();
+          ctx.drawImage(alert_danger_img,sx-5,sy-10,10,20);
+          //drawArrow(dc,sx,sy,ex,ey,10);
           ctx.strokeStyle = "#000000";
         }
         ctx.textAlign = "center";

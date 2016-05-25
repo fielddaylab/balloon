@@ -7,6 +7,7 @@
 - what did we decide we're doing for the sky? just a continuous gradient? are we getting rid of the faint grid to show apparent motion? if so, will need both vertical and horizontal landmarks always visible so you can see where you're moving
 - are we using the green arrow assets from the current game as final? (to show force vectors)
 - when increasing volume, there is no room for text bubble. how should this be handled?
+- what does the "your score: xxxx retry?" screen look like for all the minigames?
 
 - particles overlayed on top of balloon look like they're "outside" of it. would be great to have a cutaway of the balloon to make explicit that we're looking inside?
 - a different balloon asset with the "top flap open" would be great to better express what is going on when the flap button is held

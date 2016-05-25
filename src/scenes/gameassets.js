@@ -239,6 +239,15 @@ basket_img.src = "assets/basket.png";
 var bubble_img = new Image();
 bubble_img.src = "assets/bubble.png";
 
+var alert_bg_img = new Image();
+alert_bg_img.src = "assets/alert_bg.png";
+var alert_danger_img = new Image();
+alert_danger_img.src = "assets/alert_danger.png";
+var alert_gas_img = new Image();
+alert_gas_img.src = "assets/alert_gas.png";
+var alert_target_img = new Image();
+alert_target_img.src = "assets/alert_target.png";
+
 var char_imgs = [];
 for(var i = 0; i < 6; i++)
 {
