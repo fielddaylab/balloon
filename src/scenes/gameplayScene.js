@@ -129,6 +129,8 @@ var GamePlayScene = function(game, stage)
 
   self.ready = function()
   {
+    ctx.font = "12px Open Sans";
+
     //state
     rope_cut = false;
     fuel = 40;
@@ -410,7 +412,7 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function() {
         pop([
-          "See how the air particles inside the balloon are <b>moving faster</b>?",
+          "See how the air particles inside the balloon are moving faster?",
           "When air (or anything, really) gets heated, its molecules jiggle very quickly.",
           "Molecules that are bouncing all over the place create higher pressure within the balloon.",
           "This higher pressure pushes the air out of the balloon, making the balloon much lighter than the surrounding air.",
