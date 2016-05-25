@@ -1760,8 +1760,10 @@ var GamePlayScene = function(game, stage)
   {
     ctx.drawImage(balloon_back_img,obj.x,obj.y,obj.w,obj.h);
     if(burn_pad.down && fuel > 0) drawFlame(flame);
-    ctx.drawImage(balloon_img,obj.x,obj.y,obj.w,obj.h);
     drawBalloonParticles();
+    ctx.globalAlpha = 1-part_disp;
+    ctx.drawImage(balloon_img,obj.x,obj.y,obj.w,obj.h);
+    ctx.globalAlpha = 1;
   }
   var drawRope = function(obj)
   {
