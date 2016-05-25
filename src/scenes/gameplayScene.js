@@ -63,6 +63,7 @@ var GamePlayScene = function(game, stage)
   var char_r_t;
   var balloon;
   var clone_balloon;
+  var rope;
   var vel_arrow;
   var acc_arrow;
   var arrow_separator;
@@ -168,6 +169,7 @@ var GamePlayScene = function(game, stage)
     balloon.bm = hot_air_balloon_baggage;
     clone_balloon = new Obj();
     cloneObj(balloon,clone_balloon);
+    rope = new Obj(0,0,10,4,0);
     vel_arrow = new Obj();
     acc_arrow = new Obj();
     arrow_separator = new Obj();
@@ -181,6 +183,13 @@ var GamePlayScene = function(game, stage)
     for(var i = 0; i < 5000; i++)
       air_parts.push(new Part());
     initAirParticles();
+
+    //initial calibration
+    basket.wx = balloon.wx;
+    basket.wy = balloon.wy-balloon.wh*0.7;
+    rope.wy = basket.wy-basket.wh/2;
+    char.wx = basket.wx;
+    char.wy = basket.wy+basket.wh/4;
 
     bgsep = 10; bg = []; for(var i = 0; i < 30; i++) { bg.push(new Obj(i*bgsep+rand0()*bgsep, rand0()*5+10, 3, 2, randIntBelow(3))); bg[i].draw = drawCloud;    } bgi = 0;
     mgsep = 50; mg = []; for(var i = 0; i < 10; i++) { mg.push(new Obj(i*mgsep+rand0()*mgsep, rand0()*5+10, 4, 3, randIntBelow(3))); mg[i].draw = drawMountain; } mgi = 0;
@@ -1110,6 +1119,7 @@ var GamePlayScene = function(game, stage)
       balloon.wyv = 0;
     }
 
+    if(!rope_cut) balloon.wx = 0;
     if(balloon.wy <= 0 || !rope_cut) balloon.wxv = 0;
     else                             balloon.wxv = lerp(balloon.wxv,wind[min(floor(balloon.wy),wind.length-1)],0.1);
     if(balloon.wx-boost.wx > 100) { boost.wx = boost.wx+randR(200,500); boost.wy = randR(30,100); }
@@ -1134,7 +1144,7 @@ var GamePlayScene = function(game, stage)
     char.wy = basket.wy+basket.wh/4;
 
     shadow.wx = balloon.wx;
-    shadow.wy = 0-balloon.wh/2-basket.wh;
+    shadow.wy = -balloon.wh/2-basket.wh*1.2;
 
     flame.wx = balloon.wx;
     flame.wy = balloon.wy-balloon.wh*.35;
@@ -1209,7 +1219,7 @@ var GamePlayScene = function(game, stage)
     camera.ww = lerp(camera.ww,cam_target.ww,0.01);
     camera.wh = lerp(camera.wh,cam_target.wh,0.01);
 
-    //*
+    /*
     //zoom out
     camera.wh = 100;
     camera.ww = camera.wh/9*16;
@@ -1249,6 +1259,7 @@ var GamePlayScene = function(game, stage)
     screenSpace(camera,dc,basket);
     screenSpace(camera,dc,char);
     screenSpace(camera,dc,balloon);
+    screenSpace(camera,dc,rope);
     screenSpace(camera,dc,cam_target);
     screenSpace(camera,dc,vel_arrow);
     screenSpace(camera,dc,acc_arrow);
@@ -1291,35 +1302,26 @@ var GamePlayScene = function(game, stage)
     drawWind();
     //drawBoost();
     drawAirParticles();
-    if(!rope_cut) ctx.drawImage(rope_img,shadow.x+shadow.w/15+4,shadow.y-shadow.h/4,shadow.w-2*shadow.w/15,shadow.h*2);
+    drawRope(rope);
     drawBasket(basket);
     drawChars(char);
     drawBalloon(balloon);
     //drawCamTarget(cam_target);
     drawForceArrows();
 
-    ctx.textAlign = "center";
-    //burn_pad.draw(dc);
     if(burn_pad.down) ctx.drawImage(burn_btn_red_img,burn_pad.x,burn_pad.y,burn_pad.w,burn_pad.h);
     else              ctx.drawImage(    burn_btn_img,burn_pad.x,burn_pad.y,burn_pad.w,burn_pad.h);
-    ctx.fillStyle = "#000000";
-    ctx.fillText("Burn",burn_pad.x+burn_pad.w/2,burn_pad.y+burn_pad.h/2);
 
-    //flap_pad.draw(dc);
     if(flap_pad.down) ctx.drawImage(flap_btn_red_img,flap_pad.x,flap_pad.y,flap_pad.w,flap_pad.h);
     else              ctx.drawImage(    flap_btn_img,flap_pad.x,flap_pad.y,flap_pad.w,flap_pad.h);
-    ctx.fillStyle = "#000000";
-    ctx.fillText("Open Flap",flap_pad.x+flap_pad.w/2,flap_pad.y+flap_pad.h/2);
 
     if(!rope_cut)
     {
-      //cut_pad.draw(dc);
       if(cut_pad.down) ctx.drawImage(rope_btn_red_img,cut_pad.x,cut_pad.y,cut_pad.w,cut_pad.h);
       else             ctx.drawImage(    rope_btn_img,cut_pad.x,cut_pad.y,cut_pad.w,cut_pad.h);
-      ctx.fillStyle = "#000000";
-      ctx.fillText("Cut Rope",cut_pad.x+cut_pad.w/2,cut_pad.y+cut_pad.h/2);
     }
 
+    ctx.textAlign = "center";
     menu_btn.draw(dc);
     ctx.fillStyle = "#000000";
     ctx.fillText("Menu",menu_btn.x+menu_btn.w/2,menu_btn.y+menu_btn.h/2);
@@ -1744,6 +1746,21 @@ var GamePlayScene = function(game, stage)
     if(burn_pad.down && fuel > 0) drawFlame(flame);
     ctx.drawImage(balloon_img,obj.x,obj.y,obj.w,obj.h);
     drawBalloonParticles();
+  }
+  var drawRope = function(obj)
+  {
+    if(rope_cut) ctx.drawImage(rope_cut_img,obj.x,obj.y,obj.w,obj.h);
+    else
+    {
+      ctx.drawImage(rope_img,obj.x,obj.y,obj.w,obj.h);
+      ctx.strokeStyle = "#7D2724";
+      ctx.lineWidth = 1;
+      dc.drawLine(obj.x+obj.w*.25,obj.y+obj.h*.12,basket.x,basket.y+basket.h/2);
+      dc.drawLine(obj.x+obj.w*.70,obj.y+obj.h*.10,basket.x+basket.w,basket.y+basket.h/2);
+      dc.drawLine(obj.x+obj.w*.07,obj.y+obj.h*.85,basket.x,basket.y+basket.h/2);
+      dc.drawLine(obj.x+obj.w*.90,obj.y+obj.h*.85,basket.x+basket.w,basket.y+basket.h/2);
+      ctx.strokeStyle = "#000000";
+    }
   }
   var drawCamTarget = function(obj)
   {
