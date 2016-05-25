@@ -64,6 +64,7 @@ var GamePlayScene = function(game, stage)
   var balloon;
   var clone_balloon;
   var rope;
+  var bubble_origin;
   var vel_arrow;
   var acc_arrow;
   var arrow_separator;
@@ -170,6 +171,7 @@ var GamePlayScene = function(game, stage)
     clone_balloon = new Obj();
     cloneObj(balloon,clone_balloon);
     rope = new Obj(0,0,10,4,0);
+    bubble_origin = new Obj(0,0,0.1,0.1,0);
     vel_arrow = new Obj();
     acc_arrow = new Obj();
     arrow_separator = new Obj();
@@ -188,6 +190,8 @@ var GamePlayScene = function(game, stage)
     basket.wx = balloon.wx;
     basket.wy = balloon.wy-balloon.wh*0.7;
     rope.wy = basket.wy-basket.wh/2;
+    bubble_origin.wx = balloon.wx+balloon.ww;
+    bubble_origin.wy = basket.wy;
     char.wx = basket.wx;
     char.wy = basket.wy;
 
@@ -1140,6 +1144,8 @@ var GamePlayScene = function(game, stage)
 
     basket.wx = balloon.wx;
     basket.wy = balloon.wy-balloon.wh*0.7;
+    bubble_origin.wx = balloon.wx+balloon.ww;
+    bubble_origin.wy = basket.wy;
     char.wx = basket.wx;
     char.wy = basket.wy+basket.wh/6;
 
@@ -1260,6 +1266,7 @@ var GamePlayScene = function(game, stage)
     screenSpace(camera,dc,char);
     screenSpace(camera,dc,balloon);
     screenSpace(camera,dc,rope);
+    screenSpace(camera,dc,bubble_origin);
     screenSpace(camera,dc,cam_target);
     screenSpace(camera,dc,vel_arrow);
     screenSpace(camera,dc,acc_arrow);
@@ -1356,6 +1363,8 @@ var GamePlayScene = function(game, stage)
     drawGauge(xvel_gauge);         if(xvel_gauge.vis)     drawAroundDecimal(dc,        xvel_gauge.x+xvel_gauge.w/2,    xvel_gauge.y-10,fdisp(balloon.wxv*fps,2),"","m/s")
     drawGauge(yvel_gauge);         if(yvel_gauge.vis)     drawAroundDecimal(dc,        yvel_gauge.x+yvel_gauge.w/2,    yvel_gauge.y-10,fdisp(balloon.wyv*fps,2),"","m/s")
     drawGauge(fuel_gauge);         if(fuel_gauge.vis)     drawAroundDecimal(dc,        fuel_gauge.x+fuel_gauge.w/2,    fuel_gauge.y-10,fdisp(fuel,2),"","G")
+
+    //drawBubble(bubble_origin);
 
     dom.draw(dc);
     steps[cur_step].draw();
@@ -1761,6 +1770,15 @@ var GamePlayScene = function(game, stage)
       dc.drawLine(obj.x+obj.w*.90,obj.y+obj.h*.85,basket.x+basket.w,basket.y+basket.h/2);
       ctx.strokeStyle = "#000000";
     }
+  }
+  var drawBubble = function(obj)
+  {
+    ctx.fillStyle = "#FFFFFF";
+    var w = 100;
+    var h = 200;
+    var x = obj.x;   if(x < 20) x = 20;
+    var y = obj.y-h; if(y < 20) y = 20; if(y > dc.height-h-20) y = dc.height-h-20;
+    ctx.fillRect(x,y,w,h);
   }
   var drawCamTarget = function(obj)
   {
