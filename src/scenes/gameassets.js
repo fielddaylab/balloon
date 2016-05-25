@@ -236,6 +236,9 @@ rope_cut_img.src = "assets/rope_cut.png";
 var basket_img = new Image();
 basket_img.src = "assets/basket.png";
 
+var bubble_img = new Image();
+bubble_img.src = "assets/bubble.png";
+
 var char_imgs = [];
 for(var i = 0; i < 6; i++)
 {

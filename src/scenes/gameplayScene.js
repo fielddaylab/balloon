@@ -41,7 +41,6 @@ var GamePlayScene = function(game, stage)
   var presser;
   var domclicker;
   var dom;
-  var bmwrangler;
 
   ENUM = 0;
   var IGNORE_INPUT = ENUM; ENUM++;
@@ -138,7 +137,6 @@ var GamePlayScene = function(game, stage)
     presser = new Presser({source:stage.dispCanv.canvas});
     domclicker = new Clicker({source:stage.dispCanv.canvas});
     dom = new CanvDom(dc);
-    bmwrangler = new BottomMessageWrangler();
     input_state = RESUME_INPUT;
 
     camera = new Camera();
@@ -214,6 +212,7 @@ var GamePlayScene = function(game, stage)
     presser.register(flap_pad);
     presser.register(cut_pad);
     presser.register(retry_btn);
+    domclicker.register(dom);
     domclicker.register(menu_btn);
     domclicker.register(reset_btn);
     domclicker.register(arrows_btn);
@@ -1064,7 +1063,6 @@ var GamePlayScene = function(game, stage)
     if(arrow_disp < target_arrow_disp) { arrow_disp += 0.02; if(arrow_disp > 1) arrow_disp = 1; }
     if(arrow_disp > target_arrow_disp) { arrow_disp -= 0.02; if(arrow_disp < 0) arrow_disp = 0; }
 
-    bmwrangler.tick();
     if(input_state == RESUME_INPUT)
     {
       dragger.flush();
@@ -1267,6 +1265,11 @@ var GamePlayScene = function(game, stage)
     screenSpace(camera,dc,balloon);
     screenSpace(camera,dc,rope);
     screenSpace(camera,dc,bubble_origin);
+      var obj = bubble_origin;
+      obj.w = 100;
+      obj.h = 200;
+      obj.x = obj.x;       if(obj.x < 20) obj.x = 20;
+      obj.y = obj.y-obj.h; if(obj.y < 20) obj.y = 20; if(obj.y > dc.height-obj.h-20) obj.y = dc.height-obj.h-20;
     screenSpace(camera,dc,cam_target);
     screenSpace(camera,dc,vel_arrow);
     screenSpace(camera,dc,acc_arrow);
@@ -1364,9 +1367,16 @@ var GamePlayScene = function(game, stage)
     drawGauge(yvel_gauge);         if(yvel_gauge.vis)     drawAroundDecimal(dc,        yvel_gauge.x+yvel_gauge.w/2,    yvel_gauge.y-10,fdisp(balloon.wyv*fps,2),"","m/s")
     drawGauge(fuel_gauge);         if(fuel_gauge.vis)     drawAroundDecimal(dc,        fuel_gauge.x+fuel_gauge.w/2,    fuel_gauge.y-10,fdisp(fuel,2),"","G")
 
-    //drawBubble(bubble_origin);
+    if(input_state == IGNORE_INPUT)
+    {
+      drawBubble(bubble_origin);
 
-    dom.draw(dc);
+      dom.x = bubble_origin.x;
+      dom.y = bubble_origin.y;
+      dom.w = bubble_origin.w;
+      dom.h = bubble_origin.h;
+      dom.draw(12,dc);
+    }
     steps[cur_step].draw();
   };
 
@@ -1771,14 +1781,11 @@ var GamePlayScene = function(game, stage)
       ctx.strokeStyle = "#000000";
     }
   }
-  var drawBubble = function(obj)
+  var drawBubble = function(obj,doit)
   {
     ctx.fillStyle = "#FFFFFF";
-    var w = 100;
-    var h = 200;
-    var x = obj.x;   if(x < 20) x = 20;
-    var y = obj.y-h; if(y < 20) y = 20; if(y > dc.height-h-20) y = dc.height-h-20;
-    ctx.fillRect(x,y,w,h);
+    ctx.drawImage(bubble_img,obj.x-150,obj.y-50,obj.w+200,obj.h+100);
+    ctx.fillRect(obj.x,obj.y,obj.w,obj.h);
   }
   var drawCamTarget = function(obj)
   {
@@ -1970,8 +1977,13 @@ var GamePlayScene = function(game, stage)
     fuel_gauge.vis = fuel;
   }
 
-  var pop = function(msg,callback) { if(!callback) callback = dismissed; releaseUI(); input_state = IGNORE_INPUT; bmwrangler.popMessage(msg,callback); }
   var dismissed = function() { input_state = RESUME_INPUT; }
+  var pop = function(lines)
+  {
+    releaseUI();
+    input_state = IGNORE_INPUT;
+    dom.popDismissableMessage(lines,bubble_origin.x,bubble_origin.y,bubble_origin.w,bubble_origin.h,dismissed);
+  }
 
   var Step = function(begin,tick,draw,test) { this.begin = begin; this.tick = tick; this.draw = draw; this.test = test; }
 };

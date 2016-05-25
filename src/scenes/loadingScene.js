@@ -44,6 +44,7 @@ var LoadingScene = function(game, stage)
     img_srcs.push("assets/rope.png");
     img_srcs.push("assets/rope_cut.png");
     img_srcs.push("assets/basket.png");
+    img_srcs.push("assets/bubble.png");
     for(var i = 0; i < 6; i++) for(var j = 0; j < 3; j++) img_srcs.push("assets/char_"+i+"_"+j+".png");
     for(var i = 0; i < img_srcs.length; i++)
     {
