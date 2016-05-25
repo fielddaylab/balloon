@@ -155,7 +155,7 @@ var GamePlayScene = function(game, stage)
     shadow = new Obj(0,0,10,2,0);
     flame = new Obj(0,0,2,4,0);
     basket = new Obj(0,0,4,4,0);
-    char = new Obj(0,0,4,4,0);
+    char = new Obj(0,0,4,3,0);
     char_r_f = 100;
     char_r_t = 200;
     char_pose = [];
@@ -189,7 +189,7 @@ var GamePlayScene = function(game, stage)
     basket.wy = balloon.wy-balloon.wh*0.7;
     rope.wy = basket.wy-basket.wh/2;
     char.wx = basket.wx;
-    char.wy = basket.wy+basket.wh/4;
+    char.wy = basket.wy;
 
     bgsep = 10; bg = []; for(var i = 0; i < 30; i++) { bg.push(new Obj(i*bgsep+rand0()*bgsep, rand0()*5+10, 3, 2, randIntBelow(3))); bg[i].draw = drawCloud;    } bgi = 0;
     mgsep = 50; mg = []; for(var i = 0; i < 10; i++) { mg.push(new Obj(i*mgsep+rand0()*mgsep, rand0()*5+10, 4, 3, randIntBelow(3))); mg[i].draw = drawMountain; } mgi = 0;
@@ -1141,7 +1141,7 @@ var GamePlayScene = function(game, stage)
     basket.wx = balloon.wx;
     basket.wy = balloon.wy-balloon.wh*0.7;
     char.wx = basket.wx;
-    char.wy = basket.wy+basket.wh/4;
+    char.wy = basket.wy+basket.wh/6;
 
     shadow.wx = balloon.wx;
     shadow.wy = -balloon.wh/2-basket.wh*1.2;
