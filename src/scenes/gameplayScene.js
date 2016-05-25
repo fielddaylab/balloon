@@ -114,6 +114,8 @@ var GamePlayScene = function(game, stage)
 
   var steps;
   var cur_step;
+  var lines;
+  var cur_line;
 
   var step_intro;
   var step_particles;
@@ -268,6 +270,7 @@ var GamePlayScene = function(game, stage)
     //self.popDismissableMessage = function(text,x,y,w,h,callback)
 
     steps = [];
+    lines = [];
 
     step_intro = steps.length;
     steps.push(new Step(
@@ -1978,11 +1981,20 @@ var GamePlayScene = function(game, stage)
   }
 
   var dismissed = function() { input_state = RESUME_INPUT; }
-  var pop = function(lines)
+  var nextPop = function()
   {
+    var l = textToLines(dc, "12px Open Sans", bubble_origin.w, lines[cur_line])
+    cur_line++;
     releaseUI();
     input_state = IGNORE_INPUT;
-    dom.popDismissableMessage(lines,bubble_origin.x,bubble_origin.y,bubble_origin.w,bubble_origin.h,dismissed);
+    if(cur_line >= lines.length) dom.popDismissableMessage(l,bubble_origin.x,bubble_origin.y,bubble_origin.w,bubble_origin.h,dismissed);
+    else                         dom.popDismissableMessage(l,bubble_origin.x,bubble_origin.y,bubble_origin.w,bubble_origin.h,nextPop);
+  };
+  var pop = function(l)
+  {
+    lines = l;
+    cur_line = 0;
+    nextPop();
   }
 
   var Step = function(begin,tick,draw,test) { this.begin = begin; this.tick = tick; this.draw = draw; this.test = test; }
