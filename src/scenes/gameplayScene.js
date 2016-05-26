@@ -149,10 +149,10 @@ var GamePlayScene = function(game, stage)
 
     camera = new Camera();
     camera.wh = 30;
-    camera.ww = camera.wh/9*16;
+    camera.ww = camera.wh/dc.height*dc.width;
     cam_target = new Camera();
     cam_target.wh = camera.wh;
-    cam_target.ww = camera.ww/9*16;
+    cam_target.ww = camera.ww/dc.height*dc.width;
     vgcam = new Camera();
     bgcam = new Camera();
     mgcam = new Camera();
@@ -1198,25 +1198,25 @@ var GamePlayScene = function(game, stage)
     {
       cam_target.wh = 60;
       cam_target.wy = balloon.wy-15;
-      cam_target.ww = cam_target.wh/9*16;
+      cam_target.ww = cam_target.wh/dc.height*dc.width;
     }
     else if(balloon.wy > 10) //10-20
     {
       cam_target.wh = mapVal(10,20,40,60,balloon.wy);
       cam_target.wy = mapVal(10,20,0,5,balloon.wy);
-      cam_target.ww = cam_target.wh/9*16;
+      cam_target.ww = cam_target.wh/dc.height*dc.width;
     }
     else if(balloon.wy > 5) //5-10
     {
       cam_target.wh = mapVal(5,10,30,40,balloon.wy);
       cam_target.wy = 0;
-      cam_target.ww = cam_target.wh/9*16;
+      cam_target.ww = cam_target.wh/dc.height*dc.width;
     }
     else
     {
       cam_target.wh = 30;
       cam_target.wy = 0;
-      cam_target.ww = cam_target.wh/9*16;
+      cam_target.ww = cam_target.wh/dc.height*dc.width;
     }
     */
     //new
@@ -1248,7 +1248,7 @@ var GamePlayScene = function(game, stage)
       cam_target.wy = lerp(-2,0,t);
       cam_target.wh = lerp(30,35,t);
     }
-    cam_target.ww = cam_target.wh/9*16;
+    cam_target.ww = cam_target.wh/dc.height*dc.width;
 
     camera.wx = lerp(camera.wx,cam_target.wx,0.1);
     camera.wy = lerp(camera.wy,cam_target.wy,0.02);
@@ -1258,7 +1258,7 @@ var GamePlayScene = function(game, stage)
     /*
     //zoom out
     camera.wh = 100;
-    camera.ww = camera.wh/9*16;
+    camera.ww = camera.wh/dc.height*dc.width;
     //*/
 
     outside_temp_gauge.val = env_temp;
