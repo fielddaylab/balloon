@@ -1773,7 +1773,14 @@ var GamePlayScene = function(game, stage)
   }
   var drawBasket = function(obj)
   {
+    ctx.strokeStyle = "#7D2724";
+    ctx.lineWidth = 0.5;
+    dc.drawLine(obj.x+obj.w*.20,obj.y+obj.h*.1,balloon.x+balloon.w*0.40,balloon.y+balloon.h*0.95);
+    dc.drawLine(obj.x+obj.w*.32,obj.y+obj.h*.1,balloon.x+balloon.w*0.45,balloon.y+balloon.h*0.95);
+    dc.drawLine(obj.x+obj.w*.68,obj.y+obj.h*.1,balloon.x+balloon.w*0.55,balloon.y+balloon.h*0.95);
+    dc.drawLine(obj.x+obj.w*.80,obj.y+obj.h*.1,balloon.x+balloon.w*0.60,balloon.y+balloon.h*0.95);
     ctx.drawImage(basket_img,obj.x,obj.y,obj.w,obj.h);
+    ctx.strokeStyle = "#000000";
   }
   var drawChars = function(obj)
   {

@@ -68,7 +68,7 @@ var LoadingScene = function(game, stage)
   self.tick = function()
   {
     if(progress <= imagesloaded/(img_srcs.length+1)) progress += 0.01;
-    if(progress >= 1.0) { bake(); game.nextScene(); }
+    if(imagesloaded/(img_srcs.length+1) > 0.99) { bake(); game.nextScene(); }
   };
 
   self.draw = function()

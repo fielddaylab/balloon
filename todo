@@ -9,7 +9,6 @@
 - when increasing volume, there is no room for text bubble. how should this be handled?
 - what does the "your score: xxxx retry?" screen look like for all the minigames?
 
-- particles overlayed on top of balloon look like they're "outside" of it. would be great to have a cutaway of the balloon to make explicit that we're looking inside?
 - a different balloon asset with the "top flap open" would be great to better express what is going on when the flap button is held
 - particles not performant on chromebook. open to other ideas of how to express diferences in particle speed
 
