@@ -352,6 +352,9 @@ can_img.src = "assets/can.png";
 tank_img = new Image();
 tank_img.src = "assets/tank.png";
 
+eye_img = new Image();
+eye_img.src = "assets/eye.png";
+
 char_imgs = [];
 for(var i = 0; i < 6; i++)
 {

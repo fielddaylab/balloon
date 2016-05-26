@@ -83,6 +83,8 @@ var GamePlayScene = function(game, stage)
   var burn_pad;
   var flap_pad;
   var cut_pad;
+
+  var eye_btn; var drawer_disp; var drawer_disp_target;
   var menu_btn;
   var retry_btn;
   var reset_btn;
@@ -212,16 +214,20 @@ var GamePlayScene = function(game, stage)
     burn_pad = new ButtonBox(10,dc.height-100,60,40,function(){});
     flap_pad = new ButtonBox(10,dc.height-50,60,40,function(){});
     cut_pad  = new ButtonBox(dc.width-70,dc.height-50,60,40,function(){});
-    menu_btn   = new ButtonBox(dc.width-110,200,100,20,function(){ game.setScene(2); });
-    retry_btn  = new ButtonBox(dc.width-110, 80,100,20,function(){ });
-    reset_btn  = new ButtonBox(dc.width-110,110,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(3); });
-    arrows_btn = new ButtonBox(dc.width-110,140,100,20,function(){ if(cur_step != step_free) return; target_arrow_disp = (target_arrow_disp+1)%2; });
-    parts_btn  = new ButtonBox(dc.width-110,170,100,20,function(){ if(cur_step != step_free) return; target_part_disp = (target_part_disp+1)%2; });
+
+    eye_btn    = new ButtonBox(dc.width-60,dc.height-100,50,30,function(){ if(drawer_disp_target <= 0.5) drawer_disp_target = 1; else if(drawer_disp_target > 0.5) drawer_disp_target = 0; }); drawer_disp = 0; drawer_disp_target = 0;
+    menu_btn   = new ButtonBox(dc.width   ,dc.height-130,100,20,function(){ game.setScene(2); });
+    retry_btn  = new ButtonBox(dc.width   ,dc.height-160,100,20,function(){ });
+    reset_btn  = new ButtonBox(dc.width   ,dc.height-160,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(3); });
+    arrows_btn = new ButtonBox(dc.width   ,dc.height-190,100,20,function(){ if(cur_step != step_free) return; target_arrow_disp = (target_arrow_disp+1)%2; });
+    parts_btn  = new ButtonBox(dc.width   ,dc.height-220,100,20,function(){ if(cur_step != step_free) return; target_part_disp = (target_part_disp+1)%2; });
     presser.register(burn_pad);
     presser.register(flap_pad);
     presser.register(cut_pad);
     presser.register(retry_btn);
     domclicker.register(dom);
+
+    domclicker.register(eye_btn);
     domclicker.register(menu_btn);
     domclicker.register(reset_btn);
     domclicker.register(arrows_btn);
@@ -793,18 +799,20 @@ var GamePlayScene = function(game, stage)
       function() { if(balloon.wy <= 0) { if(balloon.wx > game.standard_best) game.standard_best = balloon.wx; return true; } return false; }
     ));
     steps.push(new Step(
-      noop,
+      function(){ drawer_disp_target = 1; },
       noop,
       function() {
-        retry_btn.draw(dc);
-        ctx.fillStyle = "#000000";
-        ctx.textAlign = "right";
-        ctx.fillText("Your Score:"+fdisp(balloon.wx,1)+"m",dc.width-10,30);
-        ctx.fillText("Top Score:"+fdisp(game.standard_best,1)+"m",dc.width-10,50);
-        ctx.textAlign = "center";
-        ctx.fillText("Retry",retry_btn.x+retry_btn.w/2,retry_btn.y+retry_btn.h/2);
+        //keep in sync...
+        var w = 150;
+        var x = dc.width-(drawer_disp*w);
+
+        ctx.textAlign = "left";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillText("Your Score:"+fdisp(balloon.wx,1)+"m"       ,x+10,retry_btn.y-50);
+        ctx.fillText("Top Score:"+fdisp(game.standard_best,1)+"m",x+10,retry_btn.y-20);
+        ctx.fillText("Retry",retry_btn.x+10,retry_btn.y+retry_btn.h*0.8);
       },
-      function() { if(retry_btn.down) { cur_step = step_standard-1; return true; } return false; }
+      function() { if(retry_btn.down) { drawer_disp_target = 0; cur_step = step_standard-1; return true; } return false; }
     ));
 
     step_refuel = steps.length;
@@ -929,18 +937,20 @@ var GamePlayScene = function(game, stage)
       function() { if(fuel <= 0 && balloon.wy <= 0) { if(balloon.wx > game.refuel_best) game.refuel_best = balloon.wx; return true; } return false; }
     ));
     steps.push(new Step(
-      noop,
+      function(){ drawer_disp_target = 1; },
       noop,
       function() {
-        retry_btn.draw(dc);
-        ctx.fillStyle = "#000000";
-        ctx.textAlign = "right";
-        ctx.fillText("Your Score:"+fdisp(balloon.wx,1)+"m",dc.width-10,30);
-        ctx.fillText("Top Score:"+fdisp(game.refuel_best,1)+"m",dc.width-10,50);
-        ctx.textAlign = "center";
-        ctx.fillText("Retry",retry_btn.x+retry_btn.w/2,retry_btn.y+retry_btn.h/2);
+        //keep in sync...
+        var w = 150;
+        var x = dc.width-(drawer_disp*w);
+
+        ctx.textAlign = "left";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillText("Your Score:"+fdisp(balloon.wx,1)+"m"     ,x+10,retry_btn.y-50);
+        ctx.fillText("Top Score:"+fdisp(game.refuel_best,1)+"m",x+10,retry_btn.y-20);
+        ctx.fillText("Retry",retry_btn.x+10,retry_btn.y+retry_btn.h*0.8);
       },
-      function() { if(retry_btn.down) { cur_step = step_refuel-1; return true; } return false; }
+      function() { if(retry_btn.down) { drawer_disp_target = 0; cur_step = step_refuel-1; return true; } return false; }
     ));
 
     step_flappy = steps.length;
@@ -1014,6 +1024,7 @@ var GamePlayScene = function(game, stage)
         balloon.wxv = 0;
         balloon.wx = pipe.wx-10;
         burn_pad.unpress();
+        drawer_disp_target = 1;
       },
       function() {
         screenSpace(camera,dc,pipe);
@@ -1022,15 +1033,17 @@ var GamePlayScene = function(game, stage)
         ctx.fillRect(pipe.x,0,pipe.w,pipe.y);
         ctx.fillRect(pipe.x,pipe.y+pipe.h,pipe.w,dc.height-pipe.y-pipe.h);
 
-        retry_btn.draw(dc);
-        ctx.fillStyle = "#000000";
-        ctx.textAlign = "right";
-        ctx.fillText("Your Score:"+fdisp(balloon.wx,1)+"m",dc.width-10,30);
-        ctx.fillText("Top Score:"+fdisp(game.flappy_best,1)+"m",dc.width-10,50);
-        ctx.textAlign = "center";
-        ctx.fillText("Retry",retry_btn.x+retry_btn.w/2,retry_btn.y+retry_btn.h/2);
+        //keep in sync...
+        var w = 150;
+        var x = dc.width-(drawer_disp*w);
+
+        ctx.textAlign = "left";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillText("Your Score:"+fdisp(balloon.wx,1)+"m"     ,x+10,retry_btn.y-50);
+        ctx.fillText("Top Score:"+fdisp(game.flappy_best,1)+"m",x+10,retry_btn.y-20);
+        ctx.fillText("Retry",retry_btn.x+10,retry_btn.y+retry_btn.h*0.8);
       },
-      function() { if(retry_btn.down) { cur_step = step_flappy-1; return true; } return false; }
+      function() { if(retry_btn.down) { drawer_disp_target = 0; cur_step = step_flappy-1; return true; } return false; }
     ));
 
     step_meditate = steps.length;
@@ -1306,6 +1319,8 @@ var GamePlayScene = function(game, stage)
     while(grid.wy-(grid.wh/10) > camera.wy) grid.wy -= grid.wh/10;
     screenSpace(camera,dc,grid);
 
+    drawer_disp = lerp(drawer_disp,drawer_disp_target,0.1);
+
     steps[cur_step].tick();
     if(steps[cur_step].test()) self.nextStep();
   }
@@ -1396,21 +1411,25 @@ var GamePlayScene = function(game, stage)
     }
     ctx.globalAlpha = 1;
 
-    ctx.textAlign = "center";
-    menu_btn.draw(dc);
-    ctx.fillStyle = "#000000";
-    ctx.fillText("Menu",menu_btn.x+menu_btn.w/2,menu_btn.y+menu_btn.h/2);
+    ctx.fillStyle = "rgba(0,0,0,0.2)";
+    var w = 150;
+    var x = dc.width-(drawer_disp*w);
+    menu_btn.x = x+10;
+    retry_btn.x = x+10;
+    reset_btn.x = x+10;
+    parts_btn.x = x+10;
+    arrows_btn.x = x+10;
+
+    ctx.fillRect(x,0,w,dc.height);
+    ctx.drawImage(eye_img,eye_btn.x,eye_btn.y,eye_btn.w,eye_btn.h);
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText("Return To Menu",menu_btn.x+10,menu_btn.y+menu_btn.h*0.8);
     if(cur_step == step_free)
     {
-      reset_btn.draw(dc);
-      ctx.fillStyle = "#000000";
-      ctx.fillText("Reset",reset_btn.x+reset_btn.w/2,reset_btn.y+reset_btn.h/2);
-      arrows_btn.draw(dc);
-      ctx.fillStyle = "#000000";
-      ctx.fillText("Arrows",arrows_btn.x+arrows_btn.w/2,arrows_btn.y+arrows_btn.h/2);
-      parts_btn.draw(dc);
-      ctx.fillStyle = "#000000";
-      ctx.fillText("Particles",parts_btn.x+parts_btn.w/2,parts_btn.y+parts_btn.h/2);
+      ctx.fillText("Reset Balloon",reset_btn.x+10,reset_btn.y+reset_btn.h*0.8);
+      ctx.fillText("Display Arrows",arrows_btn.x+10,arrows_btn.y+arrows_btn.h*0.8);
+      ctx.fillText("Display Particles",parts_btn.x+10,parts_btn.y+parts_btn.h*0.8);
     }
 
     ctx.textAlign = "right";
