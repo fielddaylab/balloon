@@ -130,17 +130,15 @@ carbon_img = new Image();
 carbon_img.src = "assets/carbon.png";
 
 part_canvs = [];
-/*
 part_canv = document.createElement('canvas');
-part_canv.width = 40;
-part_canv.height = 40;
+part_canv.width = 2;
+part_canv.height = 2;
 part_canv.context = part_canv.getContext('2d');
-part_canv.context.fillStyle = "#84D9F9";
+part_canv.context.fillStyle = "#FFFFFF";
 part_canv.context.beginPath();
 part_canv.context.arc(part_canv.width/2,part_canv.height/2,part_canv.width/2,0,2*pi);
 part_canv.context.fill();
 part_canvs.push(part_canv);
-*/
 
 for(var i = 0; i < 10; i++)
 {
