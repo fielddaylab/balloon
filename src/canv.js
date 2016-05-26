@@ -125,4 +125,70 @@ Canv.prototype.outlineText = function(text,x,y,color_in,color_out,max_w)
     self.context.fillText(text,x  ,y  );
   }
 }
+Canv.prototype.strokeRoundRect = function(x,y,w,h,r)
+{
+  var self = this;
+  self.context.beginPath();
+  self.context.moveTo(x+r,y);
+  self.context.lineTo(x+w-r,y);
+  self.context.quadraticCurveTo(x+w,y,x+w,y+r);
+  self.context.lineTo(x+w,y+h-r);
+  self.context.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  self.context.lineTo(x+r,y+h);
+  self.context.quadraticCurveTo(x,y+h,x,y+h-r);
+  self.context.lineTo(x,y+r);
+  self.context.quadraticCurveTo(x,y,x+r,y);
+  self.context.closePath();
+  self.context.stroke();
+}
+Canv.prototype.fillRoundRect = function(x,y,w,h,r)
+{
+  var self = this;
+  self.context.beginPath();
+  self.context.moveTo(x+r,y);
+  self.context.lineTo(x+w-r,y);
+  self.context.quadraticCurveTo(x+w,y,x+w,y+r);
+  self.context.lineTo(x+w,y+h-r);
+  self.context.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  self.context.lineTo(x+r,y+h);
+  self.context.quadraticCurveTo(x,y+h,x,y+h-r);
+  self.context.lineTo(x,y+r);
+  self.context.quadraticCurveTo(x,y,x+r,y);
+  self.context.closePath();
+  self.context.fill();
+}
+Canv.prototype.roundRectOptions = function(x,y,w,h,r,tl,tr,bl,br,stroke,fill)
+{
+  var self = this;
+  self.context.beginPath();
+  if(tl) self.context.moveTo(x+r,y);
+  else   self.context.moveTo(x,y);
+  if(tr)
+  {
+    self.context.lineTo(x+w-r,y);
+    self.context.quadraticCurveTo(x+w,y,x+w,y+r);
+  }
+  else self.context.lineTo(x+w,y);
+  if(br)
+  {
+    self.context.lineTo(x+w,y+h-r);
+    self.context.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  }
+  else self.context.lineTo(x+w,y+h);
+  if(bl)
+  {
+    self.context.lineTo(x+r,y+h);
+    self.context.quadraticCurveTo(x,y+h,x,y+h-r);
+  }
+  else self.context.lineTo(x,y+h);
+  if(tl)
+  {
+    self.context.lineTo(x,y+r);
+    self.context.quadraticCurveTo(x,y,x+r,y);
+  }
+  else self.context.lineTo(x,y);
+  self.context.closePath();
+  if(stroke) self.context.stroke();
+  if(fill)   self.context.fill();
+}
 

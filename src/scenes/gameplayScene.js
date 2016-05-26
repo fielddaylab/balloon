@@ -296,31 +296,31 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       noop,
       function() { fuel = 4; rope_cut = false; },
-      function() { ctx.textAlign = "left"; ctx.fillText("<- Hold to heat balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { drawHeatTip("Hold to heat balloon!"); },
       function() { return balloon.t > 305; }
     ));
     steps.push(new Step(
       noop,
       function() { fuel = 4; rope_cut = false; },
-      function() { ctx.textAlign = "left"; ctx.fillText("<- Keep holding!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { drawHeatTip("Keep holding!"); },
       function() { return balloon.t > 315; }
     ));
     steps.push(new Step(
       noop,
       function() { fuel = 4; rope_cut = false; },
-      function() { ctx.textAlign = "left"; ctx.fillText("<- Almost there!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { drawHeatTip("Almost there!"); },
       function() { return balloon.t > 325; }
     ));
     steps.push(new Step(
       noop,
       function() { fuel = 4; rope_cut = false; },
-      function() { ctx.textAlign = "left"; ctx.fillText("<- Just a little longer!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { drawHeatTip("Just a little longer!"); },
       function() { return balloon.t > 335; }
     ));
     steps.push(new Step(
       noop,
       function() { fuel = 4; rope_cut = false; },
-      function() { ctx.textAlign = "left"; ctx.fillText("<- Aaaaannnndd...",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { drawHeatTip("Aaaaannnndd..."); },
       function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); return true; } return false; }
     ));
     steps.push(new Step(
@@ -331,13 +331,13 @@ var GamePlayScene = function(game, stage)
         ]);
       },
       function() { balloon.t = clone_balloon.t; },
-      function() { ctx.textAlign = "right"; ctx.fillText("Cut the rope! ->",cut_pad.x-10,cut_pad.y+cut_pad.h/2); },
+      function() { drawCutTip("Cut the rope!"); },
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
       function() { fuel = 4; },
       function() { balloon.t = clone_balloon.t; },
-      function() { ctx.textAlign = "right"; ctx.fillText("Cut the rope! ->",cut_pad.x-10,cut_pad.y+cut_pad.h/2); },
+      function() { drawCutTip("Cut the rope!"); },
       function() { return rope_cut; }
     ));
     steps.push(new Step(
@@ -411,7 +411,7 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function() { },
       function() { rope_cut = false; if(fuel < 4) fuel = 4; },
-      function() { ctx.textAlign = "left"; ctx.fillText("<- Hold to heat balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2); },
+      function() { drawHeatTip("Hold to heat balloon!"); },
       function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); clone_fuel = fuel; return true; } return false; }
     ));
     steps.push(new Step(
@@ -431,7 +431,7 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       noop,
       function() { fuel = clone_fuel; balloon.t = clone_balloon.t; },
-      function() { ctx.textAlign = "right"; ctx.fillText("Cut the rope! ->",cut_pad.x-10,cut_pad.y+cut_pad.h/2); },
+      function() { drawCutTip("Cut the rope!"); },
       function() { return rope_cut; }
     ));
     steps.push(new Step(
@@ -583,10 +583,7 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function() { fuel = 40; },
       function() { if(fuel < 4) fuel = 4; rope_cut = false; },
-      function() {
-        ctx.textAlign = "left";
-        ctx.fillText("<- Heat the balloon",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
-      },
+      function() { drawHeatTip("Heat the balloon!"); },
       function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); return true; } return false; }
     ));
     steps.push(new Step(
@@ -607,7 +604,7 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function() { fuel = 4; },
       function() { fuel = 4; balloon.t = clone_balloon.t; },
-      function() { ctx.textAlign = "right"; ctx.fillText("Cut the rope! ->",cut_pad.x-10,cut_pad.y+cut_pad.h/2); },
+      function() { drawCutTip("Cut the rope!"); },
       function() { return rope_cut; }
     ));
     steps.push(new Step(
@@ -667,8 +664,8 @@ var GamePlayScene = function(game, stage)
       function() {
         ctx.textAlign = "left";
         ctx.fillText("X Heating disabled! Try increasing volume instead!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
-        ctx.textAlign = "right";
-        ctx.fillText("Drag the volume needle to change!",volume_gauge.x+volume_gauge.w/2,volume_gauge.y-50);
+        ctx.textAlign = "center";
+        ctx.fillText("Drag the volume needle to change!",volume_gauge.x+volume_gauge.w/2,volume_gauge.y-40);
         volume_gauge.vis = true;
         volume_gauge.enabled = true;
       },
@@ -692,10 +689,7 @@ var GamePlayScene = function(game, stage)
         if(fuel < 4) fuel = 4;
         rope_cut = false;
       },
-      function() {
-        ctx.textAlign = "left";
-        ctx.fillText("<- Heat the balloon!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
-      },
+      function() { drawHeatTip("Heat the balloon!"); },
       function() {
         if(balloon.wya > 0.0005)
         {
@@ -708,7 +702,7 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function() { fuel = 4; },
       function() { fuel = 4; balloon.t = clone_balloon.t; },
-      function() { ctx.textAlign = "right"; ctx.fillText("Cut the rope! ->",cut_pad.x-10,cut_pad.y+cut_pad.h/2); },
+      function() { drawCutTip("Cut the rope!"); },
       function() { return rope_cut; }
     ));
     steps.push(new Step(
@@ -1316,6 +1310,40 @@ var GamePlayScene = function(game, stage)
     if(steps[cur_step].test()) self.nextStep();
   }
 
+  var drawHeatTip = function(prompt)
+  {
+    var w = 125;
+    var h = 20;
+    var x = burn_pad.x+burn_pad.w+10;
+    var y = burn_pad.y+burn_pad.h/2;
+    y += Math.sin(n_ticks/10)*4;
+    dc.fillRoundRect(x,y-h/2,w,h,5);
+    ctx.beginPath();
+    ctx.moveTo(x+1,y-h/2+5);
+    ctx.lineTo(x-5,y);
+    ctx.lineTo(x+1,y+h/2-5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.textAlign = "left";
+    dc.outlineText(prompt,x+4,y+5);
+  }
+  var drawCutTip = function(prompt)
+  {
+    var w = 90;
+    var h = 20;
+    var x = cut_pad.x-w-10;
+    var y = cut_pad.y+cut_pad.h/2;
+    y += Math.sin(n_ticks/10)*4;
+    dc.fillRoundRect(x,y-h/2,w,h,5);
+    ctx.beginPath();
+    ctx.moveTo(x+w-1,y-h/2+5);
+    ctx.lineTo(x+w+5,y);
+    ctx.lineTo(x+w-1,y+h/2-5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.textAlign = "right";
+    dc.outlineText(prompt,x+w-4,y+5);
+  }
   self.draw = function()
   {
     //sky
