@@ -197,8 +197,7 @@ var GamePlayScene = function(game, stage)
     basket.wx = balloon.wx;
     basket.wy = balloon.wy-balloon.wh*0.7;
     rope.wy = basket.wy-basket.wh/2;
-    bubble_origin.wx = balloon.wx+balloon.ww;
-    bubble_origin.wy = basket.wy;
+    bubble_origin.wy = basket.wy+1;
     char.wx = basket.wx;
     char.wy = basket.wy;
 
@@ -1170,8 +1169,7 @@ var GamePlayScene = function(game, stage)
 
     basket.wx = balloon.wx;
     basket.wy = balloon.wy-balloon.wh*0.7;
-    bubble_origin.wx = balloon.wx+balloon.ww;
-    bubble_origin.wy = basket.wy;
+    bubble_origin.wy = basket.wy+1;
     char.wx = basket.wx;
     char.wy = basket.wy+basket.wh/6;
 
@@ -1300,7 +1298,7 @@ var GamePlayScene = function(game, stage)
       var obj = bubble_origin;
       obj.w = 100;
       obj.h = 200;
-      obj.x = obj.x;       if(obj.x < 20) obj.x = 20;
+      obj.x = basket.x+basket.w+150; if(obj.x < 20) obj.x = 20;
       obj.y = obj.y-obj.h; if(obj.y < 20) obj.y = 20; if(obj.y > dc.height-obj.h-20) obj.y = dc.height-obj.h-20;
     screenSpace(camera,dc,cam_target);
     screenSpace(camera,dc,vel_arrow);
