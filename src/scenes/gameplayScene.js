@@ -1354,6 +1354,7 @@ var GamePlayScene = function(game, stage)
     //drawCamTarget(cam_target);
     drawForceArrows();
 
+    if(input_state == IGNORE_INPUT) ctx.globalAlpha = 0.5;
     if(burn_pad.down) ctx.drawImage(burn_btn_red_img,burn_pad.x,burn_pad.y,burn_pad.w,burn_pad.h);
     else              ctx.drawImage(    burn_btn_img,burn_pad.x,burn_pad.y,burn_pad.w,burn_pad.h);
 
@@ -1365,6 +1366,7 @@ var GamePlayScene = function(game, stage)
       if(cut_pad.down) ctx.drawImage(rope_btn_red_img,cut_pad.x,cut_pad.y,cut_pad.w,cut_pad.h);
       else             ctx.drawImage(    rope_btn_img,cut_pad.x,cut_pad.y,cut_pad.w,cut_pad.h);
     }
+    ctx.globalAlpha = 1;
 
     ctx.textAlign = "center";
     menu_btn.draw(dc);
