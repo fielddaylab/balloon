@@ -153,8 +153,8 @@ for(var i = 0; i < 10; i++)
   var b1 = 0.97647058823;
 
   part_canv = document.createElement('canvas');
-  part_canv.width = 10;
-  part_canv.height = 10;
+  part_canv.width = 5;
+  part_canv.height = 5;
   part_canv.context = part_canv.getContext('2d');
   //part_canv.context.fillStyle = "#84D9F9";
   part_canv.context.fillStyle = "rgba("+Math.floor(lerp(r0,r1,i/10)*256)+","+Math.floor(lerp(g0,g1,i/10)*256)+","+Math.floor(lerp(b0,b1,i/10)*256)+",1)";

@@ -71,10 +71,12 @@ var GamePlayScene = function(game, stage)
   var air_parts;
 
   //scenery
-  var bg; var bgi; var bgsep; var bgcam;
-  var mg; var mgi; var mgsep; var mgcam;
-  var fg; var fgi; var fgsep; var fgcam;
+  var vg; var vgi; var vgsep; var vgybase; var vgyrange; var vgcam;
+  var bg; var bgi; var bgsep; var bgybase; var bgyrange; var bgcam;
+  var mg; var mgi; var mgsep; var mgybase; var mgyrange; var mgcam;
+  var fg; var fgi; var fgsep; var fgybase; var fgyrange; var fgcam;
   var faux_ground; var faux_ground_i; var faux_ground_sep;
+  var sky;
   var ground;
 
   //ui
@@ -149,6 +151,7 @@ var GamePlayScene = function(game, stage)
     cam_target = new Camera();
     cam_target.wh = camera.wh;
     cam_target.ww = camera.ww/9*16;
+    vgcam = new Camera();
     bgcam = new Camera();
     mgcam = new Camera();
     fgcam = new Camera();
@@ -197,11 +200,13 @@ var GamePlayScene = function(game, stage)
     char.wx = basket.wx;
     char.wy = basket.wy;
 
-    bgsep = 10; bg = []; for(var i = 0; i < 30; i++) { bg.push(new Obj(i*bgsep+rand0()*bgsep, rand0()*5+10, 3, 2, randIntBelow(3))); bg[i].draw = drawCloud;    } bgi = 0;
-    mgsep = 50; mg = []; for(var i = 0; i < 10; i++) { mg.push(new Obj(i*mgsep+rand0()*mgsep, rand0()*5+10, 4, 3, randIntBelow(3))); mg[i].draw = drawMountain; } mgi = 0;
-    fgsep = 20; fg = []; for(var i = 0; i < 30; i++) { fg.push(new Obj(i*fgsep+rand0()*fgsep, rand0()*1+-1, 8, 8, randIntBelow(2))); fg[i].draw = drawTree;     } fgi = 0;
+    vgsep =  2; vgybase = 100; vgyrange = 40; vg = []; for(var i = 0; i <200; i++) { vg.push(new Obj(i*vgsep+rand0()*vgsep, rand0()*vgyrange+vgybase, 0.1+Math.random()*0.1, 0.1+Math.random()*0.1, randIntBelow(3))); vg[i].draw = drawCloud;    } vgi = 0;
+    bgsep = 10; bgybase =  12; bgyrange = 10; bg = []; for(var i = 0; i < 30; i++) { bg.push(new Obj(i*bgsep+rand0()*bgsep, rand0()*bgyrange+bgybase,     3+Math.random()*3,     2+Math.random()*3, randIntBelow(3))); bg[i].draw = drawCloud;    } bgi = 0;
+    mgsep = 30; mgybase =  28; mgyrange = 20; mg = []; for(var i = 0; i < 20; i++) { mg.push(new Obj(i*mgsep+rand0()*mgsep, rand0()*mgyrange+mgybase,     4+Math.random()*4,     3+Math.random()*4, randIntBelow(3))); mg[i].draw = drawMountain; } mgi = 0;
+    fgsep = 20; fgybase =  -1; fgyrange =  1; fg = []; for(var i = 0; i < 30; i++) { fg.push(new Obj(i*fgsep+rand0()*fgsep, rand0()*fgyrange+fgybase,                 8,                 8, randIntBelow(2))); fg[i].draw = drawTree;     } fgi = 0;
     faux_ground_sep = 100; faux_ground = []; for(var i = 0; i < 3; i++) { faux_ground.push(new Obj(i*faux_ground_sep, -20, faux_ground_sep, faux_ground_sep/2, i)); faux_ground[i].draw = drawGround; } faux_ground_i = 0;
     centerGrounds();
+    sky = new Obj();
     ground = new Obj();
 
     burn_pad = new ButtonBox(10,dc.height-100,60,40,function(){});
@@ -1169,6 +1174,10 @@ var GamePlayScene = function(game, stage)
     flame.wx = balloon.wx;
     flame.wy = balloon.wy-balloon.wh*.35;
 
+    sky.wx = 0;
+    sky.wy = 70;
+    sky.ww = 1;
+    sky.wh = 140;
     ground.wx = 0;
     ground.wy = -1;
     ground.ww = 1;
@@ -1290,11 +1299,13 @@ var GamePlayScene = function(game, stage)
     screenSpace(camera,dc,vel_arrow);
     screenSpace(camera,dc,acc_arrow);
     screenSpace(camera,dc,arrow_separator);
+    for(var i = 0; i < vg.length; i++) screenSpace(vgcam,dc,vg[i]);
     for(var i = 0; i < bg.length; i++) screenSpace(bgcam,dc,bg[i]);
     for(var i = 0; i < mg.length; i++) screenSpace(mgcam,dc,mg[i]);
     for(var i = 0; i < fg.length; i++) screenSpace(fgcam,dc,fg[i]);
     for(var i = 0; i < faux_ground.length; i++) screenSpace(fgcam,dc,faux_ground[i]);
     screenSpace(camera,dc,ground);
+    screenSpace(camera,dc,sky);
     while(grid.wx+(grid.ww/10) < camera.wx) grid.wx += grid.ww/10;
     while(grid.wx-(grid.ww/10) > camera.wx) grid.wx -= grid.ww/10;
     while(grid.wy+(grid.wh/10) < camera.wy) grid.wy += grid.wh/10;
@@ -1308,8 +1319,16 @@ var GamePlayScene = function(game, stage)
   self.draw = function()
   {
     //sky
-    ctx.fillStyle = "#8899BB";
+    ctx.fillStyle = "#000000";
     ctx.fillRect(0,0,dc.width,dc.height);
+    var skygrad = ctx.createLinearGradient(0,sky.y,0,sky.y+sky.h);
+    skygrad.addColorStop(0,"#000000");
+    skygrad.addColorStop(0.8,"#8899BB");
+    skygrad.addColorStop(1,"#FFFFFF");
+    ctx.fillStyle=skygrad;
+    ctx.fillRect(0,sky.y,dc.width,sky.h+dc.height);
+
+    for(var i = 0; i < vg.length; i++) vg[i].draw(vg[i]);
     for(var i = 0; i < bg.length; i++) bg[i].draw(bg[i]);
     for(var i = 0; i < mg.length; i++) mg[i].draw(mg[i]);
     //ground
@@ -1504,82 +1523,47 @@ var GamePlayScene = function(game, stage)
 
   var tickParallax = function()
   {
+    vgcam.wx = camera.wx*0.2; vgcam.wy = camera.wy; vgcam.ww = camera.ww; vgcam.wh = camera.wh;
     bgcam.wx = camera.wx*0.2; bgcam.wy = camera.wy; bgcam.ww = camera.ww; bgcam.wh = camera.wh;
     mgcam.wx = camera.wx*0.5; mgcam.wy = camera.wy; mgcam.ww = camera.ww; mgcam.wh = camera.wh;
     fgcam.wx = camera.wx*0.8; fgcam.wy = camera.wy; fgcam.ww = camera.ww; fgcam.wh = camera.wh;
   }
+  var centerOneGrounds = function(i,arr,cam,sep,base,range)
+  {
+    var li = i;
+    var ri = (i+arr.length-1)%arr.length;
+    var ldist = abs(arr[li].wx-cam.wx);
+    var rdist = abs(arr[ri].wx-cam.wx);
+    if(abs(ldist-rdist) > sep)
+    {
+      if(ldist > rdist) //l further than r- move to r
+      {
+        arr[li].wx = arr[ri].wx+sep+rand0()*sep/2;
+        arr[li].wy = rand0()*range+base;
+        i = (i+1)%arr.length;
+      }
+      else
+      {
+        arr[ri].wx = arr[li].wx-sep-rand0()*sep/2;
+        arr[ri].wy = rand0()*range+base;
+        i = (i+arr.length-1)%arr.length;
+      }
+    }
+    return i;
+  }
   var centerGrounds = function()
   {
-    var li;
-    var ri;
-    var ldist;
-    var rdist;
-
-    li = bgi;
-    ri = (bgi+bg.length-1)%bg.length;
-    ldist = abs(bg[li].wx-bgcam.wx);
-    rdist = abs(bg[ri].wx-bgcam.wx);
-    if(abs(ldist-rdist) > bgsep)
-    {
-      if(ldist > rdist) //l further than r- move to r
-      {
-        bg[li].wx = bg[ri].wx+bgsep+rand0()*bgsep/2;
-        bg[li].wy = rand0()*5+10;
-        bgi = (bgi+1)%bg.length;
-      }
-      else
-      {
-        bg[ri].wx = bg[li].wx-bgsep-rand0()*bgsep/2;
-        bg[ri].wy = rand0()*5+10;
-        bgi = (bgi+bg.length-1)%bg.length;
-      }
-    }
-
-    li = mgi;
-    ri = (mgi+mg.length-1)%mg.length;
-    ldist = abs(mg[li].wx-mgcam.wx);
-    rdist = abs(mg[ri].wx-mgcam.wx);
-    if(abs(ldist-rdist) > bgsep)
-    {
-      if(ldist > rdist) //l further than r- move to r
-      {
-        mg[li].wx = mg[ri].wx+mgsep+rand0()*mgsep/2;
-        mg[li].wy = rand0()*5+10;
-        mgi = (mgi+1)%mg.length;
-      }
-      else
-      {
-        mg[ri].wx = mg[li].wx-mgsep-rand0()*mgsep/2;
-        mg[ri].wy = rand0()*5+10;
-        mgi = (mgi+mg.length-1)%mg.length;
-      }
-    }
-
-    li = fgi;
-    ri = (fgi+fg.length-1)%fg.length;
-    ldist = abs(fg[li].wx-fgcam.wx);
-    rdist = abs(fg[ri].wx-fgcam.wx);
-    if(abs(ldist-rdist) > bgsep)
-    {
-      if(ldist > rdist) //l further than r- move to r
-      {
-        fg[li].wx = fg[ri].wx+fgsep+rand0()*fgsep/2;
-        fg[li].wy = rand0()*1+-1;
-        fgi = (fgi+1)%fg.length;
-      }
-      else
-      {
-        fg[ri].wx = fg[li].wx-fgsep-rand0()*fgsep/2;
-        fg[ri].wy = rand0()*1+-1;
-        fgi = (fgi+fg.length-1)%fg.length;
-      }
-    }
+    vgi = centerOneGrounds(vgi,vg,vgcam,vgsep,vgybase,vgyrange);
+    bgi = centerOneGrounds(bgi,bg,bgcam,bgsep,bgybase,bgyrange);
+    mgi = centerOneGrounds(mgi,mg,mgcam,mgsep,mgybase,mgyrange);
+    fgi = centerOneGrounds(fgi,fg,fgcam,fgsep,fgybase,fgyrange);
+    //faux_ground_i = centerOneGrounds(faux_ground_i,faux_ground,faux_ground_cam,faux_ground_sep,faux_ground[0].wy,0);
 
     li = faux_ground_i;
     ri = (faux_ground_i+faux_ground.length-1)%faux_ground.length;
     ldist = abs(faux_ground[li].wx-fgcam.wx);
     rdist = abs(faux_ground[ri].wx-fgcam.wx);
-    if(abs(ldist-rdist) > bgsep)
+    if(abs(ldist-rdist) > faux_ground_sep)
     {
       if(ldist > rdist) //l further than r- move to r
       {
