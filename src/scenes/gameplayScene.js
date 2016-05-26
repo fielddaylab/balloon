@@ -1553,7 +1553,7 @@ var GamePlayScene = function(game, stage)
 
   var tickParallax = function()
   {
-    vgcam.wx = camera.wx*0.2; vgcam.wy = camera.wy; vgcam.ww = camera.ww; vgcam.wh = camera.wh;
+    vgcam.wx = camera.wx*0.1; vgcam.wy = camera.wy; vgcam.ww = camera.ww; vgcam.wh = camera.wh;
     bgcam.wx = camera.wx*0.2; bgcam.wy = camera.wy; bgcam.ww = camera.ww; bgcam.wh = camera.wh;
     mgcam.wx = camera.wx*0.5; mgcam.wy = camera.wy; mgcam.ww = camera.ww; mgcam.wh = camera.wh;
     fgcam.wx = camera.wx*0.8; fgcam.wy = camera.wy; fgcam.ww = camera.ww; fgcam.wh = camera.wh;
@@ -1818,7 +1818,6 @@ var GamePlayScene = function(game, stage)
     dc.drawLine(basket.x+basket.w*.65,basket.y+basket.h*.08,balloon.x+balloon.w*0.55,balloon.y+balloon.h*0.90);
     dc.drawLine(basket.x+basket.w*.77,basket.y+basket.h*.08,balloon.x+balloon.w*0.60,balloon.y+balloon.h*0.92);
     dc.drawLine(basket.x+basket.w*.80,basket.y+basket.h*.08,balloon.x+balloon.w*0.65,balloon.y+balloon.h*0.95);
-    ctx.drawImage(basket_img,basket.x,basket.y,basket.w,basket.h);
   }
   var drawRope = function(obj)
   {
