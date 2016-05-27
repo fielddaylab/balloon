@@ -41,6 +41,8 @@ var GamePlayScene = function(game, stage)
   var presser;
   var domclicker;
   var dom;
+  var fallback_click;
+  var hit_ui;
 
   ENUM = 0;
   var IGNORE_INPUT = ENUM; ENUM++;
@@ -145,6 +147,7 @@ var GamePlayScene = function(game, stage)
     presser = new Presser({source:stage.dispCanv.canvas});
     domclicker = new Clicker({source:stage.dispCanv.canvas});
     dom = new CanvDom(dc);
+    fallback_click = {x:0,y:0,w:dc.width,h:dc.height,click:function(evt){if(!hit_ui)dom.click(evt);}};
     input_state = RESUME_INPUT;
 
     camera = new Camera();
@@ -214,7 +217,7 @@ var GamePlayScene = function(game, stage)
     flap_pad = new ButtonBox(10,dc.height-50,60,40,function(){});
     cut_pad  = new ButtonBox(dc.width-70,dc.height-50,60,40,function(){});
 
-    eye_btn    = new ButtonBox(dc.width-60,dc.height-100,50,30,function(){ if(drawer_disp_target <= 0.5) drawer_disp_target = 1; else if(drawer_disp_target > 0.5) drawer_disp_target = 0; }); drawer_disp = 0; drawer_disp_target = 0;
+    eye_btn    = new ButtonBox(dc.width-60,dc.height-100,50,30,function(){ hit_ui = true; if(drawer_disp_target <= 0.5) drawer_disp_target = 1; else if(drawer_disp_target > 0.5) drawer_disp_target = 0; }); drawer_disp = 0; drawer_disp_target = 0;
     menu_btn   = new ButtonBox(dc.width   ,dc.height-130,100,20,function(){ game.setScene(2); });
     retry_btn  = new ButtonBox(dc.width   ,dc.height-160,100,20,function(){ });
     reset_btn  = new ButtonBox(dc.width   ,dc.height-160,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(3); });
@@ -224,13 +227,14 @@ var GamePlayScene = function(game, stage)
     presser.register(flap_pad);
     presser.register(cut_pad);
     presser.register(retry_btn);
-    domclicker.register(dom);
+    //domclicker.register(dom); //let fallback click hear it
 
     domclicker.register(eye_btn);
     domclicker.register(menu_btn);
     domclicker.register(reset_btn);
     domclicker.register(arrows_btn);
     domclicker.register(parts_btn);
+    domclicker.register(fallback_click);
 
     var b = 40;
     var w = (dc.width-(b*2))/10;
@@ -1073,6 +1077,7 @@ var GamePlayScene = function(game, stage)
 
     self.nextStep();
 
+    hit_ui = false;
   };
 
   self.nextStep = function()
@@ -1321,6 +1326,7 @@ var GamePlayScene = function(game, stage)
 
     steps[cur_step].tick();
     if(steps[cur_step].test()) self.nextStep();
+    hit_ui = false;
   }
 
   var drawHeatTip = function(prompt)
