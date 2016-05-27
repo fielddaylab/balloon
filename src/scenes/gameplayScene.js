@@ -1330,7 +1330,13 @@ var GamePlayScene = function(game, stage)
     var x = burn_pad.x+burn_pad.w+10;
     var y = burn_pad.y+burn_pad.h/2;
     y += Math.sin(n_ticks/10)*4;
+    ctx.strokeStyle = "#000000";
+    dc.strokeRoundRect(x,y-h/2+2,w,h,5);
+    ctx.fillStyle = "rgba(255,255,255,0.5)";
     dc.fillRoundRect(x,y-h/2,w,h,5);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#FFFFFF";
+    dc.strokeRoundRect(x,y-h/2,w,h,5);
     ctx.beginPath();
     ctx.moveTo(x+1,y-h/2+5);
     ctx.lineTo(x-5,y);
@@ -1338,7 +1344,8 @@ var GamePlayScene = function(game, stage)
     ctx.closePath();
     ctx.fill();
     ctx.textAlign = "left";
-    dc.outlineText(prompt,x+4,y+5);
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText(prompt,x+4,y+5);
   }
   var drawCutTip = function(prompt)
   {
@@ -1347,7 +1354,13 @@ var GamePlayScene = function(game, stage)
     var x = cut_pad.x-w-10;
     var y = cut_pad.y+cut_pad.h/2;
     y += Math.sin(n_ticks/10)*4;
+    ctx.strokeStyle = "#000000";
+    dc.strokeRoundRect(x,y-h/2+2,w,h,5);
+    ctx.fillStyle = "rgba(255,255,255,0.5)";
     dc.fillRoundRect(x,y-h/2,w,h,5);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#FFFFFF";
+    dc.strokeRoundRect(x,y-h/2,w,h,5);
     ctx.beginPath();
     ctx.moveTo(x+w-1,y-h/2+5);
     ctx.lineTo(x+w+5,y);
@@ -1355,7 +1368,8 @@ var GamePlayScene = function(game, stage)
     ctx.closePath();
     ctx.fill();
     ctx.textAlign = "right";
-    dc.outlineText(prompt,x+w-4,y+5);
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText(prompt,x+w-4,y+5);
   }
   self.draw = function()
   {
