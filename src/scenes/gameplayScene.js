@@ -49,6 +49,11 @@ var GamePlayScene = function(game, stage)
   var RESUME_INPUT = ENUM; ENUM++;
   var input_state;
 
+  ENUM = 0;
+  var SPEAKER_TALL = 0;
+  var SPEAKER_AXE = 1;
+  var SPEAKER_SHORT = 2;
+
   //objects
   var camera;
   var cam_target;
@@ -121,6 +126,7 @@ var GamePlayScene = function(game, stage)
   var steps;
   var cur_step;
   var lines;
+  var speaks;
   var cur_line;
 
   var step_intro;
@@ -287,6 +293,7 @@ var GamePlayScene = function(game, stage)
 
     steps = [];
     lines = [];
+    speaks = [];
 
     step_intro = steps.length;
     steps.push(new Step(
@@ -296,6 +303,11 @@ var GamePlayScene = function(game, stage)
         "It's ready!",
         "Can this thing actually fly?",
         "Let's find out!",
+        ],
+        [
+          SPEAKER_TALL,
+          SPEAKER_SHORT,
+          SPEAKER_TALL,
         ]);
       },
       noop,
@@ -337,6 +349,10 @@ var GamePlayScene = function(game, stage)
         pop([
           "It's working! We've heated the balloon enough to rise off the ground!",
           "Cut the rope! Cut the rope!",
+        ],
+        [
+          SPEAKER_TALL,
+          SPEAKER_AXE,
         ]);
       },
       function() { balloon.t = clone_balloon.t; },
@@ -364,6 +380,14 @@ var GamePlayScene = function(game, stage)
           "Wait... how does it work?",
           "It's easy! Heat the balloon to rise higher, and open the flap to sink back down.",
           "Just make sure to keep an eye on our fuel!",
+        ],
+        [
+          SPEAKER_SHORT,
+          SPEAKER_TALL,
+          SPEAKER_AXE,
+          SPEAKER_SHORT,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
         ]);
       },
       function() { balloon.t = clone_balloon.t; balloon.wx = clone_balloon.wx; balloon.wy = clone_balloon.wy; },
@@ -389,6 +413,10 @@ var GamePlayScene = function(game, stage)
           pop([
             "Wait a minute... we're out of fuel!",
             "Hold on tight!",
+          ],
+          [
+            SPEAKER_SHORT,
+            SPEAKER_TALL,
           ]);
         }
         altitude_gauge.vis = true;
@@ -409,6 +437,12 @@ var GamePlayScene = function(game, stage)
           "Are we... magic?",
           "Actually, it's just bouyancy!",
           "Let's go again. I'll show you how it works!",
+        ],
+        [
+          SPEAKER_AXE,
+          SPEAKER_TALL,
+          SPEAKER_SHORT,
+          SPEAKER_AXE,
         ]);
       },
       noop,
@@ -431,6 +465,12 @@ var GamePlayScene = function(game, stage)
           "Oooh... pretty.",
           "Right now, the air inside the balloon is about the same temperature as the air outside.",
           "Let's heat the balloon again. Check out what happens to the air particles.",
+        ],
+        [
+          SPEAKER_TALL,
+          SPEAKER_SHORT,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
         ]);
       },
       noop,
@@ -455,6 +495,17 @@ var GamePlayScene = function(game, stage)
           "Ohhhh. I get it. We're not magic...",
           "BOUYANCY is magic!", //CRIT NOPE
           "Abracadabra!",
+        ],
+        [
+          SPEAKER_AXE,
+          SPEAKER_TALL,
+          SPEAKER_SHORT,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_AXE,
+          SPEAKER_AXE,
+          SPEAKER_AXE,
         ]);
       },
       function() { rope_cut = false; fuel = clone_fuel; balloon.t = clone_balloon.t; },
@@ -489,6 +540,20 @@ var GamePlayScene = function(game, stage)
           "Let's see if we can go farther than last time!",
           "Heat the balloon just enough to stay level with the wind.",
           "The wind will help us move faster!",
+        ],
+        [
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_SHORT,
+          SPEAKER_AXE,
+          SPEAKER_SHORT,
+          SPEAKER_AXE,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
         ]);
       },
       function() { balloon.t = clone_balloon.t; balloon.wx = clone_balloon.wx; balloon.wy = clone_balloon.wy; },
@@ -511,6 +576,15 @@ var GamePlayScene = function(game, stage)
           "Actually, the answer is gravity.",
           "But wait... doesn't gravity make things fall down? How can it make us fly too?",
           "Let's reset again and I'll show you!",
+        ],
+        [
+          SPEAKER_AXE,
+          SPEAKER_TALL,
+          SPEAKER_SHORT,
+          SPEAKER_SHORT,
+          SPEAKER_TALL,
+          SPEAKER_SHORT,
+          SPEAKER_TALL,
         ]);
       },
       noop,
@@ -533,6 +607,12 @@ var GamePlayScene = function(game, stage)
           "How??",
           "Well, gravity pulls down on everything (on planet Earth, anyways...)",
           "So we can say \"gravity applies a downward force\".",
+        ],
+        [
+          SPEAKER_SHORT,
+          SPEAKER_SHORT,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
         ]);
       },
       noop,
@@ -556,6 +636,10 @@ var GamePlayScene = function(game, stage)
         pop([
           "But gravity doesn't just apply to big things,",
           "It also pulls down on all those little air particles!",
+        ],
+        [
+          SPEAKER_TALL,
+          SPEAKER_TALL,
         ]);
       },
       noop,
@@ -585,6 +669,10 @@ var GamePlayScene = function(game, stage)
         pop([
           "Both the balloon and the particles are each fighting to stay low push eachother out of the way",
           "The air particles trying to push the balloon out of the way exerts a small upward force",
+        ],
+        [
+          SPEAKER_TALL,
+          SPEAKER_TALL,
         ]);
       },
       noop,
@@ -606,6 +694,12 @@ var GamePlayScene = function(game, stage)
           "the baloon's gravity \"wins\" the struggle to be pulled down, and stays on the ground.",
           "What if we make the balloon lighter?",
           "I bet you can guess!",
+        ],
+        [
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_SHORT,
+          SPEAKER_TALL,
         ]);
       },
       function() { steps[cur_step].t++; if(steps[cur_step].t > 100) steps[cur_step].t = 100;},
@@ -645,6 +739,23 @@ var GamePlayScene = function(game, stage)
           "Phew.",
           "Ok, let's go again!",
           "I bet we can get even farther this time!",
+        ],
+        [
+          SPEAKER_AXE,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_AXE,
+          SPEAKER_AXE,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_AXE,
+          SPEAKER_SHORT,
+          SPEAKER_SHORT,
         ]);
       },
       function() { rope_cut = false; fuel = clone_fuel; balloon.t = clone_balloon.t; },
@@ -672,6 +783,14 @@ var GamePlayScene = function(game, stage)
           "When this happens, you can say that our balloon is neutrally bouyant-",
           "It's not changing velocity up or down.",
           "Cool! Let's go again!",
+        ],
+        [
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_AXE,
         ]);
       },
       noop,
@@ -700,6 +819,18 @@ var GamePlayScene = function(game, stage)
           "Thank goodness!",
           "So does that mean we can make our balloon go higher just by making it bigger?",
           "Exactly! Want to try it?",
+        ],
+        [
+          SPEAKER_SHORT,
+          SPEAKER_TALL,
+          SPEAKER_SHORT,
+          SPEAKER_SHORT,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_SHORT,
+          SPEAKER_SHORT,
+          SPEAKER_TALL,
         ]);
       },
       noop,
@@ -731,6 +862,12 @@ var GamePlayScene = function(game, stage)
           "A bigger balloon means more outside particles get to push on it!",
           "We'll still need to heat the air in the balloon a tiny bit-",
           "But now we have more air to heat, so we won't need to heat it as much!",
+        ],
+        [
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
         ]);
       },
       noop,
@@ -772,6 +909,11 @@ var GamePlayScene = function(game, stage)
           "Cool! We can save fuel!",
           "I bet we can definitely break our record now!",
           "This time, we can try increasing the volume of our balloon mid-flight.",
+        ],
+        [
+          SPEAKER_AXE,
+          SPEAKER_AXE,
+          SPEAKER_SHORT,
         ]);
       },
       function() { balloon.t = clone_balloon.t; balloon.wx = clone_balloon.wx; balloon.wy = clone_balloon.wy; },
@@ -792,6 +934,13 @@ var GamePlayScene = function(game, stage)
           "Can we try again?",
           "Yes! Let's keep flying!",
           "From now on, go ahead and play around with whatever gauges you want!",
+        ],
+        [
+          SPEAKER_TALL,
+          SPEAKER_AXE,
+          SPEAKER_SHORT,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
         ]);
       },
       noop,
@@ -2125,9 +2274,10 @@ var GamePlayScene = function(game, stage)
     if(cur_line >= lines.length) dom.popDismissableMessage(l,bubble_origin.x,bubble_origin.y,bubble_origin.w,bubble_origin.h,dismissed);
     else                         dom.popDismissableMessage(l,bubble_origin.x,bubble_origin.y,bubble_origin.w,bubble_origin.h,nextPop);
   };
-  var pop = function(l)
+  var pop = function(l,s)
   {
     lines = l;
+    speaks = s;
     cur_line = 0;
     nextPop();
   }
