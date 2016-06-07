@@ -1516,6 +1516,7 @@ var GamePlayScene = function(game, stage)
     drawGauge(yvel_gauge);         if(yvel_gauge.vis)     drawAroundDecimal(dc,        yvel_gauge.x+yvel_gauge.w/2,    yvel_gauge.y-10,fdisp(balloon.wyv*fps,2),"","m/s")
     drawGauge(fuel_gauge);         if(fuel_gauge.vis)     drawAroundDecimal(dc,        fuel_gauge.x+fuel_gauge.w/2,    fuel_gauge.y-10,fdisp(fuel,2),"","G")
 
+    steps[cur_step].draw();
     if(input_state == IGNORE_INPUT)
     {
       drawBubble(bubble_origin);
@@ -1526,7 +1527,6 @@ var GamePlayScene = function(game, stage)
       dom.h = bubble_origin.h;
       dom.draw(12,dc);
     }
-    steps[cur_step].draw();
   };
 
   self.cleanup = function()
