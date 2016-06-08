@@ -127,6 +127,8 @@ var GamePlayScene = function(game, stage)
   var cur_step;
   var lines;
   var speaks;
+  var speak_t;
+  var speak_pose;
   var cur_line;
 
   var step_intro;
@@ -294,6 +296,8 @@ var GamePlayScene = function(game, stage)
     steps = [];
     lines = [];
     speaks = [];
+    speak_t = 0;
+    speak_pose = 0;
 
     step_intro = steps.length;
     steps.push(new Step(
@@ -443,6 +447,8 @@ var GamePlayScene = function(game, stage)
           SPEAKER_TALL,
           SPEAKER_SHORT,
           SPEAKER_AXE,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
         ]);
       },
       noop,
@@ -667,7 +673,7 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function(){
         pop([
-          "Both the balloon and the particles are each fighting to stay low push eachother out of the way",
+          "Both the balloon and the particles -each fighting to stay low- push eachother out of the way",
           "The air particles trying to push the balloon out of the way exerts a small upward force",
         ],
         [
@@ -745,7 +751,7 @@ var GamePlayScene = function(game, stage)
           SPEAKER_TALL,
           SPEAKER_TALL,
           SPEAKER_TALL,
-          SPEAKER_TALL,
+          SPEAKER_SHORT,
           SPEAKER_TALL,
           SPEAKER_AXE,
           SPEAKER_AXE,
@@ -1519,6 +1525,7 @@ var GamePlayScene = function(game, stage)
     screenSpace(camera,dc,grid);
 
     drawer_disp = lerp(drawer_disp,drawer_disp_target,0.1);
+    speak_t = lerp(speak_t,1,0.1);
 
     steps[cur_step].tick();
     if(steps[cur_step].test()) self.nextStep();
@@ -2068,9 +2075,11 @@ var GamePlayScene = function(game, stage)
   }
   var drawBubble = function(obj,doit)
   {
+    var img;
     ctx.fillStyle = "#FFFFFF";
     ctx.drawImage(bubble_img,obj.x-150,obj.y-50,obj.w+200,obj.h+100);
     ctx.fillRect(obj.x,obj.y,obj.w,obj.h);
+    ctx.drawImage(char_imgs[speaks[cur_line]][speak_pose],obj.x-150,obj.y,obj.w+200,obj.h+50);
   }
   var drawCamTarget = function(obj)
   {
@@ -2266,18 +2275,21 @@ var GamePlayScene = function(game, stage)
   var dismissed = function() { input_state = RESUME_INPUT; }
   var nextPop = function()
   {
-    var l = textToLines(dc, "12px Open Sans", bubble_origin.w, lines[cur_line])
     cur_line++;
+    var l = textToLines(dc, "12px Open Sans", bubble_origin.w, lines[cur_line])
+    if(cur_line == 0 || speaks[cur_line] != speaks[cur_line-1])
+      speak_t = 0;
+    speak_pose = floor(rand()*3);
     releaseUI();
     input_state = IGNORE_INPUT;
-    if(cur_line >= lines.length) dom.popDismissableMessage(l,bubble_origin.x,bubble_origin.y,bubble_origin.w,bubble_origin.h,dismissed);
-    else                         dom.popDismissableMessage(l,bubble_origin.x,bubble_origin.y,bubble_origin.w,bubble_origin.h,nextPop);
+    if(cur_line >= lines.length-1) dom.popDismissableMessage(l,bubble_origin.x,bubble_origin.y,bubble_origin.w,bubble_origin.h,dismissed);
+    else                           dom.popDismissableMessage(l,bubble_origin.x,bubble_origin.y,bubble_origin.w,bubble_origin.h,nextPop);
   };
   var pop = function(l,s)
   {
     lines = l;
     speaks = s;
-    cur_line = 0;
+    cur_line = -1;
     nextPop();
   }
 
