@@ -317,31 +317,31 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       noop,
       function() { fuel = 4; rope_cut = false; },
-      function() { drawHeatTip("Hold to heat balloon!"); },
+      function() { drawHeatTip("Hold to heat balloon!",125); },
       function() { return balloon.t > 305; }
     ));
     steps.push(new Step(
       noop,
       function() { fuel = 4; rope_cut = false; },
-      function() { drawHeatTip("Keep holding!"); },
+      function() { drawHeatTip("Keep holding!",125); },
       function() { return balloon.t > 315; }
     ));
     steps.push(new Step(
       noop,
       function() { fuel = 4; rope_cut = false; },
-      function() { drawHeatTip("Almost there!"); },
+      function() { drawHeatTip("Almost there!",125); },
       function() { return balloon.t > 325; }
     ));
     steps.push(new Step(
       noop,
       function() { fuel = 4; rope_cut = false; },
-      function() { drawHeatTip("Just a little longer!"); },
+      function() { drawHeatTip("Just a little longer!",125); },
       function() { return balloon.t > 335; }
     ));
     steps.push(new Step(
       noop,
       function() { fuel = 4; rope_cut = false; },
-      function() { drawHeatTip("Aaaaannnndd..."); },
+      function() { drawHeatTip("Aaaaannnndd...",125); },
       function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); return true; } return false; }
     ));
     steps.push(new Step(
@@ -480,7 +480,7 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function() { },
       function() { rope_cut = false; if(fuel < 4) fuel = 4; },
-      function() { drawHeatTip("Hold to heat balloon!"); },
+      function() { drawHeatTip("Hold to heat balloon!",125); },
       function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); clone_fuel = fuel; return true; } return false; }
     ));
     steps.push(new Step(
@@ -718,7 +718,7 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function() { fuel = 40; },
       function() { if(fuel < 4) fuel = 4; rope_cut = false; },
-      function() { drawHeatTip("Heat the balloon!"); },
+      function() { drawHeatTip("Heat the balloon!",125); },
       function() { if(balloon.t > 343.5) { cloneObj(balloon,clone_balloon); return true; } return false; }
     ));
     steps.push(new Step(
@@ -846,10 +846,10 @@ var GamePlayScene = function(game, stage)
         rope_cut = false;
       },
       function() {
-        ctx.textAlign = "left";
-        ctx.fillText("X Heating disabled! Try increasing volume instead!",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h/2);
+        drawHeatTip("X Heating disabled! Try increasing volume instead!",300);
         ctx.textAlign = "center";
-        ctx.fillText("Drag the volume needle to change!",volume_gauge.x+volume_gauge.w/2,volume_gauge.y-40);
+        ctx.fillStyle = "#000000";
+        ctx.fillText("Drag the volume needle to change!",volume_gauge.x+volume_gauge.w/2,volume_gauge.y-35);
         volume_gauge.vis = true;
         volume_gauge.enabled = true;
       },
@@ -880,7 +880,7 @@ var GamePlayScene = function(game, stage)
         if(fuel < 4) fuel = 4;
         rope_cut = false;
       },
-      function() { drawHeatTip("Heat the balloon!"); },
+      function() { drawHeatTip("Heat the balloon!",125); },
       function() {
         if(balloon.wya > 0.0005)
         {
@@ -1525,9 +1525,8 @@ var GamePlayScene = function(game, stage)
     hit_ui = false;
   }
 
-  var drawHeatTip = function(prompt)
+  var drawHeatTip = function(prompt,w)
   {
-    var w = 125;
     var h = 20;
     var x = burn_pad.x+burn_pad.w+10;
     var y = burn_pad.y+burn_pad.h/2;
