@@ -2125,7 +2125,10 @@ var GamePlayScene = function(game, stage)
     ctx.drawImage(needle_img,-2.5,-3,27,6);
     ctx.restore();
 
-    ctx.fillStyle = "#000000";
+    var v = Math.floor(mapVal(30,90,0,256,balloon.wy));
+    if(v < 0) v = 0; if(v > 255) v = 255;
+
+    ctx.fillStyle = "rgba("+v+","+v+","+v+",1)";
     ctx.textAlign = "center";
     ctx.fillText(g.t1,g.x+g.w/2,g.y+g.h+12);
     ctx.fillText(g.t2,g.x+g.w/2,g.y+g.h+12+12);
