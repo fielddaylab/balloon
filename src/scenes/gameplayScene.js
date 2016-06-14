@@ -537,7 +537,7 @@ var GamePlayScene = function(game, stage)
         fuel = 4;
         pop([
           "Think about it this way. It's like the innertube on the pond",
-          "The inner tube is filled with air, and air lis lighter than water...", //CRIT DIFF MATS
+          "The inner tube is filled with air, and air is lighter than water...", //CRIT DIFF MATS
           "So the inner tube floats.",
           "Ohhhhh!",
           "Abraca... um... science!", //CRIT WUT
