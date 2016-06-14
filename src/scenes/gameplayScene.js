@@ -1046,7 +1046,6 @@ var GamePlayScene = function(game, stage)
         steps[cur_step].next_station.wy = 0;
         screenSpace(camera,dc,steps[cur_step].next_station);
         var off = false;
-        if(steps[cur_step].next_station.x < 10) { off = true; steps[cur_step].next_station.x = 10; }
         if(steps[cur_step].next_station.y < 10) { off = true; steps[cur_step].next_station.y = 10; }
         if(steps[cur_step].next_station.x > dc.width -20) { off = true; steps[cur_step].next_station.x = dc.width-20; }
         if(steps[cur_step].next_station.y > dc.height-90) { off = true; steps[cur_step].next_station.y = dc.height-90; }
@@ -1081,8 +1080,9 @@ var GamePlayScene = function(game, stage)
         }
         ctx.textAlign = "center";
         ctx.fillStyle = "#000000";
-        ctx.fillText("Refuel Station",steps[cur_step].next_station.x,steps[cur_step].next_station.y-30)
-        ctx.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x,steps[cur_step].next_station.y-15)
+        if(off)
+          ctx.fillText("Refuel Station",steps[cur_step].next_station.x-30,steps[cur_step].next_station.y-50)
+        ctx.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x-30,steps[cur_step].next_station.y-35)
       },
       function() { return ((balloon.wy > 0 && rope_cut) || fuel <= 0); }
     ));
@@ -1102,7 +1102,6 @@ var GamePlayScene = function(game, stage)
         steps[cur_step].next_station.wy = 0;
         screenSpace(camera,dc,steps[cur_step].next_station);
         var off = false;
-        if(steps[cur_step].next_station.x < 10) { off = true; steps[cur_step].next_station.x = 10; }
         if(steps[cur_step].next_station.y < 10) { off = true; steps[cur_step].next_station.y = 10; }
         if(steps[cur_step].next_station.x > dc.width -20) { off = true; steps[cur_step].next_station.x = dc.width-20; }
         if(steps[cur_step].next_station.y > dc.height-90) { off = true; steps[cur_step].next_station.y = dc.height-90; }
@@ -1136,8 +1135,9 @@ var GamePlayScene = function(game, stage)
         }
         ctx.textAlign = "center";
         ctx.fillStyle = "#000000";
-        ctx.fillText("Refuel Station",steps[cur_step].next_station.x,steps[cur_step].next_station.y-30)
-        ctx.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x,steps[cur_step].next_station.y-15)
+        if(off)
+          ctx.fillText("Refuel Station",steps[cur_step].next_station.x-30,steps[cur_step].next_station.y-50)
+        ctx.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x-30,steps[cur_step].next_station.y-35)
       },
       function() { if(fuel <= 0 && balloon.wy <= 0) { if(balloon.wx > game.refuel_best) game.refuel_best = balloon.wx; return true; } return false; }
     ));
@@ -1209,9 +1209,7 @@ var GamePlayScene = function(game, stage)
         ctx.textAlign = "center";
         ctx.fillStyle = "#000000";
         if(off)
-        {
           ctx.fillText("Pipe Opening",pipe.x+pipe.w/2-30,pipe.y+pipe.h/2-50)
-        }
         ctx.fillText(fdisp((pipe.wx-balloon.wx),1)+"m",pipe.x+pipe.w/2-30,pipe.y+pipe.h/2-35)
       },
       function() {
