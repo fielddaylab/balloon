@@ -1529,6 +1529,18 @@ var GamePlayScene = function(game, stage)
     steps[cur_step].tick();
     if(steps[cur_step].test()) self.nextStep();
     hit_ui = false;
+
+    fuel_gauge.x = density_gauge.x;
+    density_gauge.enabled = false;
+    bouyancy_gauge.enabled = false;
+    altitude_gauge.enabled = false;
+    xvel_gauge.enabled = false;
+    yvel_gauge.enabled = false;
+    density_gauge.vis = false;
+    bouyancy_gauge.vis = false;
+    altitude_gauge.vis = false;
+    xvel_gauge.vis = false;
+    yvel_gauge.vis = false;
   }
 
   var drawHeatTip = function(prompt,w)
@@ -1653,8 +1665,9 @@ var GamePlayScene = function(game, stage)
 
     ctx.textAlign = "right";
     ctx.fillStyle = "#000000";
+    ctx.textAlign = "left";
     if(cur_step != step_meditate)
-      ctx.fillText(fdisp(balloon.wx,1)+"m",dc.width-10,12);
+      ctx.fillText("Distance: "+fdisp(balloon.wx,1)+"m",fuel_gauge.x+fuel_gauge.w+20,fuel_gauge.y-10);
 
     ctx.fillStyle = "#000000";
     ctx.textAlign = "center";
