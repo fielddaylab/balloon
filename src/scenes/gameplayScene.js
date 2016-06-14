@@ -2034,10 +2034,10 @@ var GamePlayScene = function(game, stage)
     }
     var i;
     i = 2; ctx.drawImage(char_imgs[i][char_pose[i]],obj.x,obj.y,obj.w,obj.h);
-    i = 3; ctx.drawImage(char_imgs[i][char_pose[i]],obj.x,obj.y,obj.w,obj.h);
-    i = 4; ctx.drawImage(char_imgs[i][char_pose[i]],obj.x,obj.y,obj.w,obj.h);
+    //i = 3; ctx.drawImage(char_imgs[i][char_pose[i]],obj.x,obj.y,obj.w,obj.h);
+    //i = 4; ctx.drawImage(char_imgs[i][char_pose[i]],obj.x,obj.y,obj.w,obj.h);
     i = 0; ctx.drawImage(char_imgs[i][char_pose[i]],obj.x,obj.y,obj.w,obj.h);
-    i = 5; ctx.drawImage(char_imgs[i][char_pose[i]],obj.x,obj.y,obj.w,obj.h);
+    //i = 5; ctx.drawImage(char_imgs[i][char_pose[i]],obj.x,obj.y,obj.w,obj.h);
     i = 1; ctx.drawImage(char_imgs[i][char_pose[i]],obj.x,obj.y,obj.w,obj.h);
   }
   var drawBalloon = function(obj)
