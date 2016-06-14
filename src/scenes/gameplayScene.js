@@ -225,7 +225,7 @@ var GamePlayScene = function(game, stage)
     flap_pad = new ButtonBox(10,dc.height-50,60,40,function(){});
     cut_pad  = new ButtonBox(dc.width-70,dc.height-50,60,40,function(){});
 
-    eye_btn    = new ButtonBox(dc.width-60,dc.height-100,50,30,function(){ hit_ui = true; if(drawer_disp_target <= 0.5) drawer_disp_target = 1; else if(drawer_disp_target > 0.5) drawer_disp_target = 0; }); drawer_disp = 0; drawer_disp_target = 0;
+    eye_btn    = new ButtonBox(dc.width-65,dc.height-100,50,30,function(){ hit_ui = true; if(drawer_disp_target <= 0.5) drawer_disp_target = 1; else if(drawer_disp_target > 0.5) drawer_disp_target = 0; }); drawer_disp = 0; drawer_disp_target = 0;
     menu_btn   = new ButtonBox(dc.width   ,dc.height-130,100,20,function(){ game.setScene(2); });
     retry_btn  = new ButtonBox(dc.width   ,dc.height-160,100,20,function(){ });
     reset_btn  = new ButtonBox(dc.width   ,dc.height-160,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(3); });
