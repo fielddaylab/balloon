@@ -501,6 +501,7 @@ var GamePlayScene = function(game, stage)
           "Ohhhh. I get it. We're not magic...",
           "BOUYANCY is magic!", //CRIT NOPE
           "Abracadabra!",
+          "(Sigh)",
         ],
         [
           SPEAKER_AXE,
@@ -512,6 +513,7 @@ var GamePlayScene = function(game, stage)
           SPEAKER_AXE,
           SPEAKER_AXE,
           SPEAKER_AXE,
+          SPEAKER_TALL,
         ]);
       },
       function() { rope_cut = false; fuel = clone_fuel; balloon.t = clone_balloon.t; },
@@ -534,7 +536,6 @@ var GamePlayScene = function(game, stage)
       function() {
         fuel = 4;
         pop([
-          "(Sigh)",
           "Think about it this way. It's like the innertube on the pond",
           "The inner tube is filled with air, and air lis lighter than water...", //CRIT DIFF MATS
           "So the inner tube floats.",
@@ -548,7 +549,6 @@ var GamePlayScene = function(game, stage)
           "The wind will help us move faster!",
         ],
         [
-          SPEAKER_TALL,
           SPEAKER_TALL,
           SPEAKER_TALL,
           SPEAKER_TALL,
@@ -673,7 +673,7 @@ var GamePlayScene = function(game, stage)
     steps.push(new Step(
       function(){
         pop([
-          "Both the balloon and the particles -each fighting to stay low- push eachother out of the way",
+          "Both the balloon and the particles -each fighting to stay low- push each other out of the way",
           "The air particles trying to push the balloon out of the way exerts a small upward force",
         ],
         [
@@ -697,7 +697,7 @@ var GamePlayScene = function(game, stage)
         target_arrow_disp = 1;
         pop([
           "But because the balloon is heavier than the air particles trying to get under it,",
-          "the baloon's gravity \"wins\" the struggle to be pulled down, and stays on the ground.",
+          "the balloon's gravity \"wins\" the struggle to be pulled down, and stays on the ground.",
           "What if we make the balloon lighter?",
           "I bet you can guess!",
         ],
