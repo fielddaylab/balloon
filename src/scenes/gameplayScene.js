@@ -1182,7 +1182,6 @@ var GamePlayScene = function(game, stage)
         ctx.fillRect(pipe.x,pipe.y+pipe.h,pipe.w,dc.height-pipe.y-pipe.h);
 
         var off = false;
-        if(pipe.x+pipe.w/2 < 10) { off = true; pipe.x = 10-pipe.w/2; }
         if(pipe.y+pipe.h/2 < 10) { off = true; pipe.y = 10-pipe.h/2; }
         if(pipe.x+pipe.w/2 > dc.width -20) { off = true; pipe.x = dc.width-20-pipe.w/2; }
         if(pipe.y+pipe.h/2 > dc.height-90) { off = true; pipe.y = dc.height-90-pipe.h/2; }
@@ -1205,13 +1204,15 @@ var GamePlayScene = function(game, stage)
           ctx.drawImage(alert_bg_img,-20,-20,50,40);
           ctx.restore();
           ctx.drawImage(alert_danger_img,sx-5,sy-10,10,20);
-          //drawArrow(dc,sx,sy,ex,ey,10);
           ctx.strokeStyle = "#000000";
         }
         ctx.textAlign = "center";
         ctx.fillStyle = "#000000";
-        ctx.fillText("Pipe Opening",pipe.x+pipe.w/2,pipe.y+pipe.h/2-30)
-        ctx.fillText(fdisp((pipe.wx-balloon.wx),1)+"m",pipe.x+pipe.w/2,pipe.y+pipe.h/2-15)
+        if(off)
+        {
+          ctx.fillText("Pipe Opening",pipe.x+pipe.w/2-30,pipe.y+pipe.h/2-50)
+        }
+        ctx.fillText(fdisp((pipe.wx-balloon.wx),1)+"m",pipe.x+pipe.w/2-30,pipe.y+pipe.h/2-35)
       },
       function() {
         if(abs(balloon.wx-pipe.wx) < 10 && (balloon.wy-pipe.wy > 20 || pipe.wy-balloon.wy > 10))
