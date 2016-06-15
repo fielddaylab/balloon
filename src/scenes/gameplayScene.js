@@ -60,7 +60,7 @@ var GamePlayScene = function(game, stage)
   var tmp; //used for any non-persistent calcs
   var grid;
   var shadow;
-  var flame;
+  var flame; var flame_t;
   var basket;
   var char;
   var char_pose;
@@ -173,6 +173,7 @@ var GamePlayScene = function(game, stage)
     tmp = new Obj(0,0,0,0,0);
     shadow = new Obj(0,0,10,2,0);
     flame = new Obj(0,0,2,4,0);
+    flame_t = 0;
     basket = new Obj(0,0,4,4,0);
     char = new Obj(0,0,4,3,0);
     char_r_f = 100;
@@ -2008,16 +2009,19 @@ var GamePlayScene = function(game, stage)
   }
   var drawFlame = function(obj)
   {
+    ctx.globalAlpha = flame_t;
+    var h = flame_t*2; if(h > 1) h = 1;
     if(randB())
-      ctx.drawImage(fire_img,obj.x,obj.y,obj.w,obj.h);
+      ctx.drawImage(fire_img,obj.x,obj.y+((1-h)*obj.h),obj.w,obj.h*h);
     else
     {
       ctx.save();
-      ctx.translate(obj.x+obj.w/2,obj.y);
+      ctx.translate(obj.x+obj.w/2,obj.y+((1-h)*obj.h));
       ctx.scale(-1,1);
-      ctx.drawImage(fire_img,-obj.w/2,0,obj.w,obj.h);
+      ctx.drawImage(fire_img,-obj.w/2,0,obj.w,obj.h*h);
       ctx.restore();
     }
+    ctx.globalAlpha = 1;
   }
   var drawShadow = function(obj)
   {
@@ -2056,7 +2060,9 @@ var GamePlayScene = function(game, stage)
   var drawBalloon = function(obj)
   {
     ctx.drawImage(balloon_back_img,obj.x,obj.y,obj.w,obj.h);
-    if(burn_pad.down && fuel > 0) drawFlame(flame);
+    if(burn_pad.down && fuel > 0) flame_t = 1;
+    else { flame_t -= 0.05; if(flame_t < 0) flame_t = 0; }
+    drawFlame(flame);
     drawBalloonParticles();
     ctx.globalAlpha = 1-part_disp;
     ctx.drawImage(balloon_img,obj.x,obj.y,obj.w,obj.h);
