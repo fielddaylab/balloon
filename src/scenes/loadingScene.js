@@ -34,8 +34,11 @@ var LoadingScene = function(game, stage)
     img_srcs.push("assets/cloud_0.png");
     img_srcs.push("assets/cloud_1.png");
     img_srcs.push("assets/cloud_2.png");
+    img_srcs.push("assets/cloud_3.png");
+    img_srcs.push("assets/cloud_4.png");
     img_srcs.push("assets/tree_0.png");
     img_srcs.push("assets/tree_1.png");
+    img_srcs.push("assets/tree_2.png");
     img_srcs.push("assets/grass.png");
     img_srcs.push("assets/gauge.png");
     img_srcs.push("assets/needle.png");

@@ -213,9 +213,9 @@ var GamePlayScene = function(game, stage)
     char.wy = basket.wy;
 
     vgsep =  2; vgybase = 100; vgyrange = 40; vg = []; for(var i = 0; i <200; i++) { vg.push(new Obj(i*vgsep+rand0()*vgsep, rand0()*vgyrange+vgybase, 0.1+Math.random()*0.1, 0.1+Math.random()*0.1, randIntBelow(3))); vg[i].draw = drawPart;     } vgi = 0;
-    bgsep = 10; bgybase =  12; bgyrange = 10; bg = []; for(var i = 0; i < 30; i++) { bg.push(new Obj(i*bgsep+rand0()*bgsep, rand0()*bgyrange+bgybase,     3+Math.random()*3,     2+Math.random()*3, randIntBelow(3))); bg[i].draw = drawCloud;    } bgi = 0;
-    mgsep = 30; mgybase =  28; mgyrange = 20; mg = []; for(var i = 0; i < 20; i++) { mg.push(new Obj(i*mgsep+rand0()*mgsep, rand0()*mgyrange+mgybase,     4+Math.random()*4,     3+Math.random()*4, randIntBelow(3))); mg[i].draw = drawMountain; } mgi = 0;
-    fgsep = 20; fgybase =  -1; fgyrange =  1; fg = []; for(var i = 0; i < 30; i++) { fg.push(new Obj(i*fgsep+rand0()*fgsep, rand0()*fgyrange+fgybase,                 8,                 8, randIntBelow(2))); fg[i].draw = drawTree;     } fgi = 0;
+    bgsep = 10; bgybase =  12; bgyrange = 10; bg = []; for(var i = 0; i < 30; i++) { bg.push(new Obj(i*bgsep+rand0()*bgsep, rand0()*bgyrange+bgybase,     3+Math.random()*3,     2+Math.random()*3, randIntBelow(5))); bg[i].draw = drawCloud;    } bgi = 0;
+    mgsep = 30; mgybase =  28; mgyrange = 20; mg = []; for(var i = 0; i < 20; i++) { mg.push(new Obj(i*mgsep+rand0()*mgsep, rand0()*mgyrange+mgybase,     4+Math.random()*4,     3+Math.random()*4, randIntBelow(5))); mg[i].draw = drawMountain; } mgi = 0;
+    fgsep = 20; fgybase =  -1; fgyrange =  1; fg = []; for(var i = 0; i < 30; i++) { fg.push(new Obj(i*fgsep+rand0()*fgsep, rand0()*fgyrange+fgybase,                 8,                 8, randIntBelow(3))); fg[i].draw = drawTree;     } fgi = 0;
     faux_ground_sep = 100; faux_ground = []; for(var i = 0; i < 3; i++) { faux_ground.push(new Obj(i*faux_ground_sep, -20, faux_ground_sep, faux_ground_sep/2, i)); faux_ground[i].draw = drawGround; } faux_ground_i = 0;
     centerGrounds();
     sky = new Obj();
@@ -2110,9 +2110,9 @@ var GamePlayScene = function(game, stage)
     }
   }
   var drawPart     = function(obj) { ctx.drawImage(part_canvs[0],obj.x,obj.y,obj.w,obj.h); }
-  var drawCloud    = function(obj) { ctx.drawImage(obj.id == 0 ? cloud_0_img : (obj.id == 1 ? cloud_1_img : cloud_2_img),obj.x,obj.y,obj.w,obj.h); }
-  var drawMountain = function(obj) { ctx.drawImage(obj.id == 0 ? cloud_0_img : (obj.id == 1 ? cloud_1_img : cloud_2_img),obj.x,obj.y,obj.w,obj.h); }
-  var drawTree     = function(obj) { ctx.drawImage(obj.id == 0 ? tree_0_img : tree_1_img,obj.x,obj.y,obj.w,obj.h); }
+  var drawCloud    = function(obj) { ctx.drawImage(cloud_imgs[obj.id],obj.x,obj.y,obj.w,obj.h); }
+  var drawMountain = function(obj) { ctx.drawImage(cloud_imgs[obj.id],obj.x,obj.y,obj.w,obj.h); }
+  var drawTree     = function(obj) { ctx.drawImage(tree_imgs[obj.id],obj.x,obj.y,obj.w,obj.h); }
   var drawGround   = function(obj) { ctx.drawImage(grass_img,obj.x,obj.y,obj.w,obj.h); }
   var drawGauge    = function(g)
   {
