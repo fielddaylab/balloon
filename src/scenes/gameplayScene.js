@@ -2170,13 +2170,26 @@ var GamePlayScene = function(game, stage)
   }
   var drawSlider = function(s)
   {
-    ctx.strokeStyle = "#000000";
     var r = s.w-10;
+
+    ctx.strokeStyle = "#FFFFFF";
     ctx.lineWidth = 5;
     ctx.beginPath();
-    ctx.arc(0,dc.height,r,0,halfpi,true);
+    ctx.arc(0,dc.height,r,0,twopi-halfpi,true);
     ctx.stroke();
 
+    ctx.strokeStyle = "#EE5A4B";
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.arc(0,dc.height,r,0,twopi-s.t,true);
+    ctx.stroke();
+
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath();
+    ctx.arc(cos(s.t)*r,dc.height-sin(s.t)*r,10,0,twopi);
+    ctx.fill();
+
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.arc(cos(s.t)*r,dc.height-sin(s.t)*r,10,0,twopi);
     ctx.stroke();
