@@ -850,7 +850,12 @@ var GamePlayScene = function(game, stage)
       function() { return input_state == RESUME_INPUT; }
     ));
     steps.push(new Step(
-      function() { fuel = 40; },
+      function() {
+        fuel = 40;
+        selected_gauge = volume_gauge;
+        volume_gauge.vis = true;
+        volume_gauge.enabled = true;
+      },
       function() {
         fuel = 40;
         balloon.t = env_temp;
@@ -858,17 +863,13 @@ var GamePlayScene = function(game, stage)
         rope_cut = false;
       },
       function() {
-        drawHeatTip("X Heating disabled! Try increasing volume instead!",300);
-        ctx.textAlign = "center";
-        ctx.fillStyle = "#000000";
-        ctx.fillText("Drag the volume needle to change!",volume_gauge.x+volume_gauge.w/2,volume_gauge.y-35);
-        volume_gauge.vis = true;
-        volume_gauge.enabled = true;
+        drawHeatTip("Heating disabled! Try increasing volume instead!",300);
       },
       function() { return balloon.v > 5000 && !volume_gauge.dragging; }
     ));
     steps.push(new Step(
       function(){
+        slider.dragging = false;
         pop([
           "See how increasing the volume brings the force of gravity closer to the upward force of the surrounding particles?",
           "A bigger balloon means more outside particles get to push on it!",
