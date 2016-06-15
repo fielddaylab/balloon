@@ -2259,12 +2259,17 @@ var GamePlayScene = function(game, stage)
     self.dragStart = function(evt)
     {
       if(!selected_gauge || !selected_gauge.vis || ! selected_gauge.enabled) { self.dragging = false; return; }
+
+      var r = self.w-10;
+      var dx = cos(self.t)*r-evt.doX;
+      var dy = (dc.height-sin(self.t)*r)-evt.doY;
+      if(dx*dx + dy*dy > 10*10) return;
       self.dragging = true;
       self.drag(evt);
     }
     self.drag = function(evt)
     {
-      if(!selected_gauge || !selected_gauge.vis || ! selected_gauge.enabled) { self.dragging = false; return; }
+      if(!self.dragging || !selected_gauge || !selected_gauge.vis || ! selected_gauge.enabled) { self.dragging = false; return; }
       var x = evt.doX;
       var y = dc.height-evt.doY;
       var t = atan2(y,x);
