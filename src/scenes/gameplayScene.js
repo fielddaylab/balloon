@@ -1556,7 +1556,7 @@ var GamePlayScene = function(game, stage)
   var drawHeatTip = function(prompt,w)
   {
     var h = 20;
-    var x = burn_pad.x+burn_pad.w+10;
+    var x = burn_pad.x+burn_pad.w+80;
     var y = burn_pad.y+burn_pad.h/2;
     y += Math.sin(n_ticks/10)*4;
     ctx.fillStyle = "#FFFFFF";
@@ -1576,7 +1576,7 @@ var GamePlayScene = function(game, stage)
   {
     var w = 90;
     var h = 20;
-    var x = cut_pad.x-w-10;
+    var x = cut_pad.x-w-115;
     var y = cut_pad.y+cut_pad.h/2;
     y += Math.sin(n_ticks/10)*4;
     ctx.fillStyle = "#FFFFFF";
@@ -1630,18 +1630,25 @@ var GamePlayScene = function(game, stage)
     //drawCamTarget(cam_target);
     drawForceArrows();
 
+    ctx.font = "20px Open Sans";
+    ctx.textAlign = "left";
     if(input_state == IGNORE_INPUT) ctx.globalAlpha = 0.5;
     if(burn_pad.down) ctx.drawImage(burn_btn_red_img,burn_pad.x,burn_pad.y,burn_pad.w,burn_pad.h);
     else              ctx.drawImage(    burn_btn_img,burn_pad.x,burn_pad.y,burn_pad.w,burn_pad.h);
+    ctx.fillText("BURN",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h-15);
 
     if(flap_pad.down) ctx.drawImage(flap_btn_red_img,flap_pad.x,flap_pad.y,flap_pad.w,flap_pad.h);
     else              ctx.drawImage(    flap_btn_img,flap_pad.x,flap_pad.y,flap_pad.w,flap_pad.h);
+    ctx.fillText("OPEN FLAP",flap_pad.x+flap_pad.w+10,flap_pad.y+flap_pad.h-15);
 
     if(!rope_cut)
     {
+      ctx.textAlign = "right";
       if(cut_pad.down) ctx.drawImage(rope_btn_red_img,cut_pad.x,cut_pad.y,cut_pad.w,cut_pad.h);
       else             ctx.drawImage(    rope_btn_img,cut_pad.x,cut_pad.y,cut_pad.w,cut_pad.h);
+      ctx.fillText("CUT ROPE",cut_pad.x-10,cut_pad.y+cut_pad.h-15);
     }
+    ctx.font = "12px Open Sans";
     ctx.globalAlpha = 1;
 
     ctx.fillStyle = "rgba(0,0,0,0.2)";
@@ -2266,9 +2273,9 @@ var GamePlayScene = function(game, stage)
     var self = this;
 
     self.x = 0;
-    self.y = dc.height-200;
-    self.w = 200;
-    self.h = 200;
+    self.w = 300;
+    self.h = 300;
+    self.y = dc.height-self.h;
 
     self.t = 0;
     self.tick = function()
