@@ -65,6 +65,10 @@ function feq(f1,f2,e)
   return (f1 < f2+e && f1 > f2-e);
 }
 
+var randB = function()
+{
+  return Math.random() >= 0.5;
+}
 function randIntBelow(n)
 {
   return Math.floor(Math.random()*n);

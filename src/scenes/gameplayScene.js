@@ -2008,7 +2008,16 @@ var GamePlayScene = function(game, stage)
   }
   var drawFlame = function(obj)
   {
-    ctx.drawImage(fire_img,obj.x,obj.y,obj.w,obj.h);
+    if(randB())
+      ctx.drawImage(fire_img,obj.x,obj.y,obj.w,obj.h);
+    else
+    {
+      ctx.save();
+      ctx.translate(obj.x+obj.w/2,obj.y);
+      ctx.scale(-1,1);
+      ctx.drawImage(fire_img,-obj.w/2,0,obj.w,obj.h);
+      ctx.restore();
+    }
   }
   var drawShadow = function(obj)
   {
