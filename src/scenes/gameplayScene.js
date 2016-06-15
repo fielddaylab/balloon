@@ -254,7 +254,7 @@ var GamePlayScene = function(game, stage)
     var maxt = pi*(9/4);
     outside_temp_gauge = new Gauge("Outside","Temp",        w*0+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,280,380,0,999,function(v){ env_temp = v; return true; });
     inside_temp_gauge  = new Gauge("Balloon","Temp",        w*1+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,280,380,0,999,function(v){ balloon.t = v; return true; });
-    weight_gauge       = new Gauge("","Weight",             w*2+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,2200000,3000000,0,99999999999999,function(v){ balloon.bm = v-balloon.m; return true; });
+    weight_gauge       = new Gauge("","Weight",             w*2+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,2200000,3000000,0,99999999999999,function(v){ return; balloon.bm = v-balloon.m; return true; });
     volume_gauge       = new Gauge("","Volume",             w*3+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,500,8000,1,999999999999999999999,function(v){ balloon.v = v; balloon.ww = sqrt(balloon.v/(balloon.wh)); return true; });
     density_gauge      = new Gauge("","Density",            w*4+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,950,1200,1,999999999999999999999,function(v){ return false; });
     bouyancy_gauge     = new Gauge("Net","Force",           w*5+p+b,p+b,w-(2*p),w-(2*p),mint,maxt,-.02,.02,-999999999,99999999999,function(v){ balloon.wya = v; return true; });
@@ -1482,16 +1482,16 @@ var GamePlayScene = function(game, stage)
     yvel_gauge.tick();
     fuel_gauge.tick();
 
-    outside_temp_gauge.last_val = env_temp;
-    inside_temp_gauge.last_val = balloon.t;
-    weight_gauge.last_val = balloon.m+balloon.bm;
-    volume_gauge.last_val = balloon.v;
-    density_gauge.last_val = balloon.m/balloon.v;
-    bouyancy_gauge.last_val = balloon.wya;
-    altitude_gauge.last_val = balloon.wy;
-    xvel_gauge.last_val = balloon.wxv;
-    yvel_gauge.last_val = balloon.wyv;
-    fuel_gauge.last_val = fuel;
+    outside_temp_gauge.val = outside_temp_gauge.slider_val = env_temp;
+    inside_temp_gauge.val  = inside_temp_gauge.slider_val = balloon.t;
+    weight_gauge.val       = weight_gauge.slider_val = balloon.m+balloon.bm;
+    volume_gauge.val       = volume_gauge.slider_val = balloon.v;
+    density_gauge.val      = density_gauge.slider_val = balloon.m/balloon.v;
+    bouyancy_gauge.val     = bouyancy_gauge.slider_val = balloon.wya;
+    altitude_gauge.val     = altitude_gauge.slider_val = balloon.wy;
+    xvel_gauge.val         = xvel_gauge.slider_val = balloon.wxv;
+    yvel_gauge.val         = yvel_gauge.slider_val = balloon.wyv;
+    fuel_gauge.val         = fuel_gauge.slider_val = fuel;
 
     slider.tick();
 
@@ -2214,7 +2214,7 @@ var GamePlayScene = function(game, stage)
     self.minvalid = minvalid;
     self.maxvalid = maxvalid;
     self.val = self.min;
-    self.last_val = self.val;
+    self.slider_val = self.val;
     self.r = Math.min(self.w,self.h)/2;
 
     self.vis = false;
@@ -2222,8 +2222,8 @@ var GamePlayScene = function(game, stage)
 
     self.tick = function()
     {
-      if(altered && self.val != self.last_val && altered(self.last_val))
-        self.val = self.last_val;
+      if(self.val != self.slider_val && altered) altered(self.slider_val);
+      self.val = self.slider_val;
     }
 
     self.press = function(evt)
@@ -2275,11 +2275,10 @@ var GamePlayScene = function(game, stage)
       var t = atan2(y,x);
       var val = mapVal(0,halfpi,selected_gauge.min,selected_gauge.max,t);
       if(val < selected_gauge.maxvalid && val > selected_gauge.minvalid)
-        selected_gauge.last_val = val;
+        selected_gauge.slider_val = val;
     }
     self.dragFinish = function()
     {
-      if(!selected_gauge || !selected_gauge.vis || ! selected_gauge.enabled) { self.dragging = false; return; }
       self.dragging = false;
     }
 
