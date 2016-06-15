@@ -177,7 +177,7 @@ var GamePlayScene = function(game, stage)
     flame = new Obj(0,0,2,4,0);
     flame_t = 0;
     basket = new Obj(0,0,4,4,0);
-    char = new Obj(0,0,4,3,0);
+    char = new Obj(0,0,4,4,0);
     char_r_f = 100;
     char_r_t = 200;
     char_pose = [];
@@ -1383,7 +1383,7 @@ var GamePlayScene = function(game, stage)
     basket.wy = balloon.wy-balloon.wh*0.7;
     bubble_origin.wy = basket.wy+1;
     char.wx = basket.wx;
-    char.wy = basket.wy+basket.wh/6;
+    char.wy = basket.wy;
 
     shadow.wx = balloon.wx;
     shadow.wy = -balloon.wh/2-basket.wh*1.2;
