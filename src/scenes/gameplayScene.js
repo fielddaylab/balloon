@@ -1493,6 +1493,8 @@ var GamePlayScene = function(game, stage)
     yvel_gauge.last_val = balloon.wyv;
     fuel_gauge.last_val = fuel;
 
+    slider.tick();
+
     //faux parallax
     tickParallax();
     centerGrounds();
@@ -1687,6 +1689,8 @@ var GamePlayScene = function(game, stage)
     drawGauge(xvel_gauge);         if(xvel_gauge.vis)     drawAroundDecimal(dc,        xvel_gauge.x+xvel_gauge.w/2,    xvel_gauge.y-10,fdisp(balloon.wxv*fps,2),"","m/s")
     drawGauge(yvel_gauge);         if(yvel_gauge.vis)     drawAroundDecimal(dc,        yvel_gauge.x+yvel_gauge.w/2,    yvel_gauge.y-10,fdisp(balloon.wyv*fps,2),"","m/s")
     drawGauge(fuel_gauge);         if(fuel_gauge.vis)     drawAroundDecimal(dc,        fuel_gauge.x+fuel_gauge.w/2,    fuel_gauge.y-10,fdisp(fuel,2),"","G")
+
+    if(selected_gauge) drawSlider(slider);
 
     steps[cur_step].draw();
     if(input_state == IGNORE_INPUT)
@@ -2164,6 +2168,19 @@ var GamePlayScene = function(game, stage)
     ctx.fillText(g.t1,g.x+g.w/2,g.y+g.h+12);
     ctx.fillText(g.t2,g.x+g.w/2,g.y+g.h+12+12);
   }
+  var drawSlider = function(s)
+  {
+    ctx.strokeStyle = "#000000";
+    var r = s.w-10;
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.arc(0,dc.height,r,0,halfpi,true);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(cos(s.t)*r,dc.height-sin(s.t)*r,10,0,twopi);
+    ctx.stroke();
+  }
   var drawForceArrows = function()
   {
     if(arrow_disp <= 0) return;
@@ -2230,6 +2247,13 @@ var GamePlayScene = function(game, stage)
     self.y = dc.height-200;
     self.w = 200;
     self.h = 200;
+
+    self.t = 0;
+    self.tick = function()
+    {
+      if(selected_gauge)
+        self.t = mapVal(selected_gauge.min,selected_gauge.max,0,halfpi,selected_gauge.val);
+    }
 
     self.dragging = false;
     self.dragStart = function(evt)
