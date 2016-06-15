@@ -2170,6 +2170,13 @@ var GamePlayScene = function(game, stage)
   }
   var drawSlider = function(s)
   {
+    ctx.fillStyle = "#FFFFFF";
+    dc.fillRoundRect(-10,s.y-50,300,40,10);
+    ctx.fillStyle = "#EE5A4B";
+    ctx.font = "Bold 25px Open Sans";
+    ctx.fillText(selected_gauge.TITLE,10,s.y-20);
+    ctx.font = "12px Open Sans";
+
     var r = s.w-10;
 
     ctx.strokeStyle = "#FFFFFF";
@@ -2213,6 +2220,8 @@ var GamePlayScene = function(game, stage)
     var self = this;
     self.t1 = t1;
     self.t2 = t2;
+    var space = String.fromCharCode(8202)+String.fromCharCode(8202);
+    self.TITLE = (self.t1+" "+self.t2).toUpperCase().split("").join(space+space);
 
     self.x = x;
     self.y = y;
