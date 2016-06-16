@@ -2138,10 +2138,8 @@ var GamePlayScene = function(game, stage)
   var drawBubble = function(obj,doit)
   {
     var img;
-    ctx.fillStyle = "#FFFFFF";
-    ctx.drawImage(bubble_img,obj.x-150,obj.y-50,obj.w+200,obj.h+100);
-    ctx.fillRect(obj.x,obj.y,obj.w,obj.h);
-    ctx.drawImage(char_imgs[speaks[cur_line]][speak_pose],obj.x-150,obj.y,obj.w+200,obj.h+50);
+    ctx.drawImage(bubble_img,obj.x-80,obj.y-40,obj.w+110,obj.h+50);
+    ctx.drawImage(char_imgs[speaks[cur_line]][speak_pose],obj.x-50,obj.y-50,60,60);
   }
   var drawCamTarget = function(obj)
   {
@@ -2419,7 +2417,7 @@ var GamePlayScene = function(game, stage)
     var l = textToLines(dc, "12px Open Sans", bubble_origin.w, lines[cur_line])
     if(cur_line == 0 || speaks[cur_line] != speaks[cur_line-1])
       speak_t = 0;
-    speak_pose = floor(rand()*3);
+    speak_pose = 3;
     releaseUI();
     input_state = IGNORE_INPUT;
     if(cur_line >= lines.length-1) dom.popDismissableMessage(l,bubble_origin.x,bubble_origin.y,bubble_origin.w,bubble_origin.h,dismissed);

@@ -385,6 +385,11 @@ for(var i = 0; i < 6; i++)
     char_imgs[i][j] = new Image();
     char_imgs[i][j].src = "assets/char_"+i+"_"+j+".png";
   }
+  if(i < 3)
+  {
+    char_imgs[i][3] = new Image();
+    char_imgs[i][3].src = "assets/char_"+i+"_icon.png";
+  }
 }
 
 }
