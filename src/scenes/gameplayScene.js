@@ -1696,10 +1696,10 @@ var GamePlayScene = function(game, stage)
     ctx.fillStyle = "#FFFFFF";
     if(cur_step != step_meditate)
     {
-      ctx.font = "20px Open Sans";
+      ctx.font = "16px Open Sans";
       ctx.fillText("Distance Travelled",dc.width-10,50);
       ctx.font = "30px Open Sans";
-      ctx.fillText(fdisp(balloon.wx,1)+"m",dc.width-10,90);
+      ctx.fillText(fdisp(balloon.wx,1)+"m",dc.width-10,76);
       ctx.font = "12px Open Sans";
     }
 

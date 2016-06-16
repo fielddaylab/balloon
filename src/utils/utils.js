@@ -102,8 +102,16 @@ var halfpi = pi/2;
 var fdisp = function(f,n) //formats float for display (from 8.124512 to 8.12)
 {
   if(n == undefined) n = 2;
-  n = Math.pow(10,n);
-  return Math.round(f*n)/n;
+  var d;
+  d = Math.pow(10,n);
+  var str = (Math.round(f*d)/d)+"";
+  if(str.indexOf(".") == -1)
+  {
+    str += ".";
+    for(var i = 0; i < n; i++) //uh oh...
+      str += "0";
+  }
+  return str;
 }
 
 function clamp(a,b,v)
