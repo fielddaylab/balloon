@@ -224,16 +224,16 @@ var GamePlayScene = function(game, stage)
     sky = new Obj();
     ground = new Obj();
 
-    burn_pad = new ButtonBox(dc.width-70,dc.height-150,60,40,function(){});
-    flap_pad = new ButtonBox(dc.width-70,dc.height-100,60,40,function(){});
-    cut_pad  = new ButtonBox(dc.width-70,dc.height-50 ,60,40,function(){});
+    burn_pad = new ButtonBox(dc.width-70,dc.height-210,60,60,function(){});
+    flap_pad = new ButtonBox(dc.width-70,dc.height-140,60,60,function(){});
+    cut_pad  = new ButtonBox(dc.width-70,dc.height-70 ,60,60,function(){});
 
-    eye_btn    = new ButtonBox(dc.width-65,dc.height-200,50,30,function(){ hit_ui = true; if(drawer_disp_target <= 0.5) drawer_disp_target = 1; else if(drawer_disp_target > 0.5) drawer_disp_target = 0; }); drawer_disp = 0; drawer_disp_target = 0;
-    menu_btn   = new ButtonBox(dc.width   ,dc.height-230,100,20,function(){ game.setScene(2); });
-    retry_btn  = new ButtonBox(dc.width   ,dc.height-260,100,20,function(){ });
-    reset_btn  = new ButtonBox(dc.width   ,dc.height-260,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(3); });
-    arrows_btn = new ButtonBox(dc.width   ,dc.height-290,100,20,function(){ if(cur_step != step_free) return; target_arrow_disp = (target_arrow_disp+1)%2; });
-    parts_btn  = new ButtonBox(dc.width   ,dc.height-320,100,20,function(){ if(cur_step != step_free) return; target_part_disp = (target_part_disp+1)%2; });
+    eye_btn    = new ButtonBox(dc.width-65,dc.height-250,50,30,function(){ hit_ui = true; if(drawer_disp_target <= 0.5) drawer_disp_target = 1; else if(drawer_disp_target > 0.5) drawer_disp_target = 0; }); drawer_disp = 0; drawer_disp_target = 0;
+    menu_btn   = new ButtonBox(dc.width   ,dc.height-280,100,20,function(){ game.setScene(2); });
+    retry_btn  = new ButtonBox(dc.width   ,dc.height-310,100,20,function(){ });
+    reset_btn  = new ButtonBox(dc.width   ,dc.height-310,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(3); });
+    arrows_btn = new ButtonBox(dc.width   ,dc.height-340,100,20,function(){ if(cur_step != step_free) return; target_arrow_disp = (target_arrow_disp+1)%2; });
+    parts_btn  = new ButtonBox(dc.width   ,dc.height-370,100,20,function(){ if(cur_step != step_free) return; target_part_disp = (target_part_disp+1)%2; });
     presser.register(burn_pad);
     presser.register(flap_pad);
     presser.register(cut_pad);
@@ -1656,17 +1656,17 @@ var GamePlayScene = function(game, stage)
     if(input_state == IGNORE_INPUT) ctx.globalAlpha = 0.5;
     if(burn_pad.down) ctx.drawImage(burn_btn_red_img,burn_pad.x,burn_pad.y,burn_pad.w,burn_pad.h);
     else              ctx.drawImage(    burn_btn_img,burn_pad.x,burn_pad.y,burn_pad.w,burn_pad.h);
-    ctx.fillText("BURN",burn_pad.x-10,burn_pad.y+burn_pad.h-15);
+    ctx.fillText("BURN",burn_pad.x-10,burn_pad.y+burn_pad.h-23);
 
     if(flap_pad.down) ctx.drawImage(flap_btn_red_img,flap_pad.x,flap_pad.y,flap_pad.w,flap_pad.h);
     else              ctx.drawImage(    flap_btn_img,flap_pad.x,flap_pad.y,flap_pad.w,flap_pad.h);
-    ctx.fillText("OPEN FLAP",flap_pad.x-10,flap_pad.y+flap_pad.h-15);
+    ctx.fillText("OPEN FLAP",flap_pad.x-10,flap_pad.y+flap_pad.h-23);
 
     if(!rope_cut)
     {
       if(cut_pad.down) ctx.drawImage(rope_btn_red_img,cut_pad.x,cut_pad.y,cut_pad.w,cut_pad.h);
       else             ctx.drawImage(    rope_btn_img,cut_pad.x,cut_pad.y,cut_pad.w,cut_pad.h);
-      ctx.fillText("CUT ROPE",cut_pad.x-10,cut_pad.y+cut_pad.h-15);
+      ctx.fillText("CUT ROPE",cut_pad.x-10,cut_pad.y+cut_pad.h-23);
     }
     ctx.font = "12px Open Sans";
     ctx.globalAlpha = 1;
