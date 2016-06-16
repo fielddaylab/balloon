@@ -2198,11 +2198,17 @@ var GamePlayScene = function(game, stage)
   var drawSlider = function(s)
   {
     ctx.fillStyle = "#FFFFFF";
-    dc.fillRoundRect(-10,s.y-50,300,40,10);
+    dc.fillRoundRect(-10,dc.height-50,160,40,10);
     ctx.fillStyle = "#EE5A4B";
-    ctx.font = "Bold 25px Open Sans";
-    ctx.fillText(selected_gauge.TITLE,10,s.y-20);
+    ctx.font = "Bold 12px Open Sans";
+    ctx.fillText(selected_gauge.TITLE,10,dc.height-32);
     ctx.font = "12px Open Sans";
+    if(selected_gauge == outside_temp_gauge)
+      ctx.fillText((round((env_temp*(9/5)-459)*100)/100)+"°F",10,dc.height-18);
+    if(selected_gauge == inside_temp_gauge)
+      ctx.fillText((round((balloon.t*(9/5)-459)*100)/100)+"°F",10,dc.height-18)
+    if(selected_gauge == volume_gauge)
+      ctx.fillText(round(balloon.v)+"m3",10,dc.height-18)
 
     var r = s.w-10;
 
@@ -2248,7 +2254,10 @@ var GamePlayScene = function(game, stage)
     self.t1 = t1;
     self.t2 = t2;
     var space = String.fromCharCode(8202)+String.fromCharCode(8202);
-    self.TITLE = (self.t1+" "+self.t2).toUpperCase().split("").join(space+space);
+    if(self.t1 != "")
+      self.TITLE = (self.t1+" "+self.t2).toUpperCase().split("").join(space+space);
+    else
+      self.TITLE = (self.t2).toUpperCase().split("").join(space+space);
 
     self.x = x;
     self.y = y;
