@@ -224,16 +224,16 @@ var GamePlayScene = function(game, stage)
     sky = new Obj();
     ground = new Obj();
 
-    burn_pad = new ButtonBox(10,dc.height-100,60,40,function(){});
-    flap_pad = new ButtonBox(10,dc.height-50,60,40,function(){});
-    cut_pad  = new ButtonBox(dc.width-70,dc.height-50,60,40,function(){});
+    burn_pad = new ButtonBox(dc.width-70,dc.height-150,60,40,function(){});
+    flap_pad = new ButtonBox(dc.width-70,dc.height-100,60,40,function(){});
+    cut_pad  = new ButtonBox(dc.width-70,dc.height-50 ,60,40,function(){});
 
-    eye_btn    = new ButtonBox(dc.width-65,dc.height-100,50,30,function(){ hit_ui = true; if(drawer_disp_target <= 0.5) drawer_disp_target = 1; else if(drawer_disp_target > 0.5) drawer_disp_target = 0; }); drawer_disp = 0; drawer_disp_target = 0;
-    menu_btn   = new ButtonBox(dc.width   ,dc.height-130,100,20,function(){ game.setScene(2); });
-    retry_btn  = new ButtonBox(dc.width   ,dc.height-160,100,20,function(){ });
-    reset_btn  = new ButtonBox(dc.width   ,dc.height-160,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(3); });
-    arrows_btn = new ButtonBox(dc.width   ,dc.height-190,100,20,function(){ if(cur_step != step_free) return; target_arrow_disp = (target_arrow_disp+1)%2; });
-    parts_btn  = new ButtonBox(dc.width   ,dc.height-220,100,20,function(){ if(cur_step != step_free) return; target_part_disp = (target_part_disp+1)%2; });
+    eye_btn    = new ButtonBox(dc.width-65,dc.height-200,50,30,function(){ hit_ui = true; if(drawer_disp_target <= 0.5) drawer_disp_target = 1; else if(drawer_disp_target > 0.5) drawer_disp_target = 0; }); drawer_disp = 0; drawer_disp_target = 0;
+    menu_btn   = new ButtonBox(dc.width   ,dc.height-230,100,20,function(){ game.setScene(2); });
+    retry_btn  = new ButtonBox(dc.width   ,dc.height-260,100,20,function(){ });
+    reset_btn  = new ButtonBox(dc.width   ,dc.height-260,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(3); });
+    arrows_btn = new ButtonBox(dc.width   ,dc.height-290,100,20,function(){ if(cur_step != step_free) return; target_arrow_disp = (target_arrow_disp+1)%2; });
+    parts_btn  = new ButtonBox(dc.width   ,dc.height-320,100,20,function(){ if(cur_step != step_free) return; target_part_disp = (target_part_disp+1)%2; });
     presser.register(burn_pad);
     presser.register(flap_pad);
     presser.register(cut_pad);
@@ -863,9 +863,9 @@ var GamePlayScene = function(game, stage)
         rope_cut = false;
       },
       function() {
-        drawHeatTip("Heating disabled! Try increasing volume instead!",300);
+        drawKnobTip("Drag to increase volume!",160);
       },
-      function() { return balloon.v > 5000 && !volume_gauge.dragging; }
+      function() { return balloon.v > 5000 && !slider.dragging; }
     ));
     steps.push(new Step(
       function(){
@@ -1554,11 +1554,11 @@ var GamePlayScene = function(game, stage)
     yvel_gauge.vis = false;
   }
 
-  var drawHeatTip = function(prompt,w)
+  var drawKnobTip = function(prompt,w)
   {
     var h = 20;
-    var x = burn_pad.x+burn_pad.w+80;
-    var y = burn_pad.y+burn_pad.h/2;
+    var x = slider.x+slider.w+10;
+    var y = dc.height-70;
     y += Math.sin(n_ticks/10)*4;
     ctx.fillStyle = "#FFFFFF";
     dc.fillRoundRect(x,y-h/2,w,h,5);
@@ -1572,6 +1572,25 @@ var GamePlayScene = function(game, stage)
     ctx.textAlign = "left";
     ctx.fillStyle = "#000000";
     ctx.fillText(prompt,x+4,y+5);
+  }
+  var drawHeatTip = function(prompt,w)
+  {
+    var h = 20;
+    var x = burn_pad.x-w-80;
+    var y = burn_pad.y+burn_pad.h/2;
+    y += Math.sin(n_ticks/10)*4;
+    ctx.fillStyle = "#FFFFFF";
+    dc.fillRoundRect(x,y-h/2,w,h,5);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x+w-1,y-h/2+5);
+    ctx.lineTo(x+w+5,y);
+    ctx.lineTo(x+w-1,y+h/2-5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#000000";
+    ctx.fillText(prompt,x+w-4,y+5);
   }
   var drawCutTip = function(prompt)
   {
@@ -1632,19 +1651,19 @@ var GamePlayScene = function(game, stage)
     drawForceArrows();
 
     ctx.font = "20px Open Sans";
-    ctx.textAlign = "left";
+    ctx.textAlign = "right";
+
     if(input_state == IGNORE_INPUT) ctx.globalAlpha = 0.5;
     if(burn_pad.down) ctx.drawImage(burn_btn_red_img,burn_pad.x,burn_pad.y,burn_pad.w,burn_pad.h);
     else              ctx.drawImage(    burn_btn_img,burn_pad.x,burn_pad.y,burn_pad.w,burn_pad.h);
-    ctx.fillText("BURN",burn_pad.x+burn_pad.w+10,burn_pad.y+burn_pad.h-15);
+    ctx.fillText("BURN",burn_pad.x-10,burn_pad.y+burn_pad.h-15);
 
     if(flap_pad.down) ctx.drawImage(flap_btn_red_img,flap_pad.x,flap_pad.y,flap_pad.w,flap_pad.h);
     else              ctx.drawImage(    flap_btn_img,flap_pad.x,flap_pad.y,flap_pad.w,flap_pad.h);
-    ctx.fillText("OPEN FLAP",flap_pad.x+flap_pad.w+10,flap_pad.y+flap_pad.h-15);
+    ctx.fillText("OPEN FLAP",flap_pad.x-10,flap_pad.y+flap_pad.h-15);
 
     if(!rope_cut)
     {
-      ctx.textAlign = "right";
       if(cut_pad.down) ctx.drawImage(rope_btn_red_img,cut_pad.x,cut_pad.y,cut_pad.w,cut_pad.h);
       else             ctx.drawImage(    rope_btn_img,cut_pad.x,cut_pad.y,cut_pad.w,cut_pad.h);
       ctx.fillText("CUT ROPE",cut_pad.x-10,cut_pad.y+cut_pad.h-15);
@@ -2274,8 +2293,8 @@ var GamePlayScene = function(game, stage)
     var self = this;
 
     self.x = 0;
-    self.w = 300;
-    self.h = 300;
+    self.w = 200;
+    self.h = 200;
     self.y = dc.height-self.h;
 
     self.t = 0;
