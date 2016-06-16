@@ -436,7 +436,7 @@ var GamePlayScene = function(game, stage)
       },
       noop,
       noop,
-      function() { return balloon.wy < 0.01; }
+      function() { return (input_state == RESUME_INPUT && balloon.wy < 0.01); }
     ));
     steps.push(new Step(
       function(){
