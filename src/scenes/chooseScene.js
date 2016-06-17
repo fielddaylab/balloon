@@ -19,15 +19,7 @@ var ChooseScene = function(game, stage)
 
   var btn_s;
   var btn_y;
-  var btn_0_x;
-  var btn_1_x;
-  var btn_2_x;
-  var btn_3_x;
-  var btn_4_x;
-  var btn_5_x;
-  var btn_6_x;
-  var btn_7_x;
-  var btn_8_x;
+  var btn_x;
 
   var section_line_0_y;
   var section_line_1_y;
@@ -39,33 +31,28 @@ var ChooseScene = function(game, stage)
   {
     clicker = new Clicker({source:stage.dispCanv.canvas});
 
-    btn_s = (dc.width/10)-20;
+    var n_btns = 9;
+    btn_s = dc.width/(n_btns+2);
     btn_y = (3*dc.height/4)-btn_s/2;
-    btn_0_x = btn_s/2+0*(btn_s+20)+10;
-    btn_1_x = btn_s/2+1*(btn_s+20)+10;
-    btn_2_x = btn_s/2+2*(btn_s+20)+10;
-    btn_3_x = btn_s/2+3*(btn_s+20)+10;
-    btn_4_x = btn_s/2+4*(btn_s+20)+10;
-    btn_5_x = btn_s/2+5*(btn_s+20)+10;
-    btn_6_x = btn_s/2+6*(btn_s+20)+10;
-    btn_7_x = btn_s/2+7*(btn_s+20)+10;
-    btn_8_x = btn_s/2+8*(btn_s+20)+10;
+    btn_x = [];
+    for(var i = 0; i < n_btns; i++)
+      btn_x[i] = btn_s/2+ ( btn_s+ (btn_s/(n_btns-1)))*i;
 
     section_line_0_y = dc.height/3;
     section_line_1_y = dc.height/3+2*btn_s;
     title_y = dc.height/2-30;
     subtitle_y = btn_y-40;
 
-    btn_intro     = new ButtonBox(btn_0_x,btn_y,btn_s,btn_s,function(evt){ game.start = 0; game.setScene(3); });
-    btn_particles = new ButtonBox(btn_1_x,btn_y,btn_s,btn_s,function(evt){ game.start = 1; game.setScene(3); });
-    btn_forces    = new ButtonBox(btn_2_x,btn_y,btn_s,btn_s,function(evt){ game.start = 2; game.setScene(3); });
-    btn_density   = new ButtonBox(btn_3_x,btn_y,btn_s,btn_s,function(evt){ game.start = 3; game.setScene(3); });
-    btn_free      = new ButtonBox(btn_4_x,btn_y,btn_s,btn_s,function(evt){ game.start = 4; game.setScene(3); });
+    btn_intro     = new ButtonBox(btn_x[0],btn_y,btn_s,btn_s,function(evt){ game.start = 0; game.setScene(3); });
+    btn_particles = new ButtonBox(btn_x[1],btn_y,btn_s,btn_s,function(evt){ game.start = 1; game.setScene(3); });
+    btn_forces    = new ButtonBox(btn_x[2],btn_y,btn_s,btn_s,function(evt){ game.start = 2; game.setScene(3); });
+    btn_density   = new ButtonBox(btn_x[3],btn_y,btn_s,btn_s,function(evt){ game.start = 3; game.setScene(3); });
+    btn_free      = new ButtonBox(btn_x[4],btn_y,btn_s,btn_s,function(evt){ game.start = 4; game.setScene(3); });
 
-    btn_standard  = new ButtonBox(btn_5_x,btn_y,btn_s,btn_s,function(evt){ game.start = 5; game.setScene(3); });
-    btn_refuel    = new ButtonBox(btn_6_x,btn_y,btn_s,btn_s,function(evt){ game.start = 6; game.setScene(3); });
-    btn_flappy    = new ButtonBox(btn_7_x,btn_y,btn_s,btn_s,function(evt){ game.start = 7; game.setScene(3); });
-    btn_meditate  = new ButtonBox(btn_8_x,btn_y,btn_s,btn_s,function(evt){ game.start = 8; game.setScene(3); });
+    btn_standard  = new ButtonBox(btn_x[5],btn_y,btn_s,btn_s,function(evt){ game.start = 5; game.setScene(3); });
+    btn_refuel    = new ButtonBox(btn_x[6],btn_y,btn_s,btn_s,function(evt){ game.start = 6; game.setScene(3); });
+    btn_flappy    = new ButtonBox(btn_x[7],btn_y,btn_s,btn_s,function(evt){ game.start = 7; game.setScene(3); });
+    btn_meditate  = new ButtonBox(btn_x[8],btn_y,btn_s,btn_s,function(evt){ game.start = 8; game.setScene(3); });
 
     clicker.register(btn_intro);
     clicker.register(btn_particles);
