@@ -1693,7 +1693,9 @@ var GamePlayScene = function(game, stage)
     }
 
     ctx.textAlign = "right";
-    ctx.fillStyle = "#FFFFFF";
+    var v = Math.floor(mapVal(30,50,0,256,balloon.wy));
+    if(v < 0) v = 0; if(v > 255) v = 255;
+    ctx.fillStyle = "rgba("+v+","+v+","+v+",1)";
     if(cur_step != step_meditate)
     {
       ctx.font = "16px Open Sans";
@@ -2185,7 +2187,7 @@ var GamePlayScene = function(game, stage)
     ctx.drawImage(needle_img,-2.5,-3,27,6);
     ctx.restore();
 
-    var v = Math.floor(mapVal(30,90,0,256,balloon.wy));
+    var v = Math.floor(mapVal(30,50,0,256,balloon.wy));
     if(v < 0) v = 0; if(v > 255) v = 255;
 
     ctx.fillStyle = "rgba("+v+","+v+","+v+",1)";
