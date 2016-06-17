@@ -1,30 +1,54 @@
 var LoadingScene = function(game, stage)
 {
   var self = this;
+
+  var dc = stage.drawCanv;
+  var canvas = dc.canvas;
+  var ctx = dc.context;
+
   var pad;
   var barw;
   var progress;
-  var canv = stage.drawCanv;
 
-  var imagesloaded = 0;
+  var n_loading_imgs_loaded = 0;
+  var loading_img_srcs = [];
+  var loading_imgs = [];
+  var n_imgs_loaded = 0;
   var img_srcs = [];
-  var images = [];
+  var imgs = [];
 
+  var draw_t = 0;
+  var max_draw_t = 100;
+
+  var loadingImageLoaded = function()
+  {
+    n_loading_imgs_loaded++;
+  };
   var imageLoaded = function()
   {
-    imagesloaded++;
+    n_imgs_loaded++;
   };
 
   self.ready = function()
   {
     pad = 20;
-    barw = (canv.width-(2*pad));
+    barw = (dc.width-(2*pad));
     progress = 0;
-    canv.context.fillStyle = "#000000";
-    canv.context.font = "12px Open Sans";
-    canv.context.fillText(".",0,0);// funky way to encourage any custom font to load
+    ctx.fillStyle = "#000000";
+    ctx.font = "12px Open Sans"; //put font that nees loading here
+    ctx.fillText(".",0,0);// funky way to encourage any custom font to load
 
-    //put strings in 'img_srcs' as separate array to get "static" count
+    //put asset paths in loading_img_srcs (for assets used on loading screen itself)
+    loading_img_srcs.push("../../test.png");
+    for(var i = 0; i < loading_img_srcs.length; i++)
+    {
+      loading_imgs[i] = new Image();
+      loading_imgs[i].onload = loadingImageLoaded;
+      loading_imgs[i].src = loading_img_srcs[i];
+    }
+    loadingImageLoaded(); //call once to prevent 0/0 != 100% bug
+
+    //put asset paths in img_srcs
     img_srcs.push("assets/btn_burn.png");
     img_srcs.push("assets/btn_burn_red.png");
     img_srcs.push("assets/btn_flap.png");
@@ -66,33 +90,58 @@ var LoadingScene = function(game, stage)
       if(i < 3)
         img_srcs.push("assets/char_"+i+"_icon.png");
     }
+
     for(var i = 0; i < img_srcs.length; i++)
     {
-      images[i] = new Image();
-      images[i].onload = imageLoaded; 
-      images[i].src = img_srcs[i];
+      imgs[i] = new Image();
+      imgs[i].onload = imageLoaded;
+      imgs[i].src = img_srcs[i];
     }
     imageLoaded(); //call once to prevent 0/0 != 100% bug
   };
 
   self.tick = function()
   {
-    if(progress <= imagesloaded/(img_srcs.length+1)) progress += 0.01;
-    if(imagesloaded/(img_srcs.length+1) > 0.99) { bake(); game.nextScene(); }
+    //note- assets used on loading screen itself NOT included in wait
+    var p = n_imgs_loaded/(img_srcs.length+1);
+    if(progress <= p) progress += 0.01;
+    //if(progress >= 1.0) game.nextScene(); //use this to wait for bar
+    if(p >= 1.0 && draw_t >= max_draw_t) { bake(); game.nextScene(); }
   };
 
   self.draw = function()
   {
-    canv.context.fillRect(pad,canv.height/2,progress*barw,1);
-    canv.context.strokeRect(pad-1,(canv.height/2)-1,barw+2,3);
+    ctx.fillRect(pad,dc.height/2,progress*barw,1);
+    ctx.strokeRect(pad-1,(dc.height/2)-1,barw+2,3);
+
+    var p = n_loading_imgs_loaded/(loading_img_srcs.length+1);
+    if(p >= 1.0) //assets used in loading screen itself have been loaded
+    {
+      //do any special drawing here
+      draw_t++;
+      var f = draw_t/20;
+      if(f > 1) f = 1;
+      ctx.globalAlpha = f;
+      ctx.drawImage(loading_imgs[0],dc.width/2-100,dc.height/2-100,200,200);
+      ctx.globalAlpha = 1;
+
+      if(draw_t > max_draw_t-10)
+      {
+        f = (draw_t-(max_draw_t-10))/10;
+        if(f > 1) f = 1;
+        if(f < 0) f = 0;
+        ctx.globalAlpha = f;
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0,0,dc.width,dc.height);
+        ctx.globalAlpha = 1;
+      }
+    }
   };
 
   self.cleanup = function()
   {
-    progress = 0;
-    imagesloaded = 0;
-    images = [];//just used them to cache assets in browser; let garbage collector handle 'em.
-    canv.context.fillStyle = "#FFFFFF";
-    canv.context.fillRect(0,0,canv.width,canv.height);
+    imgs = [];//just used them to cache assets in browser; let garbage collector handle 'em.
+    loading_imgs = [];//just used them to cache assets in browser; let garbage collector handle 'em.
   };
 };
+

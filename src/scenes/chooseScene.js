@@ -26,7 +26,6 @@ var ChooseScene = function(game, stage)
   var title_y;
   var subtitle_y;
 
-
   self.ready = function()
   {
     clicker = new Clicker({source:stage.dispCanv.canvas});
@@ -97,6 +96,7 @@ var ChooseScene = function(game, stage)
 
     dc.context.fillStyle = "#333333";
     dc.context.font = "25px Open Sans";
+    dc.context.textAlign = "center";
     dc.context.fillText("The Balloon Game".split("").join(space),dc.width/2-100,100);
     dc.context.font = "Bold 16px Open Sans";
     dc.context.fillStyle = "#FFFFFF";
