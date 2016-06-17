@@ -39,7 +39,7 @@ var LoadingScene = function(game, stage)
     ctx.fillText(".",0,0);// funky way to encourage any custom font to load
 
     //put asset paths in loading_img_srcs (for assets used on loading screen itself)
-    loading_img_srcs.push("../../test.png");
+    loading_img_srcs.push("assets/balloon.png");
     for(var i = 0; i < loading_img_srcs.length; i++)
     {
       loading_imgs[i] = new Image();
@@ -111,9 +111,6 @@ var LoadingScene = function(game, stage)
 
   self.draw = function()
   {
-    ctx.fillRect(pad,dc.height/2,progress*barw,1);
-    ctx.strokeRect(pad-1,(dc.height/2)-1,barw+2,3);
-
     var p = n_loading_imgs_loaded/(loading_img_srcs.length+1);
     if(p >= 1.0) //assets used in loading screen itself have been loaded
     {
@@ -122,7 +119,11 @@ var LoadingScene = function(game, stage)
       var f = draw_t/20;
       if(f > 1) f = 1;
       ctx.globalAlpha = f;
-      ctx.drawImage(loading_imgs[0],dc.width/2-100,dc.height/2-100,200,200);
+      ctx.drawImage(loading_imgs[0],100,dc.height-progress*dc.height,200,200);
+      ctx.font = "40px Open Sans"; //put font that nees loading here
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#000000";
+      ctx.fillText("Field Day",200,dc.height-progress*dc.height+230);
       ctx.globalAlpha = 1;
 
       if(draw_t > max_draw_t-10)
