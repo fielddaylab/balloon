@@ -83,6 +83,11 @@ var LoadingScene = function(game, stage)
     img_srcs.push("assets/nitrogen.png");
     img_srcs.push("assets/carbon.png");
     img_srcs.push("assets/eye.png");
+    img_srcs.push("assets/stream.png");
+    img_srcs.push("assets/arrow_down.png");
+    img_srcs.push("assets/arrow_up.png");
+    img_srcs.push("assets/arrows_small.png");
+    img_srcs.push("assets/pipe.png");
     for(var i = 0; i < 6; i++)
     {
       for(var j = 0; j < 3; j++)

@@ -638,7 +638,7 @@ var GamePlayScene = function(game, stage)
         var bcx = balloon.x+balloon.w/2;
         var bcy = balloon.y+balloon.h/2;
         ctx.globalAlpha = steps[cur_step].t/100;
-        ctx.drawImage(down_arrow_canv,bcx-50,bcy,100,100);
+        ctx.drawImage(arrow_down_img,bcx-50,bcy-10,100,100);
         ctx.globalAlpha = 1;
       },
       function() { return steps[cur_step].t >= 100; }
@@ -658,7 +658,7 @@ var GamePlayScene = function(game, stage)
       function() {
         var bcx = balloon.x+balloon.w/2;
         var bcy = balloon.y+balloon.h/2;
-        ctx.drawImage(down_arrow_canv,bcx-50,bcy,100,100);
+        ctx.drawImage(arrow_down_img,bcx-50,bcy-10,100,100);
       },
       function() { return input_state == RESUME_INPUT; }
     ));
@@ -668,10 +668,10 @@ var GamePlayScene = function(game, stage)
       function() {
         var bcx = balloon.x+balloon.w/2;
         var bcy = balloon.y+balloon.h/2;
-        ctx.drawImage(down_arrow_canv,bcx-50,bcy,100,100);
+        ctx.drawImage(arrow_down_img,bcx-50,bcy-10,100,100);
         ctx.globalAlpha = steps[cur_step].t/100;
-        ctx.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
-        ctx.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
+        ctx.drawImage(arrows_small_img,balloon.x-100,bcy-50,100,100);
+        ctx.drawImage(arrows_small_img,balloon.x+balloon.w,bcy-50,100,100);
         ctx.globalAlpha = 1;
       },
       function() { return steps[cur_step].t >= 100; }
@@ -691,9 +691,9 @@ var GamePlayScene = function(game, stage)
       function() {
         var bcx = balloon.x+balloon.w/2;
         var bcy = balloon.y+balloon.h/2;
-        ctx.drawImage(down_arrow_canv,bcx-50,bcy,100,100);
-        ctx.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
-        ctx.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
+        ctx.drawImage(arrow_down_img,bcx-50,bcy-10,100,100);
+        ctx.drawImage(arrows_small_img,balloon.x-100,bcy-50,100,100);
+        ctx.drawImage(arrows_small_img,balloon.x+balloon.w,bcy-50,100,100);
       },
       function() { return input_state == RESUME_INPUT; }
     ));
@@ -718,11 +718,11 @@ var GamePlayScene = function(game, stage)
       function() {
         var bcx = balloon.x+balloon.w/2;
         var bcy = balloon.y+balloon.h/2;
-        ctx.drawImage(down_arrow_canv,bcx-50,bcy,100,100);
-        ctx.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
-        ctx.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
+        ctx.drawImage(arrow_down_img,bcx-50,bcy-10,100,100);
+        ctx.drawImage(arrows_small_img,balloon.x-100,bcy-50,100,100);
+        ctx.drawImage(arrows_small_img,balloon.x+balloon.w,bcy-50,100,100);
         ctx.globalAlpha = steps[cur_step].t/100;
-        ctx.drawImage(up_arrow_canv,bcx-25,bcy-50,50,50);
+        ctx.drawImage(arrow_up_img,bcx-25,bcy-50,50,50);
         ctx.globalAlpha = 1;
       },
       function() { return input_state == RESUME_INPUT; }
@@ -2241,10 +2241,10 @@ var GamePlayScene = function(game, stage)
     var bcx = balloon.x+balloon.w/2;
     var bcy = balloon.y+balloon.h/2;
     ctx.globalAlpha = arrow_disp;
-    ctx.drawImage(down_arrow_canv,bcx-50+t*25,bcy,100-t*50,100-t*50);
-    ctx.drawImage(down_arrows_canv,balloon.x-100,bcy-50,100,100);
-    ctx.drawImage(down_arrows_canv,balloon.x+balloon.w,bcy-50,100,100);
-    ctx.drawImage(up_arrow_canv,bcx-25,bcy-50,50,50);
+    ctx.drawImage(arrow_down_img,bcx-50+t*25,bcy-10,100-t*50,100-t*50);
+    ctx.drawImage(arrows_small_img,balloon.x-100,bcy-50,100,100);
+    ctx.drawImage(arrows_small_img,balloon.x+balloon.w,bcy-50,100,100);
+    ctx.drawImage(arrow_up_img,bcx-25,bcy-50,50,50);
     ctx.globalAlpha = 1;
   }
 

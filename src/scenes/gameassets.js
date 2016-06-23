@@ -50,6 +50,11 @@ var balloon_canv;
 var basket_canv;
 var flame_canv;
 var shadow_canv;
+var stream_img;
+var arrow_down_img;
+var arrow_up_img;
+var arrows_small_img;
+var pipe_img;
 
 var bake = function()
 {
@@ -288,6 +293,17 @@ down_arrows_canv.context.drawImage(down_arrow_canv,down_arrow_canv.width/2,down_
 down_arrows_canv.context.drawImage(down_arrow_canv,down_arrow_canv.width/2,down_arrow_canv.height*3/4,25,25);
 down_arrows_canv.context.drawImage(down_arrow_canv,down_arrow_canv.width*3/4,0,25,25);
 down_arrows_canv.context.drawImage(down_arrow_canv,down_arrow_canv.width*3/4,down_arrow_canv.height/2,25,25);
+
+stream_img = new Image();
+stream_img.src = "assets/stream.png";
+arrow_down_img = new Image();
+arrow_down_img.src = "assets/arrow_down.png";
+arrow_up_img = new Image();
+arrow_up_img.src = "assets/arrow_up.png";
+arrows_small_img = new Image();
+arrows_small_img.src = "assets/arrows_small.png";
+pipe_img = new Image();
+pipe_img.src = "assets/pipe.png";
 
 burn_btn_img = new Image();
 burn_btn_img.src = "assets/btn_burn.png";
