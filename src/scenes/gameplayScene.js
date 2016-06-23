@@ -1184,9 +1184,10 @@ var GamePlayScene = function(game, stage)
 
         screenSpace(camera,dc,pipe);
 
-        ctx.fillStyle = "#008800";
-        ctx.fillRect(pipe.x,0,pipe.w,pipe.y);
-        ctx.fillRect(pipe.x,pipe.y+pipe.h,pipe.w,dc.height-pipe.y-pipe.h);
+        ctx.drawImage(pipe_img,pipe.x,0,pipe.w,pipe.y);
+        ctx.drawImage(pipe_img,pipe.x-10,pipe.y-40,pipe.w+20,40);
+        ctx.drawImage(pipe_img,pipe.x,pipe.y+pipe.h,pipe.w,dc.height-pipe.y-pipe.h);
+        ctx.drawImage(pipe_img,pipe.x-10,pipe.y+pipe.h,pipe.w+20,40);
 
         var off = false;
         if(pipe.y+pipe.h/2 < 10) { off = true; pipe.y = 10-pipe.h/2; }
@@ -1240,9 +1241,10 @@ var GamePlayScene = function(game, stage)
       function() {
         screenSpace(camera,dc,pipe);
 
-        ctx.fillStyle = "#008800";
-        ctx.fillRect(pipe.x,0,pipe.w,pipe.y);
-        ctx.fillRect(pipe.x,pipe.y+pipe.h,pipe.w,dc.height-pipe.y-pipe.h);
+        ctx.drawImage(pipe_img,pipe.x,0,pipe.w,pipe.y);
+        ctx.drawImage(pipe_img,pipe.x-10,pipe.y-40,pipe.w+20,40);
+        ctx.drawImage(pipe_img,pipe.x,pipe.y+pipe.h,pipe.w,dc.height-pipe.y-pipe.h);
+        ctx.drawImage(pipe_img,pipe.x-10,pipe.y+pipe.h,pipe.w+20,40);
 
         //keep in sync...
         var w = 150;
