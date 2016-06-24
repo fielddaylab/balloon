@@ -218,8 +218,8 @@ var GamePlayScene = function(game, stage)
     vgsep =  2; vgybase = 100; vgyrange = 40; vg = []; for(var i = 0; i <200; i++) { vg.push(new Obj(i*vgsep+rand0()*vgsep, rand0()*vgyrange+vgybase, 0.1+Math.random()*0.1, 0.1+Math.random()*0.1, randIntBelow(3))); vg[i].draw = drawPart;     } vgi = 0;
     bgsep = 10; bgybase =  12; bgyrange = 10; bg = []; for(var i = 0; i < 30; i++) { bg.push(new Obj(i*bgsep+rand0()*bgsep, rand0()*bgyrange+bgybase,     3+Math.random()*3,     2+Math.random()*3, randIntBelow(5))); bg[i].draw = drawCloud;    } bgi = 0;
     mgsep = 30; mgybase =  28; mgyrange = 20; mg = []; for(var i = 0; i < 20; i++) { mg.push(new Obj(i*mgsep+rand0()*mgsep, rand0()*mgyrange+mgybase,     4+Math.random()*4,     3+Math.random()*4, randIntBelow(5))); mg[i].draw = drawMountain; } mgi = 0;
-    fgsep = 20; fgybase =  -1; fgyrange =  1; fg = []; for(var i = 0; i < 30; i++) { fg.push(new Obj(i*fgsep+rand0()*fgsep, rand0()*fgyrange+fgybase,                 8,                 8, randIntBelow(3))); fg[i].draw = drawTree;     } fgi = 0;
-    faux_ground_sep = 100; faux_ground = []; for(var i = 0; i < 3; i++) { faux_ground.push(new Obj(i*faux_ground_sep, -20, faux_ground_sep, faux_ground_sep/2, i)); faux_ground[i].draw = drawGround; } faux_ground_i = 0;
+    fgsep = 20; fgybase =  -1; fgyrange =  1; fg = []; for(var i = 0; i < 30; i++) { fg.push(new Obj(i*fgsep+rand0()*fgsep, rand0()*fgyrange+fgybase,                     8,                     8, randIntBelow(3))); fg[i].draw = drawTree;     } fgi = 0;
+    faux_ground_sep = 100; faux_ground = []; for(var i = 0; i < 3; i++) { faux_ground.push(new Obj(i*faux_ground_sep, -20, faux_ground_sep+1, faux_ground_sep/2, i)); faux_ground[i].draw = drawGround; } faux_ground_i = 0;
     centerGrounds();
     sky = new Obj();
     ground = new Obj();
@@ -1636,7 +1636,7 @@ var GamePlayScene = function(game, stage)
     for(var i = 0; i < faux_ground.length; i++) faux_ground[i].draw(faux_ground[i]);
     for(var i = 0; i < fg.length; i++) fg[i].draw(fg[i]);
 
-    drawGrid(grid);
+    //drawGrid(grid);
     ctx.lineWidth = 2;
 
     ctx.globalAlpha = clamp(0,1,1-(balloon.wy/20));
@@ -1917,6 +1917,7 @@ var GamePlayScene = function(game, stage)
     tmp.ww = camera.ww;
     tmp.wh = 1;
 
+    /*
     var a;
     for(var i = miny; i < maxy; i++)
     {
@@ -1926,14 +1927,26 @@ var GamePlayScene = function(game, stage)
       ctx.globalAlpha = a;
       tmp.wy = i;
       screenSpace(camera,dc,tmp);
-      ctx.drawImage(speed_canv,dc.width/2-5+a*80-40,tmp.y,10*3,tmp.h*3);
+      ctx.drawImage(stream_img,dc.width/2-5+a*80-40,tmp.y,10*3,tmp.h*3);
     }
     ctx.globalAlpha = 1;
+    */
+
+    maxy = wind.length;
+    miny = 0;
+    tmp.wy = miny;
+    screenSpace(camera,dc,tmp);
+    ymin = tmp.y;
+    tmp.wy = maxy;
+    screenSpace(camera,dc,tmp);
+    ymax = tmp.y;
+
+    ctx.drawImage(stream_img,dc.width/2,ymin,200,(ymax-ymin)+tmp.h*3);
   }
   var drawBoost = function()
   {
     screenSpace(camera,dc,boost);
-    ctx.drawImage(speed_canv,boost.x,boost.y,10*5,boost.h*5);
+    ctx.drawImage(stream_img,boost.x,boost.y,10*5,boost.h*5);
   }
   var tickAirParticles = function()
   {
