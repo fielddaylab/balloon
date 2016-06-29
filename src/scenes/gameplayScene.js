@@ -212,6 +212,7 @@ var GamePlayScene = function(game, stage)
     basket.wy = balloon.wy-balloon.wh*0.7;
     rope.wy = basket.wy-basket.wh/2;
     bubble_origin.wy = basket.wy+1;
+    bubble_origin.w = 100;
     char.wx = basket.wx;
     char.wy = basket.wy;
 
@@ -1076,6 +1077,22 @@ var GamePlayScene = function(game, stage)
         steps[cur_step].next_station = new Obj();
         refuel_stations[0] = randR(100,200);
         refuel_stations[1] = refuel_stations[0]+randR(500,1000);
+        pop([
+        "This time we're on a mission!",
+        "Ooh... what kind of mission?",
+        "We're starting out without much fuel...",
+        "But there are propane tanks spaced out along our route!",
+        "Our goal is to make it from one tank to the next... without running out of fuel.",
+        "No prob. Let's do it!",
+        ],
+        [
+          SPEAKER_TALL,
+          SPEAKER_SHORT,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_AXE,
+        ]);
       },
       noop,
       function() {
@@ -1201,6 +1218,22 @@ var GamePlayScene = function(game, stage)
         resetState();
         resetBalloon();
         setDisp(0,0,true,true,true,true,true,true,true,true,true,false)
+        pop([
+        "You guys ready for a challenge?",
+        "Bring it on!",
+        "This is a ballooning obstacle course!",
+        "There are pipes along the route, blocking our way...",
+        "But the pipes have gaps that are wide enough to fly through!",
+        "Let's see how far we can get!",
+        ],
+        [
+          SPEAKER_TALL,
+          SPEAKER_AXE,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+          SPEAKER_TALL,
+        ]);
       },
       function()
       {
