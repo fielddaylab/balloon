@@ -230,9 +230,9 @@ var GamePlayScene = function(game, stage)
     cut_pad  = new ButtonBox(dc.width-70,dc.height-70 ,60,60,function(){});
 
     eye_btn    = new ButtonBox(dc.width-65,dc.height-250,50,30,function(){ hit_ui = true; if(drawer_disp_target <= 0.5) drawer_disp_target = 1; else if(drawer_disp_target > 0.5) drawer_disp_target = 0; }); drawer_disp = 0; drawer_disp_target = 0;
-    menu_btn   = new ButtonBox(dc.width   ,dc.height-280,100,20,function(){ game.setScene(2); });
+    menu_btn   = new ButtonBox(dc.width   ,dc.height-280,100,20,function(){ game.setScene(3); });
     retry_btn  = new ButtonBox(dc.width   ,dc.height-310,100,20,function(){ });
-    reset_btn  = new ButtonBox(dc.width   ,dc.height-310,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(3); });
+    reset_btn  = new ButtonBox(dc.width   ,dc.height-310,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(4); });
     arrows_btn = new ButtonBox(dc.width   ,dc.height-340,100,20,function(){ if(cur_step != step_free) return; target_arrow_disp = (target_arrow_disp+1)%2; });
     parts_btn  = new ButtonBox(dc.width   ,dc.height-370,100,20,function(){ if(cur_step != step_free) return; target_part_disp = (target_part_disp+1)%2; });
     presser.register(burn_pad);

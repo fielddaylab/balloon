@@ -8,17 +8,22 @@ var LoadingScene = function(game, stage)
 
   var pad;
   var barw;
-  var progress;
 
-  var n_loading_imgs_loaded = 0;
-  var loading_img_srcs = [];
-  var loading_imgs = [];
-  var n_imgs_loaded = 0;
-  var img_srcs = [];
-  var imgs = [];
+  var loading_percent_loaded;
+  var ticks_since_loading_ready;
+  var percent_loaded;
+  var chase_percent_loaded;
+  var lerp_percent_loaded;
+  var lerp_chase_percent_loaded;
+  var ticks_since_ready;
+  var post_load_countdown;
 
-  var draw_t = 0;
-  var max_draw_t = 100;
+  var n_loading_imgs_loaded;
+  var loading_img_srcs;
+  var loading_imgs;
+  var n_imgs_loaded;
+  var img_srcs;
+  var imgs;
 
   var loadingImageLoaded = function()
   {
@@ -33,13 +38,33 @@ var LoadingScene = function(game, stage)
   {
     pad = 20;
     barw = (dc.width-(2*pad));
-    progress = 0;
-    ctx.fillStyle = "#000000";
+
+    loading_percent_loaded = 0;
+    ticks_since_loading_ready = 0;
+    percent_loaded = 0;
+    chase_percent_loaded = 0;
+    lerp_percent_loaded = 0;
+    lerp_chase_percent_loaded = 0;
+    ticks_since_ready = 0;
+    post_load_countdown = 200;
+
+    n_loading_imgs_loaded = 0;
+    loading_img_srcs = [];
+    loading_imgs = [];
+    n_imgs_loaded = 0;
+    img_srcs = [];
+    imgs = [];
+
     ctx.font = "12px Open Sans"; //put font that nees loading here
+    ctx.fillStyle = "#000000";
     ctx.fillText(".",0,0);// funky way to encourage any custom font to load
 
     //put asset paths in loading_img_srcs (for assets used on loading screen itself)
-    loading_img_srcs.push("assets/balloon.png");
+    loading_img_srcs.push("assets/loading/experiment.png");
+    loading_img_srcs.push("assets/loading/clouds.png");
+    loading_img_srcs.push("assets/loading/flag.png");
+    loading_img_srcs.push("assets/loading/logo.png");
+    loading_img_srcs.push("assets/loading/pole.png");
     for(var i = 0; i < loading_img_srcs.length; i++)
     {
       loading_imgs[i] = new Image();
@@ -48,7 +73,6 @@ var LoadingScene = function(game, stage)
     }
     loadingImageLoaded(); //call once to prevent 0/0 != 100% bug
 
-    //put asset paths in img_srcs
     img_srcs.push("assets/btn_burn.png");
     img_srcs.push("assets/btn_burn_red.png");
     img_srcs.push("assets/btn_flap.png");
@@ -95,7 +119,8 @@ var LoadingScene = function(game, stage)
       if(i < 3)
         img_srcs.push("assets/char_"+i+"_icon.png");
     }
-
+    for(var i = 0; i < 0; i++)
+      img_srcs.push("assets/comic/comic_"+i+".png");
     for(var i = 0; i < img_srcs.length; i++)
     {
       imgs[i] = new Image();
@@ -108,40 +133,87 @@ var LoadingScene = function(game, stage)
   self.tick = function()
   {
     //note- assets used on loading screen itself NOT included in wait
-    var p = n_imgs_loaded/(img_srcs.length+1);
-    if(progress <= p) progress += 0.01;
-    //if(progress >= 1.0) game.nextScene(); //use this to wait for bar
-    if(p >= 1.0 && draw_t >= max_draw_t) { bake(); game.nextScene(); }
+    loading_percent_loaded = n_loading_imgs_loaded/(loading_img_srcs.length+1);
+    if(loading_percent_loaded >= 1.0) ticks_since_loading_ready++;
+    percent_loaded = n_imgs_loaded/(img_srcs.length+1);
+    if(chase_percent_loaded <= percent_loaded) chase_percent_loaded += 0.01;
+    lerp_percent_loaded = lerp(lerp_percent_loaded,percent_loaded,0.1);
+    lerp_chase_percent_loaded = lerp(lerp_chase_percent_loaded,chase_percent_loaded,0.1);
+    if(percent_loaded >= 1.0) ticks_since_ready++;
+    if(ticks_since_ready >= post_load_countdown)
+    {
+      bake();
+      game.nextScene();
+    }
   };
 
   self.draw = function()
   {
-    var p = n_loading_imgs_loaded/(loading_img_srcs.length+1);
-    if(p >= 1.0) //assets used in loading screen itself have been loaded
+    var pole_x = 100;
+    var pole_w = 68/2;
+    var pole_h = 1158/2;
+
+    ctx.fillStyle = "#15A9CB"; //blue
+    ctx.fillRect(0,0,dc.width,dc.height);
+
+    if(loading_percent_loaded >= 1)
     {
       //do any special drawing here
-      draw_t++;
-      var f = draw_t/20;
-      if(f > 1) f = 1;
-      ctx.globalAlpha = f;
-      ctx.drawImage(loading_imgs[0],100,dc.height-progress*dc.height,200,200);
-      ctx.font = "40px Open Sans"; //put font that nees loading here
-      ctx.textAlign = "center";
-      ctx.fillStyle = "#000000";
-      ctx.fillText("Field Day",200,dc.height-progress*dc.height+230);
+      var a = ticks_since_loading_ready/20;
+      if(a > 1) a = 1;
+      ctx.globalAlpha = a;
+
+      //continue to draw underlying bar during fade in
+      ctx.fillStyle = "#EFC72F"; //yellow
+      ctx.fillRect(pole_x+15,dc.height-pole_h*lerp_percent_loaded,pole_w-30,pole_h);
+
+      var w;
+      var h;
+      w = 1540*3/4;
+      h = 564*3/4;
+      ctx.drawImage(loading_imgs[1],-w+(ticks_since_loading_ready%w),0,w,h); //clouds
+      ctx.drawImage(loading_imgs[1],(ticks_since_loading_ready%w),0,w,h); //clouds
+      w = pole_w;
+      h = pole_h;
+      ctx.drawImage(loading_imgs[4],pole_x,dc.height-h,w,h); //pole
+      w = 280;
+      h = 122;
+      ctx.drawImage(loading_imgs[2],pole_x+pole_w-20,dc.height-(pole_h-50)*lerp_percent_loaded,w,h); //flag
+
+      var n = 170;
+      if(ticks_since_ready > post_load_countdown-n)
+      {
+        f = (ticks_since_ready-(post_load_countdown-n))/50;
+        if(f < 0) f = 0;
+        if(f > 1) f = 1;
+        ctx.globalAlpha = f;
+        w = 640/2;
+        h = 118/2;
+        ctx.drawImage(loading_imgs[3],240,260+20,w,h);
+        w = 534/1.5;
+        h = 22/1.5;
+        ctx.drawImage(loading_imgs[0],240,260+100,w,h);
+      }
       ctx.globalAlpha = 1;
 
-      if(draw_t > max_draw_t-10)
+      var n = 20;
+      if(ticks_since_ready > post_load_countdown-n)
       {
-        f = (draw_t-(max_draw_t-10))/10;
+        f = (ticks_since_ready-(post_load_countdown-n))/n;
         if(f > 1) f = 1;
         if(f < 0) f = 0;
         ctx.globalAlpha = f;
         ctx.fillStyle = "#FFFFFF";
         ctx.fillRect(0,0,dc.width,dc.height);
-        ctx.globalAlpha = 1;
       }
+      ctx.globalAlpha = 1;
     }
+    else
+    {
+      ctx.fillStyle = "#EFC72F"; //yellow
+      ctx.fillRect(pole_x+25,dc.height-pole_h*lerp_chase_percent_loaded,pole_w-50,pole_h);
+    }
+
   };
 
   self.cleanup = function()

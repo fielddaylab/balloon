@@ -42,16 +42,16 @@ var ChooseScene = function(game, stage)
     title_y = dc.height/2-30;
     subtitle_y = btn_y-40;
 
-    btn_intro     = new ButtonBox(btn_x[0],btn_y,btn_s,btn_s,function(evt){ game.start = 0; game.setScene(3); });
-    btn_particles = new ButtonBox(btn_x[1],btn_y,btn_s,btn_s,function(evt){ game.start = 1; game.setScene(3); });
-    btn_forces    = new ButtonBox(btn_x[2],btn_y,btn_s,btn_s,function(evt){ game.start = 2; game.setScene(3); });
-    btn_density   = new ButtonBox(btn_x[3],btn_y,btn_s,btn_s,function(evt){ game.start = 3; game.setScene(3); });
-    btn_free      = new ButtonBox(btn_x[4],btn_y,btn_s,btn_s,function(evt){ game.start = 4; game.setScene(3); });
+    btn_intro     = new ButtonBox(btn_x[0],btn_y,btn_s,btn_s,function(evt){ game.start = 0; game.setScene(4); });
+    btn_particles = new ButtonBox(btn_x[1],btn_y,btn_s,btn_s,function(evt){ game.start = 1; game.setScene(4); });
+    btn_forces    = new ButtonBox(btn_x[2],btn_y,btn_s,btn_s,function(evt){ game.start = 2; game.setScene(4); });
+    btn_density   = new ButtonBox(btn_x[3],btn_y,btn_s,btn_s,function(evt){ game.start = 3; game.setScene(4); });
+    btn_free      = new ButtonBox(btn_x[4],btn_y,btn_s,btn_s,function(evt){ game.start = 4; game.setScene(4); });
 
-    btn_standard  = new ButtonBox(btn_x[5],btn_y,btn_s,btn_s,function(evt){ game.start = 5; game.setScene(3); });
-    btn_refuel    = new ButtonBox(btn_x[6],btn_y,btn_s,btn_s,function(evt){ game.start = 6; game.setScene(3); });
-    btn_flappy    = new ButtonBox(btn_x[7],btn_y,btn_s,btn_s,function(evt){ game.start = 7; game.setScene(3); });
-    btn_meditate  = new ButtonBox(btn_x[8],btn_y,btn_s,btn_s,function(evt){ game.start = 8; game.setScene(3); });
+    btn_standard  = new ButtonBox(btn_x[5],btn_y,btn_s,btn_s,function(evt){ game.start = 5; game.setScene(4); });
+    btn_refuel    = new ButtonBox(btn_x[6],btn_y,btn_s,btn_s,function(evt){ game.start = 6; game.setScene(4); });
+    btn_flappy    = new ButtonBox(btn_x[7],btn_y,btn_s,btn_s,function(evt){ game.start = 7; game.setScene(4); });
+    btn_meditate  = new ButtonBox(btn_x[8],btn_y,btn_s,btn_s,function(evt){ game.start = 8; game.setScene(4); });
 
     clicker.register(btn_intro);
     clicker.register(btn_particles);

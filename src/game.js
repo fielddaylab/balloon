@@ -16,13 +16,14 @@ var Game = function(init)
   self.flappy_best = 0;
 
   var stage = new Stage({width:init.width,height:init.height,container:init.container});
-  var scenes = [new NullScene(self, stage),
+  var scenes = [
+    new NullScene(self, stage),
     new LoadingScene(self, stage),
+    new ComicScene(self, stage),
     //new TestScene(self, stage),
     //new ExperimentScene(self, stage),
     new ChooseScene(self, stage),
     new GamePlayScene(self, stage),
-    null
     ];
   var cur_scene = 0;
   var old_cur_scene = -1;
