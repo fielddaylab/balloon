@@ -112,6 +112,15 @@ var LoadingScene = function(game, stage)
     img_srcs.push("assets/arrow_up.png");
     img_srcs.push("assets/arrows_small.png");
     img_srcs.push("assets/pipe.png");
+    img_srcs.push("assets/btn_flappy.png");
+    img_srcs.push("assets/btn_force.png");
+    img_srcs.push("assets/btn_meditate.png");
+    img_srcs.push("assets/btn_particles.png");
+    img_srcs.push("assets/btn_refuel.png");
+    img_srcs.push("assets/btn_standard.png");
+    img_srcs.push("assets/comic.png");
+    img_srcs.push("assets/menu/menu_gradient.png");
+    img_srcs.push("assets/menu/menu_logo.png");
     for(var i = 0; i < 6; i++)
     {
       for(var j = 0; j < 3; j++)
@@ -119,7 +128,7 @@ var LoadingScene = function(game, stage)
       if(i < 3)
         img_srcs.push("assets/char_"+i+"_icon.png");
     }
-    for(var i = 0; i < 0; i++)
+    for(var i = 0; i < 1; i++)
       img_srcs.push("assets/comic/comic_"+i+".png");
     for(var i = 0; i < img_srcs.length; i++)
     {
