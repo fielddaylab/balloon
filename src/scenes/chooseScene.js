@@ -3,12 +3,13 @@ var ChooseScene = function(game, stage)
   var self = this;
 
   var dc = stage.drawCanv;
+  var ctx = dc.context;
 
   var clicker;
 
   var btn_intro;
   var btn_particles;
-  var btn_forces;
+  var btn_force;
   var btn_density;
   var btn_free;
 
@@ -18,50 +19,38 @@ var ChooseScene = function(game, stage)
   var btn_meditate;
 
   var btn_s;
-  var btn_y;
+  var btn_y_0;
+  var btn_y_1;
   var btn_x;
 
-  var section_line_0_y;
-  var section_line_1_y;
+  var section_line_y;
   var title_y;
-  var subtitle_y;
 
   self.ready = function()
   {
     clicker = new Clicker({source:stage.dispCanv.canvas});
 
-    var n_btns = 9;
-    btn_s = dc.width/(n_btns+2);
-    btn_y = (3*dc.height/4)-btn_s/2;
+    var n_x_btns = 5;
+    section_line_y = 278/2+10;
+    btn_s = dc.width/(n_x_btns+2);
+    btn_y_0 = section_line_y+1*(dc.height-section_line_y)/3-btn_s/2-10;
+    btn_y_1 = section_line_y+2*(dc.height-section_line_y)/3-btn_s/2+10;
     btn_x = [];
-    for(var i = 0; i < n_btns; i++)
-      btn_x[i] = btn_s/2+ ( btn_s+ (btn_s/(n_btns-1)))*i;
+    for(var i = 0; i < n_x_btns; i++)
+      btn_x[i] = btn_s/2+ ( btn_s+ (btn_s/(n_x_btns-1)))*i;
 
-    section_line_0_y = dc.height/3;
-    section_line_1_y = dc.height/3+2*btn_s;
     title_y = dc.height/2-30;
-    subtitle_y = btn_y-40;
 
-    btn_intro     = new ButtonBox(btn_x[0],btn_y,btn_s,btn_s,function(evt){ game.start = 0; game.setScene(4); });
-    btn_particles = new ButtonBox(btn_x[1],btn_y,btn_s,btn_s,function(evt){ game.start = 1; game.setScene(4); });
-    btn_forces    = new ButtonBox(btn_x[2],btn_y,btn_s,btn_s,function(evt){ game.start = 2; game.setScene(4); });
-    btn_density   = new ButtonBox(btn_x[3],btn_y,btn_s,btn_s,function(evt){ game.start = 3; game.setScene(4); });
-    btn_free      = new ButtonBox(btn_x[4],btn_y,btn_s,btn_s,function(evt){ game.start = 4; game.setScene(4); });
+    btn_intro     = new ButtonBox(btn_x[0],btn_y_0,btn_s,btn_s,function(evt){ game.start = 0; game.setScene(4); }); btn_intro.img = btn_intro_img;         clicker.register(btn_intro);
+    btn_particles = new ButtonBox(btn_x[1],btn_y_0,btn_s,btn_s,function(evt){ game.start = 1; game.setScene(4); }); btn_particles.img = btn_particles_img; clicker.register(btn_particles);
+    btn_force     = new ButtonBox(btn_x[2],btn_y_0,btn_s,btn_s,function(evt){ game.start = 2; game.setScene(4); }); btn_force.img = btn_force_img;         clicker.register(btn_force);
+    btn_density   = new ButtonBox(btn_x[3],btn_y_0,btn_s,btn_s,function(evt){ game.start = 3; game.setScene(4); }); btn_density.img = btn_density_img;     clicker.register(btn_density);
 
-    btn_standard  = new ButtonBox(btn_x[5],btn_y,btn_s,btn_s,function(evt){ game.start = 5; game.setScene(4); });
-    btn_refuel    = new ButtonBox(btn_x[6],btn_y,btn_s,btn_s,function(evt){ game.start = 6; game.setScene(4); });
-    btn_flappy    = new ButtonBox(btn_x[7],btn_y,btn_s,btn_s,function(evt){ game.start = 7; game.setScene(4); });
-    btn_meditate  = new ButtonBox(btn_x[8],btn_y,btn_s,btn_s,function(evt){ game.start = 8; game.setScene(4); });
-
-    clicker.register(btn_intro);
-    clicker.register(btn_particles);
-    clicker.register(btn_forces);
-    clicker.register(btn_density);
-    clicker.register(btn_free);
-    clicker.register(btn_standard);
-    clicker.register(btn_refuel);
-    clicker.register(btn_flappy);
-    clicker.register(btn_meditate);
+    btn_standard = new ButtonBox(btn_x[0],btn_y_1,btn_s,btn_s,function(evt){ game.start = 5; game.setScene(4); }); btn_standard.img = btn_standard_img;    clicker.register(btn_standard);
+    btn_refuel   = new ButtonBox(btn_x[1],btn_y_1,btn_s,btn_s,function(evt){ game.start = 6; game.setScene(4); }); btn_refuel.img = btn_refuel_img;        clicker.register(btn_refuel);
+    btn_flappy   = new ButtonBox(btn_x[2],btn_y_1,btn_s,btn_s,function(evt){ game.start = 7; game.setScene(4); }); btn_flappy.img = btn_flappy_img;        clicker.register(btn_flappy);
+    btn_meditate = new ButtonBox(btn_x[3],btn_y_1,btn_s,btn_s,function(evt){ game.start = 8; game.setScene(4); }); btn_meditate.img = btn_meditate_img;    clicker.register(btn_meditate);
+    btn_free     = new ButtonBox(btn_x[4],btn_y_1,btn_s,btn_s,function(evt){ game.start = 4; game.setScene(4); }); btn_free.img = btn_free_img;            clicker.register(btn_free);
   };
 
   self.tick = function()
@@ -72,67 +61,46 @@ var ChooseScene = function(game, stage)
   var space = String.fromCharCode(8202)+String.fromCharCode(8202);
   self.draw = function()
   {
-  /*
-    dc.context.textAlign = "left";
-    btn_intro.draw(dc);     dc.context.fillStyle = "#000000"; dc.context.fillText("Start from Intro",btn_intro.x+8,btn_intro.y+btn_intro.h-4);
-    btn_particles.draw(dc); dc.context.fillStyle = "#000000"; dc.context.fillText("Start from Visualize Particles",btn_particles.x+8,btn_particles.y+btn_particles.h-4);
-    btn_forces.draw(dc);    dc.context.fillStyle = "#000000"; dc.context.fillText("Start from Conflicting Forces",btn_forces.x+8,btn_forces.y+btn_forces.h-4);
-    btn_density.draw(dc);   dc.context.fillStyle = "#000000"; dc.context.fillText("Start from Density",btn_density.x+8,btn_density.y+btn_density.h-4);
-    btn_free.draw(dc);      dc.context.fillStyle = "#000000"; dc.context.fillText("Free Play",btn_free.x+8,btn_free.y+btn_free.h-4);
-    btn_standard.draw(dc);  dc.context.fillStyle = "#000000"; dc.context.fillText("Standard Play (Best: "+fdisp(game.standard_best,1)+"m)",btn_standard.x+8,btn_standard.y+btn_standard.h-4);
-    btn_refuel.draw(dc);    dc.context.fillStyle = "#000000"; dc.context.fillText("Refuel Play (Best: "+fdisp(game.refuel_best,1)+"m)",btn_refuel.x+8,btn_refuel.y+btn_refuel.h-4);
-    btn_flappy.draw(dc);    dc.context.fillStyle = "#000000"; dc.context.fillText("Flappy Play (Best: "+fdisp(game.flappy_best,1)+"m)",btn_flappy.x+8,btn_flappy.y+btn_flappy.h-4);
-    btn_meditate.draw(dc);  dc.context.fillStyle = "#000000"; dc.context.fillText("Meditate Play",btn_meditate.x+8,btn_meditate.y+btn_meditate.h-4);
-    */
+    ctx.drawImage(comic_img,0,0,dc.width,dc.height);
+    ctx.drawImage(menu_grad_img,0,0,dc.width,dc.height);
+    var w = 324/2;
+    var h = 278/2;
+    ctx.drawImage(menu_logo_img,30,section_line_y-h,w,h);
 
-    dc.context.fillStyle = "#FFFFFF";
-    dc.fillRoundRect(0,0,dc.width,dc.height,5);
-    dc.context.fillStyle = "#000000";
+    ctx.lineWidth = 10;
+    ctx.fillStyle = "#FFFFFF";
+    ctx.strokeStyle = "#FFFFFF";
+    dc.drawLine(0,section_line_y,dc.width,section_line_y);
+    dc.drawLine(btn_x[0]+btn_s/2,btn_y_0+btn_s/2,btn_x[3]+btn_s/2,btn_y_0+btn_s/2);
+    ctx.textAlign = "right";
+    ctx.font = "60px SueEllen";
+    ctx.fillText("Hot Air Balloon!".split("").join(space+space),dc.width-20,section_line_y-40);
 
-    dc.context.fillStyle = "#00FF00";//blue;
-    //dc.roundRectOptions(btn_tutorial.x,btn_tutorial.y,btn_tutorial.w,btn_tutorial.h,5,1,1,0,0,0,1)
-    //dc.context.drawImage(crystal_img,dc.width-section_line_0_y,0,section_line_0_y,section_line_0_y);
-    //dc.context.drawImage(tutorial_img,50,50,220,section_line_0_y-50);
+    ctx.textAlign = "center";
+    ctx.font = "20px Open Sans";
 
-    dc.context.fillStyle = "#333333";
-    dc.context.font = "25px Open Sans";
-    dc.context.textAlign = "center";
-    dc.context.fillText("The Balloon Game".split("").join(space),dc.width/2-100,100);
-    dc.context.font = "Bold 16px Open Sans";
-    dc.context.fillStyle = "#FFFFFF";
-    dc.fillRoundRect(dc.width/2-110,120,175,30,20);
-    dc.context.fillStyle = "#333333";
-    dc.context.fillText("There's a lot of unnecessary text on this screen",dc.width/2-100,140);
-    //dc.context.drawImage(arrow_img,dc.width/2+25,127,30,15);
-    dc.context.font = "12px Open Sans";
-
-    dc.context.lineWidth = 0.5;
-    dc.context.strokeStyle = "#666666";
-    dc.drawLine(0,section_line_0_y,dc.width,section_line_0_y);
-    dc.drawLine(0,section_line_1_y,dc.width,section_line_1_y);
-
-    dc.context.textAlign = "center";
     rectBtn(btn_intro,"Intro");
     rectBtn(btn_particles,"Particles");
-    rectBtn(btn_forces,"Forces");
+    rectBtn(btn_force,"Forces");
     rectBtn(btn_density,"Density");
-    rectBtn(btn_free,"Free");
+
     rectBtn(btn_standard,"Standard");
     rectBtn(btn_refuel,"Refuel");
     rectBtn(btn_flappy,"Flappy");
     rectBtn(btn_meditate,"Meditate");
-
-    dc.context.font = "40px Open Sans";
-    dc.context.fillText("BALLOON".split("").join(space+space),dc.width/2,title_y);
+    rectBtn(btn_free,"Free");
   };
   var rectBtn = function(btn,lbl)
   {
-    dc.context.fillStyle = "#FFFFFF";
+    ctx.fillStyle = "#FFFFFF";
+  /*
+    ctx.fillStyle = "#FFFFFF";
     dc.fillRoundRect(btn.x,btn.y,btn.w,btn.h,5);
-    dc.context.strokeStyle = "#000000";
+    ctx.strokeStyle = "#000000";
     dc.strokeRoundRect(btn.x,btn.y,btn.w,btn.h,5);
-    dc.context.fillStyle = "#000000";
-    dc.context.fillText(lbl,btn.x+btn.w/2,btn.y+btn.h+20);
+  */
+    ctx.drawImage(btn.img,btn.x,btn.y,btn.w,btn.h);
+    ctx.fillText(lbl,btn.x+btn.w/2,btn.y+btn.h+20);
   }
 
   self.cleanup = function()

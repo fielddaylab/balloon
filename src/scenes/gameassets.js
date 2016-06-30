@@ -56,6 +56,17 @@ var arrow_up_img;
 var arrows_small_img;
 var pipe_img;
 
+var btn_intro_img;
+var btn_flappy_img;
+var btn_force_img;
+var btn_meditate_img;
+var btn_particles_img;
+var btn_refuel_img;
+var btn_standard_img;
+var comic_img;
+var menu_grad_img;
+var menu_logo_img;
+
 var bake = function()
 {
 shadow_canv = document.createElement('canvas');
@@ -391,6 +402,31 @@ tank_img.src = "assets/tank.png";
 
 eye_img = new Image();
 eye_img.src = "assets/eye.png";
+
+btn_intro_img = new Image();
+btn_intro_img.src = "assets/btn_standard.png";
+btn_flappy_img = new Image();
+btn_flappy_img.src = "assets/btn_flappy.png";
+btn_density_img = new Image();
+btn_density_img.src = "assets/btn_particles.png";
+btn_free_img = new Image();
+btn_free_img.src = "assets/btn_standard.png";
+btn_force_img = new Image();
+btn_force_img.src = "assets/btn_force.png";
+btn_meditate_img = new Image();
+btn_meditate_img.src = "assets/btn_meditate.png";
+btn_particles_img = new Image();
+btn_particles_img.src = "assets/btn_particles.png";
+btn_refuel_img = new Image();
+btn_refuel_img.src = "assets/btn_refuel.png";
+btn_standard_img = new Image();
+btn_standard_img.src = "assets/btn_standard.png";
+comic_img = new Image();
+comic_img.src = "assets/comic.png";
+menu_grad_img = new Image();
+menu_grad_img.src = "assets/menu/menu_gradient.png";
+menu_logo_img = new Image();
+menu_logo_img.src = "assets/menu/menu_logo.png";
 
 char_imgs = [];
 for(var i = 0; i < 6; i++)
