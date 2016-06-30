@@ -94,6 +94,8 @@ var GamePlayScene = function(game, stage)
   var eye_btn; var drawer_disp; var drawer_disp_target;
   var menu_btn;
   var retry_btn;
+  var modal_menu_btn;
+  var modal_retry_btn;
   var reset_btn;
   var parts_btn;
   var arrows_btn;
@@ -232,6 +234,8 @@ var GamePlayScene = function(game, stage)
     eye_btn    = new ButtonBox(dc.width-65,dc.height-250,50,30,function(){ hit_ui = true; if(drawer_disp_target <= 0.5) drawer_disp_target = 1; else if(drawer_disp_target > 0.5) drawer_disp_target = 0; }); drawer_disp = 0; drawer_disp_target = 0;
     menu_btn   = new ButtonBox(dc.width   ,dc.height-280,100,20,function(){ game.setScene(3); });
     retry_btn  = new ButtonBox(dc.width   ,dc.height-310,100,20,function(){ });
+    modal_menu_btn  = new ButtonBox(500,475,160,40,function(){ });
+    modal_retry_btn = new ButtonBox(220,475,160,40,function(){ });
     reset_btn  = new ButtonBox(dc.width   ,dc.height-310,100,20,function(){ if(cur_step != step_free) return; game.start = 4; game.setScene(4); });
     arrows_btn = new ButtonBox(dc.width   ,dc.height-340,100,20,function(){ if(cur_step != step_free) return; target_arrow_disp = (target_arrow_disp+1)%2; });
     parts_btn  = new ButtonBox(dc.width   ,dc.height-370,100,20,function(){ if(cur_step != step_free) return; target_part_disp = (target_part_disp+1)%2; });
@@ -239,6 +243,8 @@ var GamePlayScene = function(game, stage)
     presser.register(flap_pad);
     presser.register(cut_pad);
     presser.register(retry_btn);
+    presser.register(modal_menu_btn);
+    presser.register(modal_retry_btn);
     //domclicker.register(dom); //let fallback click hear it
 
     domclicker.register(eye_btn);
@@ -1042,20 +1048,49 @@ var GamePlayScene = function(game, stage)
       function() { if(balloon.wy <= 0) { if(balloon.wx > game.standard_best) game.standard_best = balloon.wx; return true; } return false; }
     ));
     steps.push(new Step(
-      function(){ drawer_disp_target = 1; },
+      noop,
       noop,
       function() {
-        //keep in sync...
-        var w = 150;
-        var x = dc.width-(drawer_disp*w);
+        var w = 520;
+        var h = 300;
+        var img_w = 340;
+        var img_h = img_w * 858 / 924;
 
-        ctx.textAlign = "left";
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillText("Your Score:"+fdisp(balloon.wx,1)+"m"       ,x+10,retry_btn.y-50);
-        ctx.fillText("Top Score:"+fdisp(game.standard_best,1)+"m",x+10,retry_btn.y-20);
-        ctx.fillText("Retry",retry_btn.x+10,retry_btn.y+retry_btn.h*0.8);
+        ctx.fillStyle = "rgba(50,100,255,0.4)";
+        ctx.fillRect(0, 0, dc.width, dc.height);
+        ctx.fillStyle = "white";
+        ctx.fillRect((dc.width - w) / 2, (dc.height - h) / 2 + 70, w, h);
+        ctx.drawImage(nice_job_img, (dc.width - img_w) / 2, 25, img_w, img_h);
+
+        ctx.textAlign = "center";
+        ctx.font = "25px Open Sans";
+        ctx.fillStyle = "black";
+        ctx.fillText("Nice flight!", dc.width / 2, 380);
+        ctx.font = "20px Open Sans";
+        ctx.fillText("Your Score: "+fdisp(balloon.wx,1)+"m", dc.width / 2, 415);
+        ctx.fillText("Top Score: "+fdisp(game.standard_best,1)+"m", dc.width / 2, 445);
+
+        ctx.fillStyle = "rgb(86,160,171)";
+        ctx.fillRect(modal_menu_btn.x, modal_menu_btn.y + 7, modal_menu_btn.w, modal_menu_btn.h);
+        ctx.fillRect(modal_retry_btn.x, modal_retry_btn.y + 7, modal_retry_btn.w, modal_retry_btn.h);
+        ctx.fillStyle = "rgb(140,216,226)";
+        ctx.fillRect(modal_menu_btn.x, modal_menu_btn.y, modal_menu_btn.w, modal_menu_btn.h);
+        ctx.fillRect(modal_retry_btn.x, modal_retry_btn.y, modal_retry_btn.w, modal_retry_btn.h);
+
+        ctx.fillStyle = "white";
+        ctx.fillText("Fly Again!", modal_retry_btn.x + modal_retry_btn.w / 2, modal_retry_btn.y + 28);
+        ctx.fillText("Back to Menu", modal_menu_btn.x + modal_menu_btn.w / 2, modal_menu_btn.y + 28);
       },
-      function() { if(retry_btn.down) { drawer_disp_target = 0; cur_step = step_standard-1; return true; } return false; }
+      function() {
+        if (modal_retry_btn.down) {
+          cur_step = step_standard-1;
+          return true;
+        } else if (modal_menu_btn.down) {
+          game.setScene(3);
+          return true;
+        }
+        return false; 
+      }
     ));
 
     step_refuel = steps.length;
@@ -1196,20 +1231,49 @@ var GamePlayScene = function(game, stage)
       function() { if(fuel <= 0 && balloon.wy <= 0) { if(balloon.wx > game.refuel_best) game.refuel_best = balloon.wx; return true; } return false; }
     ));
     steps.push(new Step(
-      function(){ drawer_disp_target = 1; },
+      noop,
       noop,
       function() {
-        //keep in sync...
-        var w = 150;
-        var x = dc.width-(drawer_disp*w);
+        var w = 520;
+        var h = 300;
+        var img_w = 340;
+        var img_h = img_w * 858 / 924;
 
-        ctx.textAlign = "left";
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillText("Your Score:"+fdisp(balloon.wx,1)+"m"     ,x+10,retry_btn.y-50);
-        ctx.fillText("Top Score:"+fdisp(game.refuel_best,1)+"m",x+10,retry_btn.y-20);
-        ctx.fillText("Retry",retry_btn.x+10,retry_btn.y+retry_btn.h*0.8);
+        ctx.fillStyle = "rgba(50,100,255,0.4)";
+        ctx.fillRect(0, 0, dc.width, dc.height);
+        ctx.fillStyle = "white";
+        ctx.fillRect((dc.width - w) / 2, (dc.height - h) / 2 + 70, w, h);
+        ctx.drawImage(nice_job_img, (dc.width - img_w) / 2, 25, img_w, img_h);
+
+        ctx.textAlign = "center";
+        ctx.font = "25px Open Sans";
+        ctx.fillStyle = "black";
+        ctx.fillText("Nice flight!", dc.width / 2, 380);
+        ctx.font = "20px Open Sans";
+        ctx.fillText("Your Score: "+fdisp(balloon.wx,1)+"m", dc.width / 2, 415);
+        ctx.fillText("Top Score: "+fdisp(game.refuel_best,1)+"m", dc.width / 2, 445);
+
+        ctx.fillStyle = "rgb(86,160,171)";
+        ctx.fillRect(modal_menu_btn.x, modal_menu_btn.y + 7, modal_menu_btn.w, modal_menu_btn.h);
+        ctx.fillRect(modal_retry_btn.x, modal_retry_btn.y + 7, modal_retry_btn.w, modal_retry_btn.h);
+        ctx.fillStyle = "rgb(140,216,226)";
+        ctx.fillRect(modal_menu_btn.x, modal_menu_btn.y, modal_menu_btn.w, modal_menu_btn.h);
+        ctx.fillRect(modal_retry_btn.x, modal_retry_btn.y, modal_retry_btn.w, modal_retry_btn.h);
+
+        ctx.fillStyle = "white";
+        ctx.fillText("Fly Again!", modal_retry_btn.x + modal_retry_btn.w / 2, modal_retry_btn.y + 28);
+        ctx.fillText("Back to Menu", modal_menu_btn.x + modal_menu_btn.w / 2, modal_menu_btn.y + 28);
       },
-      function() { if(retry_btn.down) { drawer_disp_target = 0; cur_step = step_refuel-1; return true; } return false; }
+      function() {
+        if (modal_retry_btn.down) {
+          cur_step = step_refuel-1;
+          return true;
+        } else if (modal_menu_btn.down) {
+          game.setScene(3);
+          return true;
+        }
+        return false; 
+      }
     ));
 
     step_flappy = steps.length;
@@ -1309,17 +1373,46 @@ var GamePlayScene = function(game, stage)
         ctx.drawImage(pipe_img,pipe.x,pipe.y+pipe.h,pipe.w,dc.height-pipe.y-pipe.h);
         ctx.drawImage(pipe_img,pipe.x-10,pipe.y+pipe.h,pipe.w+20,40);
 
-        //keep in sync...
-        var w = 150;
-        var x = dc.width-(drawer_disp*w);
+        var w = 520;
+        var h = 300;
+        var img_w = 340;
+        var img_h = img_w * 858 / 924;
 
-        ctx.textAlign = "left";
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillText("Your Score:"+fdisp(balloon.wx,1)+"m"     ,x+10,retry_btn.y-50);
-        ctx.fillText("Top Score:"+fdisp(game.flappy_best,1)+"m",x+10,retry_btn.y-20);
-        ctx.fillText("Retry",retry_btn.x+10,retry_btn.y+retry_btn.h*0.8);
+        ctx.fillStyle = "rgba(50,100,255,0.4)";
+        ctx.fillRect(0, 0, dc.width, dc.height);
+        ctx.fillStyle = "white";
+        ctx.fillRect((dc.width - w) / 2, (dc.height - h) / 2 + 70, w, h);
+        ctx.drawImage(nice_job_img, (dc.width - img_w) / 2, 25, img_w, img_h);
+
+        ctx.textAlign = "center";
+        ctx.font = "25px Open Sans";
+        ctx.fillStyle = "black";
+        ctx.fillText("Nice flight!", dc.width / 2, 380);
+        ctx.font = "20px Open Sans";
+        ctx.fillText("Your Score: "+fdisp(balloon.wx,1)+"m", dc.width / 2, 415);
+        ctx.fillText("Top Score: "+fdisp(game.flappy_best,1)+"m", dc.width / 2, 445);
+
+        ctx.fillStyle = "rgb(86,160,171)";
+        ctx.fillRect(modal_menu_btn.x, modal_menu_btn.y + 7, modal_menu_btn.w, modal_menu_btn.h);
+        ctx.fillRect(modal_retry_btn.x, modal_retry_btn.y + 7, modal_retry_btn.w, modal_retry_btn.h);
+        ctx.fillStyle = "rgb(140,216,226)";
+        ctx.fillRect(modal_menu_btn.x, modal_menu_btn.y, modal_menu_btn.w, modal_menu_btn.h);
+        ctx.fillRect(modal_retry_btn.x, modal_retry_btn.y, modal_retry_btn.w, modal_retry_btn.h);
+
+        ctx.fillStyle = "white";
+        ctx.fillText("Fly Again!", modal_retry_btn.x + modal_retry_btn.w / 2, modal_retry_btn.y + 28);
+        ctx.fillText("Back to Menu", modal_menu_btn.x + modal_menu_btn.w / 2, modal_menu_btn.y + 28);
       },
-      function() { if(retry_btn.down) { drawer_disp_target = 0; cur_step = step_flappy-1; return true; } return false; }
+      function() {
+        if (modal_retry_btn.down) {
+          cur_step = step_flappy-1;
+          return true;
+        } else if (modal_menu_btn.down) {
+          game.setScene(3);
+          return true;
+        }
+        return false; 
+      }
     ));
 
     step_meditate = steps.length;

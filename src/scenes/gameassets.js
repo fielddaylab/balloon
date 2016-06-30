@@ -55,6 +55,7 @@ var arrow_down_img;
 var arrow_up_img;
 var arrows_small_img;
 var pipe_img;
+var nice_job_img;
 
 var btn_intro_img;
 var btn_flappy_img;
@@ -402,6 +403,9 @@ tank_img.src = "assets/tank.png";
 
 eye_img = new Image();
 eye_img.src = "assets/eye.png";
+
+nice_job_img = new Image();
+nice_job_img.src = "assets/nicejob.png";
 
 btn_intro_img = new Image();
 btn_intro_img.src = "assets/btn_standard.png";
