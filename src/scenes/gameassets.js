@@ -55,6 +55,7 @@ var arrow_down_img;
 var arrow_up_img;
 var arrows_small_img;
 var pipe_img;
+var nice_job_img;
 
 var bake = function()
 {
@@ -391,6 +392,9 @@ tank_img.src = "assets/tank.png";
 
 eye_img = new Image();
 eye_img.src = "assets/eye.png";
+
+nice_job_img = new Image();
+nice_job_img.src = "assets/nicejob.png";
 
 char_imgs = [];
 for(var i = 0; i < 6; i++)
