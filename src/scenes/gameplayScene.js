@@ -768,7 +768,7 @@ var GamePlayScene = function(game, stage)
           "They won the tug of war!",
           "Yep. And with our spot taken... there's nowhere to go but up!!",
           "So... what happens if we keep this temperature inside the balloon?",
-          "The air particles will kep pushing us upward, and the balloon will keep rising and rising... forever.",
+          "The air particles will keep pushing us upward, and the balloon will keep rising and rising... forever.",
           "GULP",
           "Um... I can't fly away forever. I forgot to feed my hamster.",
           "Don't worry! Heat escapes the balloon naturally.",
@@ -900,7 +900,7 @@ var GamePlayScene = function(game, stage)
       function() {
         drawKnobTip("Drag to increase volume!",160);
       },
-      function() { return balloon.v > 5000 && !slider.dragging; }
+      function() { return balloon.v > 6000; }
     ));
     steps.push(new Step(
       function(){
@@ -1015,7 +1015,7 @@ var GamePlayScene = function(game, stage)
         yvel_gauge.enabled = true;
         fuel_gauge.enabled = true;
       },
-      noop,
+      function() { fuel = 40; },
       noop,
       function() { return false; }
     ));
@@ -1168,7 +1168,7 @@ var GamePlayScene = function(game, stage)
           ctx.fillRect(steps[cur_step].next_station.x,steps[cur_step].next_station.y,10,10);
         }
         ctx.textAlign = "center";
-        ctx.fillStyle = "#000000";
+        ctx.fillStyle = colorForHeight();
         if(off)
           ctx.fillText("Refuel Station",steps[cur_step].next_station.x-30,steps[cur_step].next_station.y-50)
         ctx.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x-30,steps[cur_step].next_station.y-35)
@@ -1223,7 +1223,7 @@ var GamePlayScene = function(game, stage)
           ctx.drawImage(can_img,steps[cur_step].next_station.x,steps[cur_step].next_station.y,30,100);
         }
         ctx.textAlign = "center";
-        ctx.fillStyle = "#000000";
+        ctx.fillStyle = colorForHeight();
         if(off)
           ctx.fillText("Refuel Station",steps[cur_step].next_station.x-30,steps[cur_step].next_station.y-50)
         ctx.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x-30,steps[cur_step].next_station.y-35)
@@ -1342,7 +1342,7 @@ var GamePlayScene = function(game, stage)
           ctx.strokeStyle = "#000000";
         }
         ctx.textAlign = "center";
-        ctx.fillStyle = "#000000";
+        ctx.fillStyle = colorForHeight();
         if(off)
           ctx.fillText("Pipe Opening",pipe.x+pipe.w/2-30,pipe.y+pipe.h/2-50)
         ctx.fillText(fdisp((pipe.wx-balloon.wx),1)+"m",pipe.x+pipe.w/2-30,pipe.y+pipe.h/2-35)
@@ -1715,8 +1715,9 @@ var GamePlayScene = function(game, stage)
   var drawKnobTip = function(prompt,w)
   {
     var h = 20;
-    var x = slider.x+slider.w+10;
-    var y = dc.height-70;
+    var r = slider.w-10;
+    var x = cos(slider.t)*r + 30;
+    var y = dc.height - sin(slider.t)*r;
     y += Math.sin(n_ticks/10)*4;
     ctx.fillStyle = "#FFFFFF";
     dc.fillRoundRect(x,y-h/2,w,h,5);
@@ -1851,15 +1852,13 @@ var GamePlayScene = function(game, stage)
     }
 
     ctx.textAlign = "right";
-    var v = Math.floor(mapVal(30,50,0,256,balloon.wy));
-    if(v < 0) v = 0; if(v > 255) v = 255;
-    ctx.fillStyle = "rgba("+v+","+v+","+v+",1)";
+    ctx.fillStyle = colorForHeight();
     if(cur_step != step_meditate)
     {
       ctx.font = "16px Open Sans";
       ctx.fillText("Distance Travelled",dc.width-10,50);
       ctx.font = "30px Open Sans";
-      ctx.fillText(fdisp(balloon.wx,1)+"m",dc.width-10,76);
+      ctx.fillText(Math.floor(balloon.wx)+"m",dc.width-10,76);
       ctx.font = "12px Open Sans";
     }
 
@@ -2358,10 +2357,7 @@ var GamePlayScene = function(game, stage)
     ctx.drawImage(needle_img,-2.5,-3,27,6);
     ctx.restore();
 
-    var v = Math.floor(mapVal(30,50,0,256,balloon.wy));
-    if(v < 0) v = 0; if(v > 255) v = 255;
-
-    ctx.fillStyle = "rgba("+v+","+v+","+v+",1)";
+    ctx.fillStyle = colorForHeight();
     ctx.textAlign = "center";
     ctx.fillText(g.t1,g.x+g.w/2,g.y+g.h+12);
     ctx.fillText(g.t2,g.x+g.w/2,g.y+g.h+12+12);
@@ -2511,6 +2507,13 @@ var GamePlayScene = function(game, stage)
       self.dragging = false;
     }
 
+  }
+
+  var colorForHeight = function()
+  {
+    var v = Math.floor(mapVal(30,50,0,256,balloon.wy));
+    if(v < 0) v = 0; if(v > 255) v = 255;
+    return "rgba("+v+","+v+","+v+",1)";
   }
 
   var releaseUI = function()
