@@ -1233,6 +1233,7 @@ var GamePlayScene = function(game, stage)
         steps[cur_step].next_station.wx = min(refuel_stations[0],refuel_stations[1]);
         steps[cur_step].next_station.wy = 0;
         screenSpace(camera,dc,steps[cur_step].next_station);
+        ctx.drawImage(tank_img,steps[cur_step].next_station.x,steps[cur_step].next_station.y+150,100,100);
         var off = false;
         if(steps[cur_step].next_station.y < 10) { off = true; steps[cur_step].next_station.y = 10; }
         if(steps[cur_step].next_station.x > dc.width -20) { off = true; steps[cur_step].next_station.x = dc.width-20; }
@@ -1260,10 +1261,6 @@ var GamePlayScene = function(game, stage)
           ctx.drawImage(alert_danger_img,sx-5,sy-10,10,20);
           //drawArrow(dc,sx,sy,ex,ey,10);
           ctx.strokeStyle = "#000000";
-        }
-        else
-        {
-          ctx.drawImage(can_img,steps[cur_step].next_station.x,steps[cur_step].next_station.y,30,100);
         }
         ctx.textAlign = "center";
         ctx.fillStyle = colorForHeight();
