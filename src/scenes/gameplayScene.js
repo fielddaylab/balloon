@@ -125,6 +125,7 @@ var GamePlayScene = function(game, stage)
   var arrow_disp;
   var target_arrow_disp;
   var fuel;
+  var fuel_pulse_n;
   var clone_fuel;
 
   var steps;
@@ -152,6 +153,7 @@ var GamePlayScene = function(game, stage)
     //state
     rope_cut = false;
     fuel = 40;
+    fuel_pulse_n = 0;
     clone_fuel = fuel;
 
     //doqueues
@@ -1456,6 +1458,8 @@ var GamePlayScene = function(game, stage)
   self.tick = function()
   {
     n_ticks++;
+    fuel_pulse_n++;
+    if(fuel > 1) fuel_pulse_n = 0;
     if(part_disp < target_part_disp) { part_disp += 0.02; if(part_disp > 1) part_disp = 1; }
     if(part_disp > target_part_disp) { part_disp -= 0.02; if(part_disp < 0) part_disp = 0; }
     if(arrow_disp < target_arrow_disp) { arrow_disp += 0.02; if(arrow_disp > 1) arrow_disp = 1; }
@@ -1881,6 +1885,18 @@ var GamePlayScene = function(game, stage)
     drawGauge(xvel_gauge);         if(xvel_gauge.vis)     drawAroundDecimal(dc,        xvel_gauge.x+xvel_gauge.w/2,    xvel_gauge.y-10,fdisp(balloon.wxv*fps,2),"","m/s")
     drawGauge(yvel_gauge);         if(yvel_gauge.vis)     drawAroundDecimal(dc,        yvel_gauge.x+yvel_gauge.w/2,    yvel_gauge.y-10,fdisp(balloon.wyv*fps,2),"","m/s")
     drawGauge(fuel_gauge);         if(fuel_gauge.vis)     drawAroundDecimal(dc,        fuel_gauge.x+fuel_gauge.w/2,    fuel_gauge.y-10,fdisp(fuel,2),"","G")
+
+    if(fuel < 1.)
+    {
+      ctx.fillStyle = "rgba(255,0,0,"+sin(fuel_pulse_n/50)+")";
+      ctx.font = "100px Open Sans";
+      ctx.textAlign = "center";
+      if(fuel <= 0)
+        ctx.fillText("FUEL EMPTY",dc.width/2,dc.height/2-50);
+      else
+        ctx.fillText("FUEL LOW",dc.width/2,dc.height/2-50);
+      ctx.font = "12px Open Sans";
+    }
 
     if(selected_gauge) drawSlider(slider);
 
