@@ -128,6 +128,9 @@ var GamePlayScene = function(game, stage)
   var fuel_pulse_n;
   var clone_fuel;
 
+  var scene_title;
+  var scene_n;
+
   var steps;
   var cur_step;
   var lines;
@@ -155,6 +158,9 @@ var GamePlayScene = function(game, stage)
     fuel = 40;
     fuel_pulse_n = 0;
     clone_fuel = fuel;
+
+    scene_title = "";
+    scene_n = 0;
 
     //doqueues
     dragger = new Dragger({source:stage.dispCanv.canvas});
@@ -317,6 +323,8 @@ var GamePlayScene = function(game, stage)
     step_intro = steps.length;
     steps.push(new Step(
       function(){
+        scene_title = "Intro";
+        scene_n = 300;
         setDisp(0,0,true,true,false,false,false,false,false,false,false,false);
         pop([
         "It's ready!",
@@ -476,6 +484,8 @@ var GamePlayScene = function(game, stage)
     step_particles = steps.length;
     steps.push(new Step(
       function(){
+        scene_title = "Particles";
+        scene_n = 300;
         setDisp(1,0,true,true,false,false,false,false,true,true,true,true);
         pop([
           "Those are air particles bouncing around.",
@@ -613,7 +623,12 @@ var GamePlayScene = function(game, stage)
 
     step_forces = steps.length;
     steps.push(new Step(
-      function() { resetState(); resetBalloon(); },
+      function() {
+        scene_title = "Forces";
+        scene_n = 300;
+        resetState();
+        resetBalloon();
+      },
       function() { resetState(); },
       noop,
       function() { return camera.wx < 0.2; }
@@ -851,7 +866,12 @@ var GamePlayScene = function(game, stage)
 
     step_density = steps.length;
     steps.push(new Step(
-      function() { resetState(); resetBalloon(); },
+      function() {
+        scene_title = "Density";
+        scene_n = 300;
+        resetState();
+        resetBalloon();
+      },
       function() { resetState(); },
       noop,
       function() { return camera.wx < 0.2; }
@@ -1003,6 +1023,8 @@ var GamePlayScene = function(game, stage)
     step_free = steps.length;
     steps.push(new Step(
       function() {
+        scene_title = "Free Play";
+        scene_n = 300;
         resetState();
         resetBalloon();
         setDisp(0,0,true,true,true,true,true,true,true,true,true,true);
@@ -1025,6 +1047,8 @@ var GamePlayScene = function(game, stage)
     step_standard = steps.length;
     steps.push(new Step(
       function() {
+        scene_title = "Standard Game";
+        scene_n = 300;
         resetState();
         resetBalloon();
         setDisp(0,0,true,true,true,true,true,true,true,true,true,true);
@@ -1098,6 +1122,8 @@ var GamePlayScene = function(game, stage)
     step_refuel = steps.length;
     steps.push(new Step(
       function() {
+        scene_title = "Refuel Game";
+        scene_n = 300;
         resetState();
         resetBalloon();
         setDisp(0,0,true,true,true,true,true,true,true,true,true,true);
@@ -1281,6 +1307,8 @@ var GamePlayScene = function(game, stage)
     step_flappy = steps.length;
     steps.push(new Step(
       function() {
+        scene_title = "Flappy Game";
+        scene_n = 300;
         resetState();
         resetBalloon();
         setDisp(0,0,true,true,true,true,true,true,true,true,true,false)
@@ -1420,6 +1448,8 @@ var GamePlayScene = function(game, stage)
     step_meditate = steps.length;
     steps.push(new Step(
       function() {
+        scene_title = "Meditate";
+        scene_n = 300;
         resetState();
         resetBalloon();
         setDisp(0,0,false,false,false,false,false,false,false,false,false,false);
@@ -1459,6 +1489,7 @@ var GamePlayScene = function(game, stage)
   {
     n_ticks++;
     fuel_pulse_n++;
+    scene_n--;
     if(fuel > 1) fuel_pulse_n = 0;
     if(part_disp < target_part_disp) { part_disp += 0.02; if(part_disp > 1) part_disp = 1; }
     if(part_disp > target_part_disp) { part_disp -= 0.02; if(part_disp < 0) part_disp = 0; }
@@ -1886,6 +1917,16 @@ var GamePlayScene = function(game, stage)
     drawGauge(yvel_gauge);         if(yvel_gauge.vis)     drawAroundDecimal(dc,        yvel_gauge.x+yvel_gauge.w/2,    yvel_gauge.y-10,fdisp(balloon.wyv*fps,2),"","m/s")
     drawGauge(fuel_gauge);         if(fuel_gauge.vis)     drawAroundDecimal(dc,        fuel_gauge.x+fuel_gauge.w/2,    fuel_gauge.y-10,fdisp(fuel,2),"","G")
 
+    if(scene_n > 0)
+    {
+      var v = 0;
+      if(scene_n > 250) v = (300-scene_n)/50;
+      else              v = scene_n/100;
+      ctx.fillStyle = "rgba(0,0,0,"+v+")";
+      ctx.font = "60px Open Sans";
+      ctx.textAlign = "left";
+      ctx.fillText(scene_title,50,220);
+    }
     if(fuel < 1.)
     {
       ctx.fillStyle = "rgba(255,0,0,"+sin(fuel_pulse_n/50)+")";
@@ -1895,8 +1936,8 @@ var GamePlayScene = function(game, stage)
         ctx.fillText("FUEL EMPTY",dc.width/2,dc.height/2-50);
       else
         ctx.fillText("FUEL LOW",dc.width/2,dc.height/2-50);
-      ctx.font = "12px Open Sans";
     }
+    ctx.font = "12px Open Sans";
 
     if(selected_gauge) drawSlider(slider);
 
