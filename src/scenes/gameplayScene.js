@@ -1038,6 +1038,21 @@ var GamePlayScene = function(game, stage)
         xvel_gauge.enabled = true;
         yvel_gauge.enabled = true;
         fuel_gauge.enabled = true;
+        if(game.start == 4)
+        {
+          pop([
+            "Wheee!!! Time to fly!",
+            "This is the playground, which means we can experiment with the volume or temperature gauges however we want!",
+            "(Plus, infinite fuel!)",
+            "Have fun!",
+          ],
+          [
+            SPEAKER_SHORT,
+            SPEAKER_TALL,
+            SPEAKER_TALL,
+            SPEAKER_TALL,
+          ]);
+        }
       },
       function() { fuel = 40; },
       noop,
