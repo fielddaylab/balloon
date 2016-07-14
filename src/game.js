@@ -10,6 +10,11 @@ var Game = function(init)
   var self = this;
   doMapInitDefaults(init,init,default_init);
 
+  self.intro_complete = false;
+  self.particles_complete = false;
+  self.forces_complete = false;
+  self.density_complete = false;
+
   self.start = 0;
   self.standard_best = 0;
   self.refuel_best = 0;

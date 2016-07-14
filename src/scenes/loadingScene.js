@@ -79,6 +79,7 @@ var LoadingScene = function(game, stage)
     img_srcs.push("assets/btn_flap_red.png");
     img_srcs.push("assets/btn_rope.png");
     img_srcs.push("assets/btn_rope_red.png");
+    img_srcs.push("assets/check.png");
     img_srcs.push("assets/cloud_0.png");
     img_srcs.push("assets/cloud_1.png");
     img_srcs.push("assets/cloud_2.png");

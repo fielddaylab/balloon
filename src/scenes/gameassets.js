@@ -407,6 +407,9 @@ eye_img.src = "assets/eye.png";
 nice_job_img = new Image();
 nice_job_img.src = "assets/nicejob.png";
 
+check_img = new Image();
+check_img.src = "assets/check.png";
+
 btn_intro_img = new Image();
 btn_intro_img.src = "assets/btn_standard.png";
 btn_flappy_img = new Image();

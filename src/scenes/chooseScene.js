@@ -79,18 +79,18 @@ var ChooseScene = function(game, stage)
     ctx.textAlign = "center";
     ctx.font = "20px Open Sans";
 
-    rectBtn(btn_intro,"Intro");
-    rectBtn(btn_particles,"Particles");
-    rectBtn(btn_force,"Forces");
-    rectBtn(btn_density,"Density");
+    rectBtn(btn_intro,"Intro",game.intro_complete);
+    rectBtn(btn_particles,"Particles",game.particles_complete);
+    rectBtn(btn_force,"Forces",game.forces_complete);
+    rectBtn(btn_density,"Density",game.density_complete);
 
-    rectBtn(btn_standard,"Standard");
-    rectBtn(btn_refuel,"Refuel");
-    rectBtn(btn_flappy,"Flappy");
-    rectBtn(btn_meditate,"Meditate");
-    rectBtn(btn_free,"Free");
+    rectBtn(btn_standard,"Standard",false);
+    rectBtn(btn_refuel,"Refuel",false);
+    rectBtn(btn_flappy,"Flappy",false);
+    rectBtn(btn_meditate,"Meditate",false);
+    rectBtn(btn_free,"Free",false);
   };
-  var rectBtn = function(btn,lbl)
+  var rectBtn = function(btn,lbl,chck)
   {
     ctx.fillStyle = "#FFFFFF";
   /*
@@ -101,6 +101,7 @@ var ChooseScene = function(game, stage)
   */
     ctx.drawImage(btn.img,btn.x,btn.y,btn.w,btn.h);
     ctx.fillText(lbl,btn.x+btn.w/2,btn.y+btn.h+20);
+    if(chck) ctx.drawImage(check_img,btn.x+btn.w-30,btn.y-10,40,40);
   }
 
   self.cleanup = function()

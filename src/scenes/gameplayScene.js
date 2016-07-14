@@ -469,6 +469,7 @@ var GamePlayScene = function(game, stage)
           SPEAKER_TALL,
           SPEAKER_TALL,
         ]);
+        game.intro_complete = true;
       },
       noop,
       noop,
@@ -615,6 +616,7 @@ var GamePlayScene = function(game, stage)
           SPEAKER_SHORT,
           SPEAKER_TALL,
         ]);
+        game.particles_complete = true;
       },
       noop,
       noop,
@@ -858,6 +860,7 @@ var GamePlayScene = function(game, stage)
           SPEAKER_TALL,
           SPEAKER_AXE,
         ]);
+        game.forces_complete = true;
       },
       noop,
       noop,
@@ -1014,6 +1017,7 @@ var GamePlayScene = function(game, stage)
           SPEAKER_TALL,
           SPEAKER_TALL,
         ]);
+        game.density_complete = true;
       },
       noop,
       noop,
