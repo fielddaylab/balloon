@@ -1943,7 +1943,7 @@ var GamePlayScene = function(game, stage)
       ctx.textAlign = "left";
       ctx.fillText(scene_title,50,220);
     }
-    if(fuel < 1.)
+    if(fuel < 1. && balloon.wy > 0.01)
     {
       ctx.fillStyle = "rgba(255,0,0,"+sin(fuel_pulse_n/50)+")";
       ctx.font = "100px Open Sans";
