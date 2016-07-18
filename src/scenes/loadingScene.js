@@ -126,7 +126,7 @@ var LoadingScene = function(game, stage)
     {
       for(var j = 0; j < 3; j++)
         img_srcs.push("assets/char_"+i+"_"+j+".png");
-      if(i < 3)
+      if(i < 4)
         img_srcs.push("assets/char_"+i+"_icon.png");
     }
     for(var i = 0; i < 1; i++)
