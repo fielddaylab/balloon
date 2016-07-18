@@ -1671,7 +1671,7 @@ var GamePlayScene = function(game, stage)
     cam_target.ww = cam_target.wh/dc.height*dc.width;
 
     camera.wx = lerp(camera.wx,cam_target.wx,0.1);
-    camera.wy = lerp(camera.wy,cam_target.wy,0.02);
+    camera.wy = lerp(camera.wy,cam_target.wy,0.1);
     camera.ww = lerp(camera.ww,cam_target.ww,0.01);
     camera.wh = lerp(camera.wh,cam_target.wh,0.01);
 
