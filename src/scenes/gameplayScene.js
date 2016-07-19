@@ -1728,7 +1728,7 @@ var GamePlayScene = function(game, stage)
     screenSpace(camera,dc,vel_arrow);
     screenSpace(camera,dc,acc_arrow);
     screenSpace(camera,dc,arrow_separator);
-    for(var i = 0; i < vg.length; i++) screenSpace(vgcam,dc,vg[i]);
+    for(var i = 0; i < vg.length; i++) { screenSpace(vgcam,dc,vg[i]); while(vg[i].y > dc.height) vg[i].y -= dc.height; } //expensive hack to ensure stars repeat forever
     for(var i = 0; i < bg.length; i++) screenSpace(bgcam,dc,bg[i]);
     for(var i = 0; i < mg.length; i++) screenSpace(mgcam,dc,mg[i]);
     for(var i = 0; i < fg.length; i++) screenSpace(fgcam,dc,fg[i]);
