@@ -100,7 +100,7 @@ var ChooseScene = function(game, stage)
     dc.strokeRoundRect(btn.x,btn.y,btn.w,btn.h,5);
   */
     ctx.drawImage(btn.img,btn.x,btn.y,btn.w,btn.h);
-    ctx.fillText(lbl,btn.x+btn.w/2,btn.y+btn.h+20);
+    ctx.fillText(lbl.toUpperCase(),btn.x+btn.w/2,btn.y+btn.h+20);
     if(chck) ctx.drawImage(check_img,btn.x+btn.w-30,btn.y-10,40,40);
   }
 
