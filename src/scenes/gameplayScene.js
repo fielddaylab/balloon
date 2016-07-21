@@ -1907,13 +1907,13 @@ var GamePlayScene = function(game, stage)
     if(cur_step != step_meditate)
     {
       ctx.font = "16px Open Sans";
-      ctx.fillText("Distance Travelled",dc.width-10,50);
+      ctx.fillText("DISTANCE TRAVELED",dc.width-10,50);
       ctx.font = "30px Open Sans";
       ctx.fillText(Math.floor(balloon.wx)+"m",dc.width-10,76);
       var a = vForHeight()/255;
       ctx.fillStyle = "rgba(255,255,255,"+a+")";
       ctx.font = "14px Open Sans";
-      ctx.fillText("Altitude",dc.width-10,100);
+      ctx.fillText("ALTITUDE",dc.width-10,100);
       ctx.font = "20px Open Sans";
       ctx.fillText(Math.floor(balloon.wy)+"m",dc.width-10,120);
       ctx.font = "12px Open Sans";
