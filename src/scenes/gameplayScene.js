@@ -1946,14 +1946,31 @@ var GamePlayScene = function(game, stage)
     if(fuel < 1. && balloon.wy > 0.01)
     {
       ctx.fillStyle = "rgba(255,0,0,"+sin(fuel_pulse_n/50)+")";
+      ctx.strokeStyle = "rgba(255,0,0,"+sin(fuel_pulse_n/50)+")";
       ctx.font = "100px Open Sans";
       ctx.textAlign = "center";
+      var w;
+      var h;
+      ctx.lineWidth = 10;
       if(fuel <= 0)
+      {
+        w = 600;
+        h = 120;
+        dc.strokeRoundRect(dc.width/2-w/2,dc.height/2-h-30,w,h,10);
         ctx.fillText("FUEL EMPTY",dc.width/2,dc.height/2-50);
+      }
       else
+      {
+        w = 500;
+        h = 120;
+        dc.strokeRoundRect(dc.width/2-w/2,dc.height/2-h-30,w,h,10);
         ctx.fillText("FUEL LOW",dc.width/2,dc.height/2-50);
+      }
     }
     ctx.font = "12px Open Sans";
+    ctx.fillStyle = "#000000";
+    ctx.strokeStyle = "#000000";
+    ctx.lineWidth = 2;
 
     if(selected_gauge) drawSlider(slider);
 
