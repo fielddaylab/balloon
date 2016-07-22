@@ -1103,8 +1103,8 @@ var GamePlayScene = function(game, stage)
 
         ctx.fillStyle = "rgba(50,100,255,0.4)";
         ctx.fillRect(0, 0, dc.width, dc.height);
-        ctx.fillStyle = "white";
-        ctx.fillRect((dc.width - w) / 2, (dc.height - h) / 2 + 70, w, h);
+        ctx.fillStyle = "#FFFFFF";
+        dc.fillRoundRect((dc.width - w) / 2, (dc.height - h) / 2 + 70, w, h,5);
         ctx.drawImage(nice_job_img, (dc.width - img_w) / 2, 25, img_w, img_h);
 
         ctx.textAlign = "center";
@@ -1279,8 +1279,8 @@ var GamePlayScene = function(game, stage)
 
         ctx.fillStyle = "rgba(50,100,255,0.4)";
         ctx.fillRect(0, 0, dc.width, dc.height);
-        ctx.fillStyle = "white";
-        ctx.fillRect((dc.width - w) / 2, (dc.height - h) / 2 + 70, w, h);
+        ctx.fillStyle = "#FFFFFF";
+        dc.fillRoundRect((dc.width - w) / 2, (dc.height - h) / 2 + 70, w, h,5);
         ctx.drawImage(nice_job_img, (dc.width - img_w) / 2, 25, img_w, img_h);
 
         ctx.textAlign = "center";
@@ -1418,8 +1418,8 @@ var GamePlayScene = function(game, stage)
 
         ctx.fillStyle = "rgba(50,100,255,0.4)";
         ctx.fillRect(0, 0, dc.width, dc.height);
-        ctx.fillStyle = "white";
-        ctx.fillRect((dc.width - w) / 2, (dc.height - h) / 2 + 70, w, h);
+        ctx.fillStyle = "#FFFFFF";
+        dc.fillRoundRect((dc.width - w) / 2, (dc.height - h) / 2 + 70, w, h,5);
         ctx.drawImage(nice_job_img, (dc.width - img_w) / 2, 25, img_w, img_h);
 
         ctx.textAlign = "center";
