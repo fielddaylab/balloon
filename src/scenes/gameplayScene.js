@@ -1939,9 +1939,14 @@ var GamePlayScene = function(game, stage)
       if(scene_n > 250) v = (300-scene_n)/50;
       else              v = scene_n/100;
       ctx.fillStyle = "rgba(0,0,0,"+v+")";
+      ctx.strokeStyle = "rgba(0,0,0,"+v+")";
       ctx.font = "60px Open Sans";
       ctx.textAlign = "left";
-      ctx.fillText(scene_title,50,220);
+      ctx.lineWidth = 10;
+      w = ctx.measureText(scene_title).width;
+      dc.strokeRoundRect(50,160,w+40,80,10);
+      ctx.fillText(scene_title,50+20,220);
+      ctx.lineWIdth = 2;
     }
     if(fuel < 1. && balloon.wy > 0.01)
     {
@@ -1954,7 +1959,7 @@ var GamePlayScene = function(game, stage)
       ctx.lineWidth = 10;
       if(fuel <= 0)
       {
-        w = 600;
+        w = 620;
         h = 120;
         dc.strokeRoundRect(dc.width/2-w/2,dc.height/2-h-30,w,h,10);
         ctx.fillText("FUEL EMPTY",dc.width/2,dc.height/2-50);
