@@ -1182,9 +1182,9 @@ var GamePlayScene = function(game, stage)
         steps[cur_step].next_station.wy = 0;
         screenSpace(camera,dc,steps[cur_step].next_station);
         var off = false;
-        if(steps[cur_step].next_station.y < 10) { off = true; steps[cur_step].next_station.y = 10; }
-        if(steps[cur_step].next_station.x > dc.width -20) { off = true; steps[cur_step].next_station.x = dc.width-20; }
-        if(steps[cur_step].next_station.y > dc.height-90) { off = true; steps[cur_step].next_station.y = dc.height-90; }
+        if(steps[cur_step].next_station.y < 20)           { off = true; steps[cur_step].next_station.y = 20; }
+        if(steps[cur_step].next_station.x > dc.width -30) { off = true; steps[cur_step].next_station.x = dc.width-30; }
+        if(steps[cur_step].next_station.y > dc.height-60) { off = true; steps[cur_step].next_station.y = dc.height-60; }
         if(off)
         {
           ctx.strokeStyle = "#FF0000";
@@ -1203,10 +1203,9 @@ var GamePlayScene = function(game, stage)
           ctx.save();
           ctx.translate(sx,sy);
           ctx.rotate(Math.atan2(ey-sy,ex-sx));
-          ctx.drawImage(alert_bg_img,-20,-20,50,40);
+          ctx.drawImage(alert_bg_img,-40,-40,100,80);
           ctx.restore();
-          ctx.drawImage(alert_danger_img,sx-5,sy-10,10,20);
-          //drawArrow(dc,sx,sy,ex,ey,10);
+          ctx.drawImage(alert_danger_img,sx-5,sy-20,10,20);
           ctx.strokeStyle = "#000000";
         }
         else
@@ -1215,10 +1214,8 @@ var GamePlayScene = function(game, stage)
           ctx.fillRect(steps[cur_step].next_station.x,steps[cur_step].next_station.y,10,10);
         }
         ctx.textAlign = "center";
-        ctx.fillStyle = colorForHeight();
-        if(off)
-          ctx.fillText("Refuel Station",steps[cur_step].next_station.x-30,steps[cur_step].next_station.y-50)
-        ctx.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x-30,steps[cur_step].next_station.y-35)
+        ctx.fillStyle = "#000000";
+        ctx.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x-30,sy+20)
       },
       function() { return ((balloon.wy > 0 && rope_cut) || fuel <= 0); }
     ));
@@ -1239,9 +1236,9 @@ var GamePlayScene = function(game, stage)
         screenSpace(camera,dc,steps[cur_step].next_station);
         ctx.drawImage(tank_img,steps[cur_step].next_station.x,steps[cur_step].next_station.y+150,100,100);
         var off = false;
-        if(steps[cur_step].next_station.y < 10) { off = true; steps[cur_step].next_station.y = 10; }
-        if(steps[cur_step].next_station.x > dc.width -20) { off = true; steps[cur_step].next_station.x = dc.width-20; }
-        if(steps[cur_step].next_station.y > dc.height-90) { off = true; steps[cur_step].next_station.y = dc.height-90; }
+        if(steps[cur_step].next_station.y < 20)           { off = true; steps[cur_step].next_station.y = 20; }
+        if(steps[cur_step].next_station.x > dc.width -30) { off = true; steps[cur_step].next_station.x = dc.width-30; }
+        if(steps[cur_step].next_station.y > dc.height-60) { off = true; steps[cur_step].next_station.y = dc.height-60; }
         if(off)
         {
           ctx.strokeStyle = "#FF0000";
@@ -1260,17 +1257,14 @@ var GamePlayScene = function(game, stage)
           ctx.save();
           ctx.translate(sx,sy);
           ctx.rotate(Math.atan2(ey-sy,ex-sx));
-          ctx.drawImage(alert_bg_img,-20,-20,50,40);
+          ctx.drawImage(alert_bg_img,-40,-40,100,80);
           ctx.restore();
-          ctx.drawImage(alert_danger_img,sx-5,sy-10,10,20);
-          //drawArrow(dc,sx,sy,ex,ey,10);
+          ctx.drawImage(alert_danger_img,sx-5,sy-20,10,20);
           ctx.strokeStyle = "#000000";
         }
         ctx.textAlign = "center";
-        ctx.fillStyle = colorForHeight();
-        if(off)
-          ctx.fillText("Refuel Station",steps[cur_step].next_station.x-30,steps[cur_step].next_station.y-50)
-        ctx.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x-30,steps[cur_step].next_station.y-35)
+        ctx.fillStyle = "#000000";
+        ctx.fillText(fdisp((steps[cur_step].next_station.wx-balloon.wx),1)+"m",steps[cur_step].next_station.x-30,sy+20);
       },
       function() { if(fuel <= 0 && balloon.wy <= 0) { if(balloon.wx > game.refuel_best) game.refuel_best = balloon.wx; return true; } return false; }
     ));
@@ -1363,9 +1357,9 @@ var GamePlayScene = function(game, stage)
         ctx.drawImage(pipe_img,pipe.x-10,pipe.y+pipe.h,pipe.w+20,40);
 
         var off = false;
-        if(pipe.y+pipe.h/2 < 10) { off = true; pipe.y = 10-pipe.h/2; }
-        if(pipe.x+pipe.w/2 > dc.width -20) { off = true; pipe.x = dc.width-20-pipe.w/2; }
-        if(pipe.y+pipe.h/2 > dc.height-90) { off = true; pipe.y = dc.height-90-pipe.h/2; }
+        if(pipe.y+pipe.h/2 < 20)           { off = true; pipe.y = 20-pipe.h/2; }
+        if(pipe.x+pipe.w/2 > dc.width -30) { off = true; pipe.x = dc.width-30-pipe.w/2; }
+        if(pipe.y+pipe.h/2 > dc.height-60) { off = true; pipe.y = dc.height-60-pipe.h/2; }
         if(off)
         {
           var sx = balloon.x+balloon.w/2;
@@ -1382,16 +1376,14 @@ var GamePlayScene = function(game, stage)
           ctx.save();
           ctx.translate(sx,sy);
           ctx.rotate(Math.atan2(ey-sy,ex-sx));
-          ctx.drawImage(alert_bg_img,-20,-20,50,40);
+          ctx.drawImage(alert_bg_img,-40,-40,100,80);
           ctx.restore();
-          ctx.drawImage(alert_danger_img,sx-5,sy-10,10,20);
+          ctx.drawImage(alert_danger_img,sx-5,sy-20,10,20);
           ctx.strokeStyle = "#000000";
         }
         ctx.textAlign = "center";
-        ctx.fillStyle = colorForHeight();
-        if(off)
-          ctx.fillText("Pipe Opening",pipe.x+pipe.w/2-30,pipe.y+pipe.h/2-50)
-        ctx.fillText(fdisp((pipe.wx-balloon.wx),1)+"m",pipe.x+pipe.w/2-30,pipe.y+pipe.h/2-35)
+        ctx.fillStyle = "#000000";
+        ctx.fillText(fdisp((pipe.wx-balloon.wx),1)+"m",pipe.x+pipe.w/2-30,sy+20);
       },
       function() {
         if(abs(balloon.wx-pipe.wx) < 10 && (balloon.wy-pipe.wy > 20 || pipe.wy-balloon.wy > 10))
