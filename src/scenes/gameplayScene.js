@@ -470,6 +470,7 @@ var GamePlayScene = function(game, stage)
           SPEAKER_TALL,
         ]);
         game.intro_complete = true;
+        ga('send', 'event', 'balloon_level', 'complete', 0, 0);
       },
       noop,
       noop,
@@ -617,6 +618,7 @@ var GamePlayScene = function(game, stage)
           SPEAKER_TALL,
         ]);
         game.particles_complete = true;
+        ga('send', 'event', 'balloon_level', 'complete', 1, 0);
       },
       noop,
       noop,
@@ -861,6 +863,7 @@ var GamePlayScene = function(game, stage)
           SPEAKER_AXE,
         ]);
         game.forces_complete = true;
+        ga('send', 'event', 'balloon_level', 'complete', 2, 0);
       },
       noop,
       noop,
@@ -1018,6 +1021,7 @@ var GamePlayScene = function(game, stage)
           SPEAKER_TALL,
         ]);
         game.density_complete = true;
+        ga('send', 'event', 'balloon_level', 'complete', 3, 0);
       },
       noop,
       noop,
