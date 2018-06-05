@@ -46,11 +46,11 @@ var ChooseScene = function(game, stage)
     btn_force     = new ButtonBox(btn_x[2],btn_y_0,btn_s,btn_s,function(evt){ game.start = 2; game.setScene(4); }); btn_force.img = btn_force_img;         clicker.register(btn_force);
     btn_density   = new ButtonBox(btn_x[3],btn_y_0,btn_s,btn_s,function(evt){ game.start = 3; game.setScene(4); }); btn_density.img = btn_density_img;     clicker.register(btn_density);
 
-    btn_standard = new ButtonBox(btn_x[0],btn_y_1,btn_s,btn_s,function(evt){ game.start = 5; game.setScene(4); }); btn_standard.img = btn_standard_img;    clicker.register(btn_standard);
-    btn_refuel   = new ButtonBox(btn_x[1],btn_y_1,btn_s,btn_s,function(evt){ game.start = 6; game.setScene(4); }); btn_refuel.img = btn_refuel_img;        clicker.register(btn_refuel);
-    btn_flappy   = new ButtonBox(btn_x[2],btn_y_1,btn_s,btn_s,function(evt){ game.start = 7; game.setScene(4); }); btn_flappy.img = btn_flappy_img;        clicker.register(btn_flappy);
-    btn_meditate = new ButtonBox(btn_x[3],btn_y_1,btn_s,btn_s,function(evt){ game.start = 8; game.setScene(4); }); btn_meditate.img = btn_meditate_img;    clicker.register(btn_meditate);
-    btn_free     = new ButtonBox(btn_x[4],btn_y_1,btn_s,btn_s,function(evt){ game.start = 4; game.setScene(4); }); btn_free.img = btn_free_img;            clicker.register(btn_free);
+    btn_standard = new ButtonBox(btn_x[0],btn_y_1,btn_s,btn_s,function(evt){ game.start = 5; game.setScene(4); game.logLevel(5)}); btn_standard.img = btn_standard_img;    clicker.register(btn_standard);
+    btn_refuel   = new ButtonBox(btn_x[1],btn_y_1,btn_s,btn_s,function(evt){ game.start = 6; game.setScene(4); game.logLevel(6)}); btn_refuel.img = btn_refuel_img;        clicker.register(btn_refuel);
+    btn_flappy   = new ButtonBox(btn_x[2],btn_y_1,btn_s,btn_s,function(evt){ game.start = 7; game.setScene(4); game.logLevel(7)}); btn_flappy.img = btn_flappy_img;        clicker.register(btn_flappy);
+    btn_meditate = new ButtonBox(btn_x[3],btn_y_1,btn_s,btn_s,function(evt){ game.start = 8; game.setScene(4); game.logLevel(8)}); btn_meditate.img = btn_meditate_img;    clicker.register(btn_meditate);
+    btn_free     = new ButtonBox(btn_x[4],btn_y_1,btn_s,btn_s,function(evt){ game.start = 4; game.setScene(4); game.logLevel(4)}); btn_free.img = btn_free_img;            clicker.register(btn_free);
   };
 
   self.tick = function()

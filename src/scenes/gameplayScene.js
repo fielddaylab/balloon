@@ -149,8 +149,140 @@ var GamePlayScene = function(game, stage)
   var step_flappy;
   var step_meditate;
 
+  //logging variables
+  var mySlog;
+
+  var burnPadWasDown = false;
+  var burnPadStartTime;
+  var burnPadEndTime;
+
+  var flapPadWasDown = false;
+  var flapPadStartTime;
+  var flapPadEndTime;
+
+  var startState = {altitude:null, temperature:null, distance:null, fuelLevel:null};
+  var endState = {altitude:null, temperature:null, distance:null, fuelLevel:null};
+
+  self.numLevels = 0;
+  var meditateTime = 0;
+  var freeTime = 0;
+  self.startTime;
+  var endTime;
+  self.currentLevel = null;
+
+  self.log_level_begin = function(type, tutCompletion)
+  {
+    var log_data =
+    {
+      levelType:type,
+      event:"BEGIN",
+      event_data_complex:{
+        tutorialCompletion:tutCompletion
+      }
+    };
+    
+    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    //mySlog.log(log_data);
+    console.log(log_data);
+  }
+
+  self.log_burn_release = function(time, startState, endState)
+  {
+    var log_data =
+    {
+      event:"BURN_RELEASE",
+      event_data_complex:{
+        heldTime:time,
+        startState:startState,
+        endState:endState,
+      }
+    };
+    
+    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    //mySlog.log(log_data);
+    console.log(log_data);
+  }
+
+  self.log_flap_release = function(time, startState, endState)
+  {
+    var log_data =
+    {
+      event:"FLAP_RELEASE",
+      event_data_complex:{
+        heldTime:time,
+        startState:startState,
+        endState:endState,
+      }
+    };
+    
+    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    //mySlog.log(log_data);
+    console.log(log_data);
+  }
+
+  self.log_level_end = function(gamemode, dist, fuel, highScore, numLevels)
+  {
+    self.numLevels++;
+    var log_data =
+    {
+      gamemode:gamemode,
+      event:"LEVEL_END",
+      event_data_complex:{
+        distance:dist,
+        fuelLevel:fuel,
+        topScore:highScore,
+        numLevelsAttempted:self.numLevels
+      }
+    };
+    
+    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    //mySlog.log(log_data);
+    console.log(log_data);
+  }
+
+  self.log_meditate_end = function(time)
+  {
+    var log_data =
+    {
+      event:"MEDITATE_END",
+      event_data_complex:{
+        totalTimeInMeditate:time
+      }
+    };
+    
+    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    //mySlog.log(log_data);
+    console.log(log_data);
+  }
+
+  self.log_free_end = function(time)
+  {
+    var log_data =
+    {
+      event:"FREE_END",
+      event_data_complex:{
+        totalTimeInFree:time
+      }
+    };
+    
+    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    //mySlog.log(log_data);
+    console.log(log_data);
+  }
+
+  self.endLevel = function() {
+    if (balloon) {
+      if (self.currentLevel === "STANDARD") self.log_level_end("STANDARD", balloon.wx, fuel, game.standard_best, self.numLevels);
+      if (self.currentLevel === "REFUEL") self.log_level_end("REFUEL", balloon.wx, fuel, game.refuel_best, self.numLevels);
+      if (self.currentLevel === "FLAPPY") self.log_level_end("FLAPPY", balloon.wx, fuel, game.flappy_best, self.numLevels);
+      if (self.currentLevel === "MEDITATE") { endTime = new Date().getTime(); meditateTime += ((endTime - self.startTime) / 1000); self.log_meditate_end(meditateTime); }
+      if (self.currentLevel === "FREE") { endTime = new Date().getTime(); freeTime += ((endTime - self.startTime) / 1000); self.log_free_end(freeTime); }
+    }
+  }
+
   self.ready = function()
   {
+    mySlog = new slog("BALLOON", 1);
     ctx.font = "12px Open Sans";
 
     //state
@@ -1031,6 +1163,7 @@ var GamePlayScene = function(game, stage)
     step_free = steps.length;
     steps.push(new Step(
       function() {
+        self.currentLevel = "FREE";
         scene_title = "Free Play";
         scene_n = 300;
         resetState();
@@ -1070,6 +1203,7 @@ var GamePlayScene = function(game, stage)
     step_standard = steps.length;
     steps.push(new Step(
       function() {
+        self.currentLevel = "STANDARD";
         scene_title = "Standard Game";
         scene_n = 300;
         resetState();
@@ -1132,6 +1266,9 @@ var GamePlayScene = function(game, stage)
       },
       function() {
         if (modal_retry_btn.down) {
+          var completion = {intro:self.intro_complete, particles:self.particles_complete, forces:self.forces_complete, density:self.density_complete};
+          self.log_level_begin(self.currentLevel, completion);
+          self.endLevel();
           cur_step = step_standard-1;
           return true;
         } else if (modal_menu_btn.down) {
@@ -1145,6 +1282,7 @@ var GamePlayScene = function(game, stage)
     step_refuel = steps.length;
     steps.push(new Step(
       function() {
+        self.currentLevel = "REFUEL";
         scene_title = "Refuel Game";
         scene_n = 300;
         resetState();
@@ -1308,6 +1446,9 @@ var GamePlayScene = function(game, stage)
       },
       function() {
         if (modal_retry_btn.down) {
+          var completion = {intro:self.intro_complete, particles:self.particles_complete, forces:self.forces_complete, density:self.density_complete};
+          self.log_level_begin(self.currentLevel, completion);
+          self.endLevel();
           cur_step = step_refuel-1;
           return true;
         } else if (modal_menu_btn.down) {
@@ -1321,6 +1462,7 @@ var GamePlayScene = function(game, stage)
     step_flappy = steps.length;
     steps.push(new Step(
       function() {
+        self.currentLevel = "FLAPPY";
         scene_title = "Flappy Game";
         scene_n = 300;
         resetState();
@@ -1447,6 +1589,9 @@ var GamePlayScene = function(game, stage)
       },
       function() {
         if (modal_retry_btn.down) {
+          var completion = {intro:self.intro_complete, particles:self.particles_complete, forces:self.forces_complete, density:self.density_complete};
+          self.log_level_begin(self.currentLevel, completion);
+          self.endLevel();
           cur_step = step_flappy-1;
           return true;
         } else if (modal_menu_btn.down) {
@@ -1460,6 +1605,7 @@ var GamePlayScene = function(game, stage)
     step_meditate = steps.length;
     steps.push(new Step(
       function() {
+        self.currentLevel = "MEDITATE";
         scene_title = "Meditate";
         scene_n = 300;
         resetState();
@@ -1499,6 +1645,41 @@ var GamePlayScene = function(game, stage)
   var n_ticks = 0;
   self.tick = function()
   {
+    // Handle tracking burn pad data
+    if (burn_pad.down && !burnPadWasDown) {
+      burnPadWasDown = true;
+      burnPadStartTime = new Date().getTime();
+      startState.altitude = altitude_gauge.val;
+      startState.temperature = balloon.t;
+      startState.distance = balloon.wx;
+      startState.fuelLevel = fuel;
+    } else if (!burn_pad.down && burnPadWasDown) {
+      burnPadWasDown = false;
+      burnPadEndTime = new Date().getTime();
+      endState.altitude = altitude_gauge.val;
+      endState.temperature = balloon.t;
+      endState.distance = balloon.wx;
+      endState.fuelLevel = fuel;
+      self.log_burn_release((burnPadEndTime - burnPadStartTime) / 1000, startState, endState)
+    }
+    // Handle tracking flap pad data
+    if (flap_pad.down && !flapPadWasDown) {
+      flapPadWasDown = true;
+      flapPadStartTime = new Date().getTime();
+      startState.altitude = altitude_gauge.val;
+      startState.temperature = balloon.t;
+      startState.distance = balloon.wx;
+      startState.fuelLevel = fuel;
+    } else if (!flap_pad.down && flapPadWasDown) {
+      flapPadWasDown = false;
+      flapPadEndTime = new Date().getTime();
+      endState.altitude = altitude_gauge.val;
+      endState.temperature = balloon.t;
+      endState.distance = balloon.wx;
+      endState.fuelLevel = fuel;
+      self.log_flap_release((flapPadEndTime - flapPadStartTime) / 1000, startState, endState)
+    }
+
     n_ticks++;
     fuel_pulse_n++;
     scene_n--;
