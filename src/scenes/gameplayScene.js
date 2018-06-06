@@ -181,9 +181,9 @@ var GamePlayScene = function(game, stage)
       }
     };
     
-    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    //mySlog.log(log_data);
-    console.log(log_data);
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    mySlog.log(log_data);
+    //console.log(log_data);
   }
 
   self.log_burn_release = function(time, startState, endState)
@@ -198,9 +198,9 @@ var GamePlayScene = function(game, stage)
       }
     };
     
-    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    //mySlog.log(log_data);
-    console.log(log_data);
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    mySlog.log(log_data);
+    //console.log(log_data);
   }
 
   self.log_flap_release = function(time, startState, endState)
@@ -215,9 +215,9 @@ var GamePlayScene = function(game, stage)
       }
     };
     
-    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    //mySlog.log(log_data);
-    console.log(log_data);
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    mySlog.log(log_data);
+    //console.log(log_data);
   }
 
   self.log_level_end = function(gamemode, dist, fuel, highScore, numLevels)
@@ -235,9 +235,9 @@ var GamePlayScene = function(game, stage)
       }
     };
     
-    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    //mySlog.log(log_data);
-    console.log(log_data);
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    mySlog.log(log_data);
+    //console.log(log_data);
   }
 
   self.log_meditate_end = function(time)
@@ -250,9 +250,9 @@ var GamePlayScene = function(game, stage)
       }
     };
     
-    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    //mySlog.log(log_data);
-    console.log(log_data);
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    mySlog.log(log_data);
+    //console.log(log_data);
   }
 
   self.log_free_end = function(time)
@@ -265,9 +265,26 @@ var GamePlayScene = function(game, stage)
       }
     };
     
-    //log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
-    //mySlog.log(log_data);
-    console.log(log_data);
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    mySlog.log(log_data);
+    //console.log(log_data);
+  }
+
+  self.log_fuel_collect = function(dist, fuel1, fuel2)
+  {
+    var log_data =
+    {
+      event:"FUEL_COLLECT",
+      event_data_complex:{
+        distance:dist,
+        beforeFuel:fuel1,
+        afterFuel:fuel2
+      }
+    };
+    
+    log_data.event_data_complex = JSON.stringify(log_data.event_data_complex);
+    mySlog.log(log_data);
+    //console.log(log_data);
   }
 
   self.endLevel = function() {
@@ -1368,8 +1385,8 @@ var GamePlayScene = function(game, stage)
         if(refuel_stations[1]-balloon.wx < -100) refuel_stations[1] = refuel_stations[0] + randR(500,1000);
         if(balloon.wy <= 0)
         {
-          if(abs(refuel_stations[0]-balloon.wx) < 30) { fuel += 15; refuel_stations[0] = refuel_stations[1] + randR(500,1000); }
-          if(abs(refuel_stations[1]-balloon.wx) < 30) { fuel += 15; refuel_stations[1] = refuel_stations[0] + randR(500,1000); }
+          if(abs(refuel_stations[0]-balloon.wx) < 30) { self.log_fuel_collect(balloon.wx, fuel, fuel+15); fuel += 15; refuel_stations[0] = refuel_stations[1] + randR(500,1000); }
+          if(abs(refuel_stations[1]-balloon.wx) < 30) { self.log_fuel_collect(balloon.wx, fuel, fuel+15); fuel += 15; refuel_stations[1] = refuel_stations[0] + randR(500,1000); }
         }
       },
       function() {
