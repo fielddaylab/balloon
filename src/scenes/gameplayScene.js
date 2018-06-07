@@ -169,6 +169,8 @@ var GamePlayScene = function(game, stage)
   self.startTime;
   var endTime;
   self.currentLevel = null;
+  var maxAltitude = 0;
+  var numFuelCollected = 0;
 
   self.log_level_begin = function(type, tutCompletion)
   {
@@ -220,7 +222,7 @@ var GamePlayScene = function(game, stage)
     //console.log(log_data);
   }
 
-  self.log_level_end = function(gamemode, dist, fuel, highScore, numLevels)
+  self.log_level_end = function(gamemode, dist, fuel, highScore, numLevels, maxAlt)
   {
     self.numLevels++;
     var log_data =
@@ -231,7 +233,8 @@ var GamePlayScene = function(game, stage)
         distance:dist,
         fuelLevel:fuel,
         topScore:highScore,
-        numLevelsAttempted:self.numLevels
+        numLevelsAttempted:self.numLevels,
+        maximumAltitude:maxAlt
       }
     };
     
@@ -270,7 +273,7 @@ var GamePlayScene = function(game, stage)
     //console.log(log_data);
   }
 
-  self.log_fuel_collect = function(dist, fuel1, fuel2)
+  self.log_fuel_collect = function(dist, fuel1, fuel2, numFuels)
   {
     var log_data =
     {
@@ -278,7 +281,8 @@ var GamePlayScene = function(game, stage)
       event_data_complex:{
         distance:dist,
         beforeFuel:fuel1,
-        afterFuel:fuel2
+        afterFuel:fuel2,
+        numFuelsCollected:numFuels
       }
     };
     
@@ -289,11 +293,14 @@ var GamePlayScene = function(game, stage)
 
   self.endLevel = function() {
     if (balloon) {
-      if (self.currentLevel === "STANDARD") self.log_level_end("STANDARD", balloon.wx, fuel, game.standard_best, self.numLevels);
-      if (self.currentLevel === "REFUEL") self.log_level_end("REFUEL", balloon.wx, fuel, game.refuel_best, self.numLevels);
-      if (self.currentLevel === "FLAPPY") self.log_level_end("FLAPPY", balloon.wx, fuel, game.flappy_best, self.numLevels);
+      if (self.currentLevel === "STANDARD") self.log_level_end("STANDARD", balloon.wx, fuel, game.standard_best, self.numLevels, maxAltitude);
+      if (self.currentLevel === "REFUEL") self.log_level_end("REFUEL", balloon.wx, fuel, game.refuel_best, self.numLevels, maxAltitude);
+      if (self.currentLevel === "FLAPPY") self.log_level_end("FLAPPY", balloon.wx, fuel, game.flappy_best, self.numLevels, maxAltitude);
       if (self.currentLevel === "MEDITATE") { endTime = new Date().getTime(); meditateTime += ((endTime - self.startTime) / 1000); self.log_meditate_end(meditateTime); }
       if (self.currentLevel === "FREE") { endTime = new Date().getTime(); freeTime += ((endTime - self.startTime) / 1000); self.log_free_end(freeTime); }
+
+      numFuels = 0;
+      maxAltitude = 0;
     }
   }
 
@@ -1385,8 +1392,8 @@ var GamePlayScene = function(game, stage)
         if(refuel_stations[1]-balloon.wx < -100) refuel_stations[1] = refuel_stations[0] + randR(500,1000);
         if(balloon.wy <= 0)
         {
-          if(abs(refuel_stations[0]-balloon.wx) < 30) { self.log_fuel_collect(balloon.wx, fuel, fuel+15); fuel += 15; refuel_stations[0] = refuel_stations[1] + randR(500,1000); }
-          if(abs(refuel_stations[1]-balloon.wx) < 30) { self.log_fuel_collect(balloon.wx, fuel, fuel+15); fuel += 15; refuel_stations[1] = refuel_stations[0] + randR(500,1000); }
+          if(abs(refuel_stations[0]-balloon.wx) < 30) { numFuels++; self.log_fuel_collect(balloon.wx, fuel, fuel+15, numFuels); fuel += 15; refuel_stations[0] = refuel_stations[1] + randR(500,1000); }
+          if(abs(refuel_stations[1]-balloon.wx) < 30) { numFuels++; self.log_fuel_collect(balloon.wx, fuel, fuel+15, numFuels); fuel += 15; refuel_stations[1] = refuel_stations[0] + randR(500,1000); }
         }
       },
       function() {
@@ -1696,7 +1703,7 @@ var GamePlayScene = function(game, stage)
       endState.fuelLevel = fuel;
       self.log_flap_release((flapPadEndTime - flapPadStartTime) / 1000, startState, endState)
     }
-
+    if (balloon.wy > maxAltitude) maxAltitude = balloon.wy;
     n_ticks++;
     fuel_pulse_n++;
     scene_n--;
