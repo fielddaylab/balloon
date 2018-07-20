@@ -59,9 +59,25 @@ var Game = function(init)
 
   self.setScene = function(i)
   {
+    if (i == 3) {
+      scenes[4].endLevel();
+    }
     scenes[cur_scene].cleanup();
     cur_scene = i;
     scenes[cur_scene].ready();
+  }
+
+  self.logLevel = function(i) {
+    var levelType;
+    switch(i) {
+      case 5: levelType = "STANDARD"; break;
+      case 6: levelType = "REFUEL"; break;
+      case 7: levelType = "FLAPPY"; break;
+      case 8: levelType = "MEDITATE"; scenes[4].startTime = new Date().getTime(); break;
+      case 4: levelType = "FREE"; scenes[4].startTime = new Date().getTime(); break;
+    }
+    var completion = {intro:self.intro_complete, particles:self.particles_complete, forces:self.forces_complete, density:self.density_complete};
+    scenes[4].log_level_begin(levelType, completion);
   }
 };
 
