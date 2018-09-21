@@ -176,9 +176,10 @@ var GamePlayScene = function(game, stage)
   {
     var log_data =
     {
-      levelType:type,
+      level:0,
       event:"BEGIN",
       event_data_complex:{
+        levelType:type,
         tutorialCompletion:tutCompletion
       }
     };
@@ -192,8 +193,12 @@ var GamePlayScene = function(game, stage)
   {
     var log_data =
     {
-      event:"BURN_RELEASE",
+      level:0,
+      event:"CUSTOM",
+      event_custom:1,
       event_data_complex:{
+        event_custom:"BURN_RELEASE",
+        levelType:self.currentLevel,
         heldTime:time,
         startState:startState,
         endState:endState,
@@ -209,8 +214,12 @@ var GamePlayScene = function(game, stage)
   {
     var log_data =
     {
-      event:"FLAP_RELEASE",
+      level:0,
+      event:"CUSTOM",
+      event_custom:2,
       event_data_complex:{
+        event_custom:"FLAP_RELEASE",
+        levelType:self.currentLevel,
         heldTime:time,
         startState:startState,
         endState:endState,
@@ -227,9 +236,11 @@ var GamePlayScene = function(game, stage)
     self.numLevels++;
     var log_data =
     {
-      gamemode:gamemode,
-      event:"LEVEL_END",
+      level:0,
+      event:"COMPLETE",
       event_data_complex:{
+        gamemode:gamemode,
+        levelType:self.currentLevel,
         distance:dist,
         fuelLevel:fuel,
         topScore:highScore,
@@ -247,8 +258,12 @@ var GamePlayScene = function(game, stage)
   {
     var log_data =
     {
-      event:"MEDITATE_END",
+      level:0,
+      event:"CUSTOM",
+      event_custom:3,
       event_data_complex:{
+        event_custom:"MEDITATE_END",
+        levelType:self.currentLevel,
         totalTimeInMeditate:time
       }
     };
@@ -262,8 +277,11 @@ var GamePlayScene = function(game, stage)
   {
     var log_data =
     {
-      event:"FREE_END",
+      event:"CUSTOM",
+      event_custom:4,
       event_data_complex:{
+        event_custom:"FREE_END",
+        levelType:self.currentLevel,
         totalTimeInFree:time
       }
     };
@@ -277,8 +295,12 @@ var GamePlayScene = function(game, stage)
   {
     var log_data =
     {
-      event:"FUEL_COLLECT",
+      level:0,
+      event:"CUSTOM",
+      event_custom:5,
       event_data_complex:{
+        event_custom:"FUEL_COLLECT",
+        levelType:self.currentLevel,
         distance:dist,
         beforeFuel:fuel1,
         afterFuel:fuel2,
